@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 // 引入组件
 import Home from '@/view/home/home.vue'
 
+
 // 异步加载的路由组件
 const routes = [
   {
@@ -15,23 +16,15 @@ const routes = [
     }
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import('@/view/about.vue'),
+    path: '/genre',
+    name: 'Genre',
+    component: () => import('@/view/genre/index.vue'),
     meta: {
-      title: '关于',
+      title: '分类',
       requiresAuth: false
     }
   },
-  {
-    path: '/user',
-    name: 'User',
-    component: () => import('@/view/user.vue'),
-    meta: {
-      title: '用户中心',
-      requiresAuth: true
-    }
-  }
+ 
 ]
 
 const router = createRouter({

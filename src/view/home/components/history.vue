@@ -69,6 +69,7 @@ const menuItems = ref([
       flex-shrink: 0;
       @include responsive-scale {
         padding: calc(1024 / 1440 * 10px) calc(1024 / 1440 * 16px);
+        gap: calc(1024 / 1440 * 8px);
       }
       img {
         width: 24px;
