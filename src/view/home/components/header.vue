@@ -120,7 +120,7 @@
         border-radius: 40px;
         font-size: 16px;
         font-weight: 600;
-        cursor: pointer;
+         
         padding: 6px 12px;
 
         @include responsive-scale {

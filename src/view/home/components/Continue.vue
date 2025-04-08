@@ -14,7 +14,7 @@
 
         <div class="content-scroll">
             <div class="content-list">
-                <div class="content-item" v-for="(item, index) in contentList" :key="index">
+                <div class="content-item" v-for="(item, index) in contentList" :key="index" @click="handleItemClick(item)">
                     <div class="cover-image">
                         <img :src="item.cover" :alt="item.title">
                         <div class="text">{{ item.title }}</div>
@@ -23,7 +23,7 @@
                             EP.{{ item.currentEp }} / EP.{{ item.totalEp }}
                         </div>
                     </div>
-                </div>
+                </div>  
             </div>
         </div>
     </div>
@@ -31,7 +31,8 @@
 
 <script setup>
 import coverImage from '@/assets/images/image.png'
-
+import {useRouter} from 'vue-router'
+const router = useRouter()
 const contentList = [
     {
         title: "Open Your Eyes, MyBillionaire Husband",
@@ -51,80 +52,15 @@ const contentList = [
             currentEp: 1,
             totalEp: 67
         },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-    // ... 其他内容项
+       
+       
 ];
+const handleItemClick = (item) => {
+    router.push({
+        name: 'VideoPlay',
+        params: { videoInfo: item }
+    });
+};
 
 const scrollContent = (direction) => {
     const container = document.querySelector('.content-list');
@@ -183,7 +119,7 @@ const scrollContent = (direction) => {
                 border-radius: 50%;
                 border: 1px solid #2C2E31;
                 background: transparent;
-                cursor: pointer;
+                 
                 display: flex;
                 align-items: center;
                 justify-content: center;

@@ -64,3 +64,12 @@ const userStore = useUserStore()
     color: #666;
 } */
 </style>
+
+<style>
+
+
+/* 如果需要保持页面背景色一致 */
+body {
+  background-color: #000; /* 或者你项目中使用的背景色 */
+}
+</style>

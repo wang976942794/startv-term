@@ -2,7 +2,7 @@
   <div class="home">
     <Header></Header>
     <History></History>
-    <Content></Content>
+    <Continue></Continue>
     <NewRelease></NewRelease>
     <MoreRecommended></MoreRecommended>
   </div>
@@ -11,7 +11,7 @@
 <script setup>
 import Header from './components/header.vue'
 import History from './components/history.vue'
-import Content from './components/content.vue'
+import Continue from './components/Continue.vue'
 import NewRelease from './components/newrelease.vue'
 import MoreRecommended from './components/morerecommended.vue'
 </script>

@@ -203,7 +203,7 @@ const agreeTerms = ref(false)
             color: #fff;
             font-size: 16px;
             font-weight: 600;
-            cursor: pointer;
+             
             margin-bottom: 32px;
             transition: opacity 0.3s;
 
@@ -249,7 +249,7 @@ const agreeTerms = ref(false)
                 border-radius: 100px;
                 color: #fff;
                 font-size: 16px;
-                cursor: pointer;
+                 
                 transition: all 0.3s;
 
                 img {

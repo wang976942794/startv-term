@@ -24,12 +24,59 @@ const routes = [
       requiresAuth: false
     }
   },
- 
+  {
+    path: '/videoPlay',
+    name: 'VideoPlay',
+    component: () => import('@/view/home/components/videoPlay.vue'),
+    meta: {
+      title: '视频播放',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/fandom',
+    name: 'Fandom',
+    component: () => import('@/view/fandom/index.vue')
+  },
+  {
+    path: '/fandom/:id',
+    name: 'FandomContent',
+    component: () => import('@/view/fandom/components/fandomContent.vue')
+  },
+  {
+    path: '/user',
+    component: () => import('@/components/userpage.vue'),
+    children: [
+      {
+        path: 'wallet',
+        component: () => import('@/components/userpage.vue'),
+      },
+      {
+        path: 'list',
+        component: () => import('@/components/userpage.vue'),
+      },
+      {
+        path: 'history',
+        component: () => import('@/components/userpage.vue'),
+      },
+      {
+        path: 'points',
+        component: () => import('@/components/userpage.vue'),
+      },
+      {
+        path: '',
+        redirect: '/user/wallet'
+      }
+    ]
+  }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 } // 每次路由切换都滚动到顶部
+  }
 })
 
 // // 路由守卫

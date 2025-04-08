@@ -62,7 +62,7 @@ const menuItems = ref([
       gap: 8px;
       padding: 10px 16px;
       border-radius: 20px;
-      cursor: pointer;
+       
       white-space: nowrap;
       transition: all 0.3s ease;
       border: 1px solid #2C2E31;
