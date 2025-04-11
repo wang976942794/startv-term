@@ -47,7 +47,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      
+      'vue3-video-play': 'vue3-video-play/dist/index.umd.js'
     }
   },
   
@@ -69,5 +69,19 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['vue3-video-play']
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true
+    },
+    rollupOptions: {
+      external: ['vue3-video-play'],
+      output: {
+        globals: {
+          'vue3-video-play': 'Vue3VideoPlay'
+        }
+      }
+    }
   }
 })
