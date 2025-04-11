@@ -45,23 +45,23 @@ const routes = [
   },
   {
     path: '/user',
-    component: () => import('@/components/userpage.vue'),
+    component: () => import('@/components/user.vue'),
     children: [
       {
         path: 'wallet',
-        component: () => import('@/components/userpage.vue'),
+        component: () => import('@/components/WalletContent.vue'),
       },
       {
         path: 'list',
-        component: () => import('@/components/userpage.vue'),
+        component: () => import('@/components/MyList.vue'),
       },
       {
         path: 'history',
-        component: () => import('@/components/userpage.vue'),
+        component: () => import('@/components/history.vue'),
       },
       {
         path: 'points',
-        component: () => import('@/components/userpage.vue'),
+        component: () => import('@/components/points.vue'),
       },
       {
         path: '',

@@ -46,8 +46,27 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
+      '@': path.resolve(__dirname, 'src'),
     }
   },
- 
+  
+  // 添加服务器配置，包含代理设置
+  server: {
+    host: '0.0.0.0',
+    port: 3000, // 设置开发服务器端口
+    open: true, // 自动打开浏览器
+    cors: true, // 允许跨域
+    proxy: {
+      // 配置代理
+      '/api': {
+        target: 'http://192.168.200.122:18080', // 替换为您的后端API地址
+        changeOrigin: true, // 允许跨域
+        rewrite: (path) => path.replace(/^\/api/, ''), // 重写路径
+        secure: false, // 如果是https接口，需要配置这个参数
+      },
+    }
+  },
+  optimizeDeps: {
+    include: ['vue3-video-play']
+  }
 })

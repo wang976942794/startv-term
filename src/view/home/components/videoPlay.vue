@@ -3,6 +3,7 @@
     <!-- 左侧播放器预留位置 -->
     <div class="video-player">
       <!-- 播放器将在这里实现 -->
+      <Vue3VideoPlay />
     </div>
 
     <!-- 右侧信息区域 -->
@@ -67,7 +68,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-
+import Vue3VideoPlay from '@/components/Vue3videoPlay.vue'
 const videoInfo = ref({
   seriesTitle: 'Pregnant and Spoiled ...',
   episode: 1,
@@ -94,7 +95,8 @@ onMounted(() => {
   .video-player {
     flex: 2;
     background: #000;
-    min-height: 500px;
+    width: 952px;
+    min-height: 700px;
   }
 
   .video-info {

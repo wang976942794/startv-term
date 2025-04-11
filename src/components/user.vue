@@ -47,11 +47,8 @@
     </div>
 
     <div class="user-content">
-      <!-- 根据当前标签显示不同内容 -->
-      <WalletContent v-if="currentTab === 'wallet'" />
-      <MyList v-if="currentTab === 'list'" />
-      <!-- 其他标签页的内容组件 -->
-    </div>
+       <router-view></router-view>
+          </div>
 
   </div>
 </template>
@@ -59,8 +56,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import WalletContent from './WalletContent.vue';
-import MyList from './MyList.vue';
+
 import coverImage from '@/assets/images/image.png'
 const route = useRoute();
 const router = useRouter();
