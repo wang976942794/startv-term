@@ -47,7 +47,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      'vue3-video-play': path.resolve(__dirname, 'node_modules/vue3-video-play/dist/index.umd.js')
+      'vue3-video-play': path.resolve(__dirname, 'node_modules/vue3-video-play')
     }
   },
   
