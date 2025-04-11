@@ -11,7 +11,7 @@
 <script setup>
 import { reactive } from 'vue'
 import Vue3VideoPlay from 'vue3-video-play/dist/index.umd.js'
-import '@/assets/styles/video-player.css'
+import '@/assets/styles/video-play.css'
 
 const options = reactive({
   width: '100%', //播放器高度
