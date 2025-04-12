@@ -1,7 +1,7 @@
 <template>
     <div class="continue-watching">
         <div class="continue-watching-header">
-            <h2 class="section-title">New Release</h2>
+            <h2 class="section-title">More Recommended</h2>
         </div>
 
         <div class="content-container">
@@ -26,37 +26,37 @@ import coverImage from '@/assets/images/image.png'
 
 const contentList = [
     {
-        title: "Open Your Eyes, MyBillionaire Husband",
+        title: "Open Your Eyes, MyBillionaire Husband asdds",
         cover: coverImage,
         currentEp: 1,
         totalEp: 67
     },
     {
-        title: "Open Your Eyes, MyBillionaire Husband",
+        title: "Open Your Eyes, ",
         cover: coverImage,
         currentEp: 1,
         totalEp: 67
     },
     {
-        title: "Open Your Eyes, MyBillionaire Husband",
+        title: "Open Your Eyes,",
         cover: coverImage,
         currentEp: 1,
         totalEp: 67
     },
     {
-        title: "Open Your Eyes, MyBillionaire Husband",
+        title: "Open Your Eyes, ",
         cover: coverImage,
         currentEp: 1,
         totalEp: 67
     },
     {
-        title: "Open Your Eyes, MyBillionaire Husband",
+        title: "Open Your Eyes, ",
         cover: coverImage,
         currentEp: 1,
         totalEp: 67
     },
     {
-        title: "Open Your Eyes, MyBillionaire Husband",
+        title: "Open Your Eyes, MyBillionaire Husband sfsdf",
         cover: coverImage,
         currentEp: 1,
         totalEp: 67
@@ -157,12 +157,18 @@ const contentList = [
 
             .cover-image {
                 width: 100%;
-                
+                height: 328px;
+                position: relative;
                 .text {
                     font-size: 16px;
                     color: #fff;
                     font-weight: 700;
                     margin-top: 12px;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                     @include responsive-scale {
                         font-size: calc(1024 / 1440 * 16px);
                         margin-top: calc(1024 / 1440 * 12px);
@@ -180,7 +186,9 @@ const contentList = [
                 }
 
                 .episode-tag {
-                    margin-top: 8px;
+                    position: absolute;
+                    bottom: 8px;
+                    // left: 8px;
                     background: rgba(0, 0, 0, 0.7);
                     padding: 4px 8px;
                     border-radius: 4px;

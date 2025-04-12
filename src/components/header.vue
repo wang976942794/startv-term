@@ -120,10 +120,10 @@
                 <img src="@/assets/images/langauge.svg" alt="Download">
             </div>
             <!-- 头像 -->
-            <div class="timer-btn-user" @click="showUserMenu = !showUserMenu">
+            <div class="timer-btn-user" @click="handleUserClick">
                 <img src="@/assets/images/user.svg" alt="User">
                 <!-- 用户菜单悬浮窗 -->
-                <div class="user-dropdown" v-show="showUserMenu">
+                <div class="user-dropdown" v-show="showUserMenu && isLoggedIn">
                     <router-link to="/user/wallet" class="menu-item">
                         <img src="@/assets/images/wallet.svg" alt="wallet">
                         My wallet
@@ -167,6 +167,7 @@ const showLoginDialog = ref(false)
 const showUserMenu = ref(false)
 const showDownloadQR = ref(false)
 const showHistoryMenu = ref(false)
+const isLoggedIn = ref(false) // 你需要根据实际情况设置这个值
 // 模拟数据
 const hotMovies = ref([
     { title: 'Saved by the Sexy Cowboy' },
@@ -238,6 +239,15 @@ onMounted(() => {
 watch(() => route.path, (newPath) => {
     currentPath.value = newPath
 }, { immediate: true })
+
+// 处理用户头像点击
+const handleUserClick = () => {
+    if (isLoggedIn.value) {
+        showUserMenu.value = !showUserMenu.value
+    } else {
+        showLoginDialog.value = true
+    }
+}
 </script>
 
 <style lang="scss" scoped>

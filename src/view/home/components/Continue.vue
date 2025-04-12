@@ -35,7 +35,7 @@ import {useRouter} from 'vue-router'
 const router = useRouter()
 const contentList = [
     {
-        title: "Open Your Eyes, MyBillionaire Husband",
+        title: "Open Your Eyes, MyBillionaire Husband asdhjkh",
         cover: coverImage,
         currentEp: 1,
         totalEp: 67
@@ -177,7 +177,8 @@ const scrollContent = (direction) => {
 
             .cover-image {
                 width: 100%;
-
+                height: 328px;
+                position: relative;
                 img {
                     width: 100%;
                     height: 232px;
@@ -194,6 +195,11 @@ const scrollContent = (direction) => {
                     font-weight: 700;
                     margin-top: 12px;
                     margin-bottom: 8px;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                     @include responsive-scale {
                         font-size: calc(1024 / 1440 * 16px);
                         margin-top: calc(1024 / 1440 * 12px);
@@ -202,6 +208,8 @@ const scrollContent = (direction) => {
                 }
 
                 .episode-tag {
+                    position: absolute;
+                    bottom: 8px;
                     display: inline-flex;
                     align-items: center;
                     gap: 4px;

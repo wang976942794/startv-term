@@ -89,14 +89,14 @@ onMounted(() => {
 .video-container {
   display: flex;
   gap: 24px;
-  padding: 0 60px;
+  padding: 60px 60px;
   color: #fff;
   
   .video-player {
     flex: 2;
     background: #000;
     width: 952px;
-    min-height: 700px;
+    height: 800px;
   }
 
   .video-info {
