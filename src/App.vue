@@ -1,8 +1,18 @@
 <script setup>
 import { useUserStore } from './stores/user'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
 import Header from '@/components/header.vue'
 import Footer from '@/components/footer.vue'
+
 const userStore = useUserStore()
+const route = useRoute()
+
+// 计算属性来判断是否显示 Footer
+const showFooter = computed(() => {
+  // 在 videoPlay 路由下不显示 Footer
+  return !route.path.includes('/videoPlay')
+})
 </script>
 
 <template>
@@ -13,7 +23,7 @@ const userStore = useUserStore()
         <main class="main-content">
             <router-view></router-view>
         </main>
-        <Footer></Footer>
+        <Footer v-show="showFooter"></Footer>
     </div>
 </template>
 
@@ -46,7 +56,8 @@ const userStore = useUserStore()
 }
 
 .main-content {
-    padding-top: 100px; /* 调整此值以匹配您的 header 实际高度 */
+    padding-top: 100px; 
+    /* 调整此值以匹配您的 header 实际高度 */
     min-height: calc(100vh - 100px);
     @include responsive-scale {
         padding-top: calc(1024 / 1440 * 100px);

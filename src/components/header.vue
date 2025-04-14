@@ -6,7 +6,8 @@
             <div class="logo">
                 <img src="../assets/images/logo.svg" alt="START TV" />
             </div>
-            <el-menu :router="true" mode="horizontal" :ellipsis="false" class="nav-menu" background-color="transparent" :default-active="currentPath">
+            <el-menu :router="true" mode="horizontal" :ellipsis="false" class="nav-menu" background-color="transparent"
+                :default-active="currentPath">
                 <el-menu-item index="/" class="menu-item">Home</el-menu-item>
                 <el-menu-item index="/genre" class="menu-item">Genre</el-menu-item>
                 <el-menu-item index="/fandom" class="menu-item">Fandom</el-menu-item>
@@ -92,27 +93,35 @@
                 <!-- 历史菜单悬浮窗 -->
                 <div class="history-dropdown" v-show="showHistoryMenu">
                     <div class="history-nav">
-                        <div class="history-nav-item" >
+                        <div class="history-nav-item" 
+                             :class="{ active: activeHistoryTab === 0 }"
+                             @click="activeHistoryTab = 0">
                             History
                         </div>
-                        <div class="history-nav-item"> 
+                        <div class="history-nav-item" 
+                             :class="{ active: activeHistoryTab === 1 }"
+                             @click="activeHistoryTab = 1">
                             myList
                         </div>
                     </div>
                     <div class="history-content">
-                        <div class="history-item">
+                        <div class="history-item" 
+                        v-for="item in activeHistoryTab === 0 ? historyData.value : chapterCollections.value" 
+                        :key="item.bookId" 
+                        @click="handleHistoryItemClick(item)">
                             <div class="history-left">
-                                <img src="@/assets/images/image.png" alt="">
+                                <img :src="item.fontUrl" alt="">
                             </div>
                             <div class="history-right">
-                                <div class="history-right-top">Open Your Eyes, MyBillionaire Husband</div>
+                                <div class="history-right-top">{{ item.title }}</div>
                                 <div class="history-right-bottom">
                                     <span class="history-right-bottom-icon"></span>
-                                    <span class="history-right-bottom-text">Played to Episode 1</span>
+                                    <span class="history-right-bottom-text">Played to Episode {{ item.watchChapterId }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                 
                 </div>
             </div>
             <!-- 语言 -->
@@ -154,11 +163,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted, watch, computed, reactive } from 'vue'
+import { useRoute, useRouter} from 'vue-router'
+import { useUserStore } from '@/stores/user'  // 导入 userStore
 import LoginDialog from './LoginDialog.vue'
+import { getHistory,getChapterCollections } from '@/api/home'
 
 const route = useRoute()
+const router = useRouter()  // 获取路由实例
+const userStore = useUserStore()  // 使用 userStore
 const currentPath = ref(route.path)
 
 const searchText = ref('')
@@ -167,7 +180,14 @@ const showLoginDialog = ref(false)
 const showUserMenu = ref(false)
 const showDownloadQR = ref(false)
 const showHistoryMenu = ref(false)
-const isLoggedIn = ref(false) // 你需要根据实际情况设置这个值
+const historyData=reactive([])
+const chapterCollections=reactive([])
+// 使用 userStore 的 isLoggedIn
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+
+// 添加activeHistoryTab状态
+const activeHistoryTab = ref(0)
+
 // 模拟数据
 const hotMovies = ref([
     { title: 'Saved by the Sexy Cowboy' },
@@ -191,28 +211,23 @@ const handleBlur = (e) => {
     }
 }
 
-// 点击外部关闭菜单
+// 修改历史菜单的点击监听器
 onMounted(() => {
+
+    // 点击外部关闭菜单
     document.addEventListener('click', (e) => {
         const userBtn = e.target.closest('.timer-btn-user')
         if (!userBtn) {
             showUserMenu.value = false
         }
     })
-})
-
-// 点击外部关闭下载框
-onMounted(() => {
+    // 点击外部关闭下载框
     document.addEventListener('click', (e) => {
         const downloadWrapper = e.target.closest('.download-wrapper')
         if (!downloadWrapper) {
             showDownloadQR.value = false
         }
     })
-})
-
-// 修改历史菜单的点击监听器
-onMounted(() => {
     // 为历史菜单添加点击事件，阻止冒泡
     const historyDropdown = document.querySelector('.history-dropdown')
     if (historyDropdown) {
@@ -233,6 +248,21 @@ onMounted(() => {
     document.addEventListener('click', () => {
         showHistoryMenu.value = false
     })
+
+
+    // 获取历史记录
+    getHistory().then(res => {
+        if(res.code==100000){
+            historyData.value=res.data
+        }
+    })
+    // 获取章节集合
+    getChapterCollections().then(res => {
+        if(res.code==100000){
+            chapterCollections.value=res.data
+        }
+    })
+
 })
 
 // 监听路由变化
@@ -242,11 +272,31 @@ watch(() => route.path, (newPath) => {
 
 // 处理用户头像点击
 const handleUserClick = () => {
-    if (isLoggedIn.value) {
+    if (userStore.isLoggedIn) {  // 使用 userStore 的 isLoggedIn
         showUserMenu.value = !showUserMenu.value
     } else {
         showLoginDialog.value = true
     }
+}
+
+// 处理登出
+const handleLogout = () => {
+    userStore.logout()
+    showUserMenu.value = false
+}
+
+// 处理历史记录项点击
+const handleHistoryItemClick = (item) => {
+    // 关闭历史菜单
+    showHistoryMenu.value = false
+    // 跳转到视频播放页面，并传递必要的参数
+    router.push({
+        path: '/videoPlay',
+        query: {
+            bookId: item.bookId,
+            chapterId: item.watchChapterId
+        }
+    })
 }
 </script>
 
@@ -383,7 +433,7 @@ const handleUserClick = () => {
                 .close-btn {
                     background: none;
                     border: none;
-                     
+
                     padding: 4px;
 
                     .close-icon {
@@ -415,7 +465,7 @@ const handleUserClick = () => {
                         gap: 8px;
                         padding: 8px 0;
                         color: #fff;
-                         
+
 
                         &:hover {
                             color: #D0A944;
@@ -443,7 +493,7 @@ const handleUserClick = () => {
                         border-radius: 100px;
                         color: #FFFFFF;
                         font-size: 14px;
-                         
+
 
                         &:hover {
 
@@ -524,7 +574,7 @@ const handleUserClick = () => {
             display: flex;
             align-items: center;
             justify-content: center;
-             
+
             transition: all 0.3s;
 
             &:hover {
@@ -570,7 +620,7 @@ const handleUserClick = () => {
                     gap: 12px;
                     color: #FFFFFF;
                     font-size: 18px;
-                     
+
                     border-radius: 4px;
                     transition: all 0.3s;
 
@@ -644,7 +694,7 @@ const handleUserClick = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-     
+
     transition: all 0.3s;
 
     &:hover {
@@ -727,16 +777,19 @@ const handleUserClick = () => {
             width: 246px;
             height: 160px;
             text-align: left;
+
             @include responsive-scale {
                 width: calc(1024 / 1440 * 246px);
                 height: calc(1024 / 1440 * 160px);
             }
+
             p {
                 color: #FFFFFF;
                 font-size: 20px;
+
                 @include responsive-scale {
                     font-size: calc(1024 / 1440 * 20px);
-                  
+
                 }
             }
 
@@ -744,6 +797,7 @@ const handleUserClick = () => {
                 display: flex;
                 gap: 12px;
                 margin-top: 53px;
+
                 @include responsive-scale {
                     gap: calc(1024 / 1440 * 12px);
                     margin-top: calc(1024 / 1440 * 53px);
@@ -758,7 +812,7 @@ const handleUserClick = () => {
                     border: none;
                     border-radius: 100px;
                     color: #FFFFFF;
-                     
+
                     font-size: 14px;
                     transition: all 0.3s;
 
@@ -771,25 +825,27 @@ const handleUserClick = () => {
                     img {
                         width: 18px;
                         height: 18px;
+
                         @include responsive-scale {
                             width: calc(1024 / 1440 * 18px);
                             height: calc(1024 / 1440 * 18px);
                         }
                     }
 
-                 
+
                 }
             }
-            .download-tip {
-            color: #88888C;
-            font-size: 14px;
-            margin-top: 8px;
 
-            @include responsive-scale {
-                font-size: calc(1024 / 1440 * 14px);    
-                margin-top: calc(1024 / 1440 * 8px);
+            .download-tip {
+                color: #88888C;
+                font-size: 14px;
+                margin-top: 8px;
+
+                @include responsive-scale {
+                    font-size: calc(1024 / 1440 * 14px);
+                    margin-top: calc(1024 / 1440 * 8px);
+                }
             }
-        }
         }
 
 
@@ -802,7 +858,7 @@ const handleUserClick = () => {
             @include responsive-scale {
                 width: calc(1024 / 1440 * 160px);
                 height: calc(1024 / 1440 * 160px);
-                
+
             }
 
             img {
@@ -814,7 +870,7 @@ const handleUserClick = () => {
 
 
 
-       
+
     }
 }
 
@@ -828,72 +884,100 @@ const handleUserClick = () => {
     border-radius: 30px;
     padding: 16px 20px;
     z-index: 1000;
-    .history-nav{
+
+    .history-nav {
         width: 100%;
         height: 47px;
         display: flex;
         align-items: center;
         gap: 12px;
         border-bottom: 1px solid #2C2E31;
-        .history-nav-item{
+
+        .history-nav-item {
             width: 63px;
             height: 47px;
             line-height: 47px;
             text-align: center;
             font-size: 18px;
             color: #fff;
-            // opacity: 0.7;
-            
+            opacity: 0.7;
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &.active {
+                opacity: 1;
+                position: relative;
+                color:#D0A944 ;
+                
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 2px;
+                    background: #D0A944;
+                }
+            }
         }
     }
-    .history-content{
+
+    .history-content {
+        margin-top: 16px;
         width: 100%;
         height: calc(100% - 47px);
-        .history-item{
+
+        .history-item {
             width: 100%;
             height: 154px;
             background: #21262D;
             display: flex;
             justify-content: space-between;
             gap: 16px;
-           .history-left{
-            width: 120px;
-            height: 154px;
-            img{
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 16px;
-            }
-           }
-           .history-right{
-            width: 200px;
-            height: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            .history-right-top{
-                font-size: 16px;
-                color: #fff;
-            }
-            .history-right-bottom{
-                font-size: 14px;
-                color: #88888C;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-                .history-right-bottom-icon{
-                    display: inline-block;
-                    width: 8px;
-                    height: 8px;
-                    background:#FD346E;
-                    border-radius: 50%;
+
+            .history-left {
+                width: 120px;
+                height: 154px;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 16px;
                 }
             }
-           }
+
+            .history-right {
+                width: 200px;
+                height: 80px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                .history-right-top {
+                    font-size: 16px;
+                    color: #fff;
+                }
+
+                .history-right-bottom {
+                    font-size: 14px;
+                    color: #88888C;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+
+                    .history-right-bottom-icon {
+                        display: inline-block;
+                        width: 8px;
+                        height: 8px;
+                        background: #FD346E;
+                        border-radius: 50%;
+                    }
+                }
+            }
         }
     }
-  
+
 }
 
 .menu-item {
@@ -903,7 +987,7 @@ const handleUserClick = () => {
     align-items: center;
     gap: 10px;
     padding: 12px 16px;
-     
+
 
     &:hover {
         background: rgba(255, 255, 255, 0.1);

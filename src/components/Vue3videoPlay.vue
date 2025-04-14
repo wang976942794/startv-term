@@ -9,9 +9,30 @@
 </template>
   
 <script setup>
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 import Vue3VideoPlay from 'vue3-video-play'
 import 'vue3-video-play/dist/style.css'
+import Hls from 'hls.js'  // 需要先安装 hls.js
+
+// 定义 props
+const props = defineProps({
+  fontUrl: {
+    type: String,
+    default: ''
+  },
+  url: {
+    type: String,
+    default: ''
+  }
+})
+
+console.log('Props received:', props.url)
+
+// 处理视频URL，将原始地址转换为使用代理的地址
+const getProxyUrl = (url) => {
+  if (!url) return ''
+  return url.replace('https://zhongdong-stream.startvs.net', '/hls')
+}
 
 const options = reactive({
   width: '100%', //播放器高度
@@ -37,8 +58,9 @@ const options = reactive({
     "fullScreen",
   ],
   title: '', //视频名称
-  src: "http://vjs.zencdn.net/v/oceans.mp4", //视频源
-  poster: '', //封面
+  src: getProxyUrl(props.url), // 使用代理URL
+  poster: props.fontUrl, //封面
+  type: 'application/x-mpegURL',  // 添加这行，指定视频类型为 HLS
   tracks: [ // 字幕配置
     {
       default: true, // 默认显示的字幕
@@ -55,6 +77,44 @@ const options = reactive({
     }
   ]
 })
+
+// 监听 fontUrl 的变化
+watch(() => props.fontUrl, (newUrl) => {
+  console.log('fontUrl changed:', newUrl)
+  if (newUrl) {
+    options.src = newUrl
+    console.log('Video source updated:', options.src)
+  }
+})
+
+// 监听 url 的变化
+watch(() => props.url, (newUrl) => {
+  console.log('url changed:', newUrl)
+  if (newUrl) {
+    const proxyUrl = getProxyUrl(newUrl)
+    options.src = proxyUrl
+    console.log('Video source updated:', options.src)
+    
+    // 检查浏览器是否原生支持 HLS
+    if (Hls.isSupported()) {
+      const hls = new Hls()
+      hls.loadSource(newUrl)
+      // 获取 video 元素
+      const video = document.querySelector('video')
+      if (video) {
+        hls.attachMedia(video)
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play()
+        })
+      }
+    }
+    // 对于原生支持 HLS 的浏览器（如 Safari）
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = newUrl
+    }
+  }
+})
+
 
 const onPlay = (ev) => {
   console.log('播放')

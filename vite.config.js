@@ -65,6 +65,11 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ''), // 重写路径
         secure: false, // 如果是https接口，需要配置这个参数
       },
+      '/hls': {
+        target: 'https://zhongdong-stream.startvs.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/hls/, '')
+      }
     }
   },
   optimizeDeps: {

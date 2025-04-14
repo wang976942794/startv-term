@@ -27,7 +27,7 @@
             </div>
 
             <!-- 登录按钮 -->
-            <button class="login-btn">Login</button>
+            <button class="login-btn" @click="handleLogin">Login</button>
 
             <!-- 第三方登录 -->
             <div class="divider">
@@ -35,15 +35,15 @@
             </div>
 
             <div class="social-login">
-                <button class="social-btn">
+                <button class="social-btn" @click="handleSocialLogin('GOOGLE')">
                     <img src="@/assets/images/google.svg" alt="Google">
                     <span>Log in with Google</span>
                 </button>
-                <button class="social-btn">
+                <button class="social-btn" @click="handleSocialLogin('FACEBOOK')">
                     <img src="@/assets/images/facebook.svg" alt="Facebook">
                     <span>Log in with Facebook</span>
                 </button>
-                <button class="social-btn">
+                <button class="social-btn" @click="handleSocialLogin('APPLE')">
                     <img src="@/assets/images/apple.svg" alt="Apple">
                     <span>Log in with Apple</span>
                 </button>
@@ -60,7 +60,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getOAuthUrl, getTokenByLogin } from '@/api/login'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/user'
 
 defineProps({
     visible: {
@@ -69,12 +72,66 @@ defineProps({
     }
 })
 
-defineEmits(['update:visible'])
+// 正确定义 emit
+const emit = defineEmits(['update:visible'])
 
+const userStore = useUserStore()
 const username = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 const agreeTerms = ref(false)
+
+// 组件加载时读取保存的账号密码和勾选状态
+onMounted(() => {
+    const savedCredentials = userStore.getCredentials()
+    if (savedCredentials) {
+        username.value = savedCredentials.username
+        password.value = savedCredentials.password
+        rememberMe.value = savedCredentials.rememberMe
+    }
+})
+
+// 处理第三方登录
+const handleSocialLogin = async (type) => {
+    try {
+        // 使用完整的重定向URL，包含协议
+        const redirectUrl = window.location.origin  // 添加回调路径
+        const response = await getOAuthUrl({
+            type,
+            redirectUrl
+        })
+        console.log(response)
+        if (response.code === 100000) {
+            window.location.href = response.data
+        } else {
+            ElMessage.error(response.msg || '获取登录链接失败')
+        }
+    } catch (error) {
+        console.error('Social login error:', error)
+        ElMessage.error('登录失败，请稍后重试')
+    }
+}
+
+const handleLogin = async () => {
+    console.log(username.value, password.value)
+    const res = await getTokenByLogin({
+        email: username.value,
+        password: password.value
+    })
+    // 使用正确定义的 emit
+    emit('update:visible', false)
+    if (res.code === 100000) {
+        // 保存账号密码和勾选状态
+        if (rememberMe.value) {
+            userStore.saveCredentials(username.value, password.value, rememberMe.value)
+        } else {
+            userStore.clearCredentials()
+        }
+        userStore.setToken(res.data)
+    } else {
+        ElMessage.error(res.msg)
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -251,16 +308,21 @@ const agreeTerms = ref(false)
                 font-size: 16px;
                  
                 transition: all 0.3s;
+                cursor: pointer;
 
                 img {
                     width: 28px;
                     height: 28px;
                 }
 
-                // &:hover {
-                //     border-color: #D0A944;
-                //     color: #D0A944;
-                // }
+                &:hover {
+                    border-color: #D0A944;
+                    color: #D0A944;
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
             }
         }
 

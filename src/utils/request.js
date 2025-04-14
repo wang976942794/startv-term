@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const request = axios.create({
   baseURL: '/api',
-  timeout: 5000, // 请求超时时间
+  timeout: 50000, // 请求超时时间
   headers: {
     'Content-Type': 'application/json'
   }
@@ -15,7 +15,7 @@ request.interceptors.request.use(
     // 例如：获取并设置 token
     const token = localStorage.getItem('token')
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
+      config.headers['Authorization'] = token
     }
     return config
   },
@@ -30,15 +30,15 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   response => {
     // 对响应数据做点什么
-    const res = response.data
+    const res = response.data  // 获取响应中的 data
     
-    // 这里可以根据后端的数据结构进行调整
-    if (res.code === 200) {
-      return res.data
+    // 这里根据后端的数据结构进行处理
+    if (res.code === 100000) {
+      return res  // 返回完整的响应数据
     } else {
       // 处理业务错误
-      console.error('业务错误：', res.message)
-      return Promise.reject(new Error(res.message || '未知错误'))
+      // console.error('业务错误：', res.msg)
+      return res
     }
   },
   error => {
