@@ -1,16 +1,16 @@
 <template>
   <div class="history-container">
     <div class="history-grid">
-      <div v-for="(item, index) in historyItems" :key="index" class="history-card">
+      <div v-for="(item, index) in historyStore.historyData" :key="index" class="history-card">
         <div class="card-image">
-          <img :src="coverImage" :alt="item.title">
+          <img :src="item.fontUrl" :alt="item.title">
         </div>
         <div class="card-content">
           <h3 class="title">{{ item.title }}</h3>
           <div class="episode-info">
-            <span class="episode">EP.{{ item.episode }}</span>
+            <span class="episode">EP.{{ item.watchChapterId}}</span>
             <span class="separator">/</span>
-            <span class="total-episodes">EP.{{ item.totalEpisodes }}</span>
+            <span class="total-episodes">EP.{{ item.allNum }}</span>
           </div>
         </div>
       </div>
@@ -23,86 +23,14 @@
 </template>
 
 <script setup>
-import coverImage from '@/assets/images/image.png'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useHistoryStore } from '@/stores/history'  
+const historyStore = useHistoryStore()  
 
-const historyItems = ref([
-  {
-    title: "Open Your Eyes, MyBillionaire Husband",
-    image: "/path/to/image1.jpg",
-    episode: "1",
-    totalEpisodes: "67",
-    isExclusive: true,
-    isInteractive: false
-  },
-  {
-    title: "The Billionaire Firefighterand His Sweet Wife",
-    image: "/path/to/image2.jpg",
-    episode: "1",
-    totalEpisodes: "67",
-    isExclusive: false,
-    isInteractive: true
-  },
-  {
-    title: "After Divorce, MyEx-WifeBecame a Billionaire",
-    image: "/path/to/image3.jpg",
-    episode: "1",
-    totalEpisodes: "67",
-    isExclusive: true,
-    isInteractive: false
-  },
-
-  {
-    title: "Open Your Eyes, MyBillionaire Husband",
-    image: "/path/to/image1.jpg",
-    episode: "1",
-    totalEpisodes: "67",
-    isExclusive: true,
-    isInteractive: false
-  },
-  {
-    title: "The Billionaire Firefighterand His Sweet Wife",
-    image: "/path/to/image2.jpg",
-    episode: "1",
-    totalEpisodes: "67",
-    isExclusive: false,
-    isInteractive: true
-  },
-  {
-    title: "After Divorce, MyEx-WifeBecame a Billionaire",
-    image: "/path/to/image3.jpg",
-    episode: "1",
-    totalEpisodes: "67",
-    isExclusive: true,
-    isInteractive: false
-  },
-  {
-    title: "Open Your Eyes, MyBillionaire Husband",
-    image: "/path/to/image1.jpg",
-    episode: "1",
-    totalEpisodes: "67",
-    isExclusive: true,
-    isInteractive: false
-  },
-  {
-    title: "The Billionaire Firefighterand His Sweet Wife",
-    image: "/path/to/image2.jpg",
-    episode: "1",
-    totalEpisodes: "67",
-    isExclusive: false,
-    isInteractive: true
-  },
-  {
-    title: "After Divorce, MyEx-WifeBecame a Billionaire",
-    image: "/path/to/image3.jpg",
-    episode: "1",
-    totalEpisodes: "67",
-    isExclusive: true,
-    isInteractive: false
-  },
-
-
-])
+onMounted(async () => {
+  // 确保数据在组件挂载时被加载
+  await historyStore.fetchChapterCollections()
+})
 
 const loadMore = () => {
   // 实现加载更多逻辑
@@ -135,7 +63,9 @@ const loadMore = () => {
 
 .history-card {
   width: 200px;
+  height: 328px;
 //   margin: 0 8px;
+position: relative;
   border-radius: 8px;
   overflow: hidden;
   background: transparent;
@@ -143,6 +73,7 @@ const loadMore = () => {
   
   @include responsive-scale {
     width: calc(1024 / 1440 * 210px);
+    height: calc(1024 / 1440 * 328px);
   }
 
   &:hover {
@@ -170,7 +101,7 @@ const loadMore = () => {
 
 .card-content {
   padding: 0 4px;
-
+ 
   .title {
     font-size: 14px;
     margin: 0 0 6px 0;
@@ -187,7 +118,9 @@ const loadMore = () => {
     font-size: 12px;
     display: flex;
     align-items: center;
-
+    position: absolute;
+    bottom: 20px;
+    left: 6px;
     .episode {
       color: #ff2c55;
       font-weight: 500;

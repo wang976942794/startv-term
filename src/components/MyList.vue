@@ -1,15 +1,15 @@
 <template>
     <div class="my-list">
         <div class="list-content">
-            <div v-for="(item, index) in listItems" :key="index" class="list-item">
+            <div v-for="(item, index) in historyStore.chapterCollections" :key="index" class="list-item">
                 <div class="item-cover">
-                    <img :src="item.coverImage" alt="cover">
+                    <img :src="item.fontUrl" alt="cover">
                 </div>
                 <div class="item-info">
                     <h3 class="item-title">{{ item.title }}</h3>
                     <div class="coin-info">
                         <span class="coin-amount">{{ item.coins }} Coins</span>
-                        <span class="unlock-time">Unlock time: {{ item.unlockTime }}</span>
+                        <span class="unlock-time">Unlock time: {{ formatTime(item.updateTime) }}</span>
                     </div>
                 </div>
             </div>
@@ -19,33 +19,11 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useHistoryStore } from '@/stores/history'  
+import { formatTime } from '@/utils/fix'
+const historyStore = useHistoryStore()  
 
-const listItems = ref([
-    {
-        title: "Move Aside!I'm the Final BoSS EP1",
-        coins: 200,
-        unlockTime: '2023.12.22 15:00',
-        coverImage: new URL('@/assets/images/image.png', import.meta.url).href,
-    },
-    {
-        title: "Move Aside!I'm the Final BoSS EP1",
-        coins: 200,
-        unlockTime: '2023.12.22 15:00',
-        coverImage: new URL('@/assets/images/image.png', import.meta.url).href,
-    },
-    {
-        title: "Move Aside!I'm the Final BoSS EP1",
-        coins: 200,
-        unlockTime: '2023.12.22 15:00',
-        coverImage: new URL('@/assets/images/image.png', import.meta.url).href,
-    },
-    {
-        title: "Move Aside!I'm the Final BoSS EP1",
-        coins: 200,
-        unlockTime: '2023.12.22 15:00',
-        coverImage: new URL('@/assets/images/image.png', import.meta.url).href,
-    }
-]);
+const listItems = ref();
 </script>
 
 <style scoped lang="scss">

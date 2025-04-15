@@ -14,6 +14,7 @@ export function getHistory() {
     })
 }
 
+//获取收藏列表
 export function getChapterCollections() {
     return request({
         url: '/api/book/chapterCollections',
@@ -46,11 +47,14 @@ export function getChapterCollect(data) {
     })
 }
 
-//获取收藏列表
-export function getChapterCollectList(data) {
+//取消收藏
+export function getChapterCollectCancel(data) {
     return request({
-        url: '/api/book/chapterCollections',
-        method: 'get',
+        url: '/api/book/chapterCollectCancel',
+        method: 'POST',
         data:data
     })
 }
+
+
+

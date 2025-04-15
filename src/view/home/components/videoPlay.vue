@@ -37,14 +37,14 @@
 
       <!-- 互动按钮 -->
       <div class="interaction-buttons">
-        <div class="button">
-          <img src="@/assets/images/heart2.svg" alt="" v-if="!videoInfo.matchCollect">
-          <img src="@/assets/images/hearttrue.svg" alt="" v-else>
+        <div :class="chapterInfo.matchLike ? 'action' : 'button'" >
+          <img src="@/assets/images/hearttrue.svg" alt="" v-if="chapterInfo.matchLike">
+          <img src="@/assets/images/heart2.svg" alt="" v-else>
           <span>{{ videoInfo.collectNum }}</span>
         </div>
-        <div :class="videoInfo.matchCollect ? 'action' : 'button'" @click="handleCollect">
-          <img src="@/assets/images/star2.svg" alt="" v-if="!videoInfo.matchCollect">
-          <img src="@/assets/images/startrue.svg" alt="" v-else>
+        <div :class="matchCollect ? 'action' : 'button'" @click="handleCollect(matchCollect)">
+          <img src="@/assets/images/startrue.svg" alt="" v-if="matchCollect">
+          <img src="@/assets/images/star2.svg" alt="" v-else>
           <span>{{ videoInfo.collectNum }}</span>
         </div>
         <div class="button">
@@ -98,7 +98,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import Vue3VideoPlay from '@/components/Vue3videoPlay.vue'
-import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollections } from '@/api/home'
+import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel } from '@/api/home'
 import { ElMessage } from 'element-plus'
 
 const route = useRoute()
@@ -108,7 +108,7 @@ const chapterInfo = ref({})  // 添加章节信息的响应式引用
 // 获取路由参数
 const bookId = ref(route.query.bookId)
 const chapterId = ref(route.query.chapterId==0?1:route.query.chapterId)
-
+const matchCollect = ref(false)
 const activeRange = ref(0)
 
 // 计算集数区间
@@ -153,20 +153,27 @@ const isEpisodeLocked = (episodeNum) => {
   return episodeNum > unlockedEpisode
 }
 //点击收藏
-const handleCollect = async () => {
-
+const handleCollect = async (type) => {
+console.log("是否手粗昂",type);
+if(type){
+  const res = await getChapterCollectCancel({
+    bookId: bookId.value,
+    chapterId: chapterId.value
+  })
+  matchCollect.value = false
+}else{
   const res = await getChapterCollect({
     bookId: bookId.value,
     chapterId: chapterId.value
   })
-  console.log(res);
-  
+  matchCollect.value = true
+}
 }
 
 // 封装获取视频和章节信息的函数
 const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
   try {
-    const [videoRes, chapterRes,collectRes] = await Promise.all([
+    const [videoRes, chapterRes] = await Promise.all([
       getVideoInfo({
         bookId,
         chapterId
@@ -176,7 +183,7 @@ const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
         chapterId
       }),
     ])
-    console.log("collectRes",collectRes);
+    console.log("collectRes",chapterRes);
       
     if (videoRes.code === 100000) {
       videoInfo.value = videoRes.data.bookInfoResp
@@ -184,6 +191,7 @@ const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
 
     if (chapterRes.code === 100000) {
       chapterInfo.value = chapterRes.data
+      matchCollect.value = chapterRes.data.matchCollect
     }
 
     return { videoRes, chapterRes }

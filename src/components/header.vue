@@ -106,7 +106,7 @@
                     </div>
                     <div class="history-content">
                         <div class="history-item" 
-                        v-for="item in activeHistoryTab === 0 ? historyData.value : chapterCollections.value" 
+                        v-for="item in activeHistoryTab === 0 ? historyStore.historyData : historyStore.chapterCollections" 
                         :key="item.bookId" 
                         @click="handleHistoryItemClick(item)">
                             <div class="history-left">
@@ -168,10 +168,12 @@ import { useRoute, useRouter} from 'vue-router'
 import { useUserStore } from '@/stores/user'  // 导入 userStore
 import LoginDialog from './LoginDialog.vue'
 import { getHistory,getChapterCollections } from '@/api/home'
+import { useHistoryStore } from '@/stores/history'  // 添加这行
 
 const route = useRoute()
 const router = useRouter()  // 获取路由实例
 const userStore = useUserStore()  // 使用 userStore
+const historyStore = useHistoryStore()  // 添加这行
 const currentPath = ref(route.path)
 
 const searchText = ref('')
@@ -180,8 +182,7 @@ const showLoginDialog = ref(false)
 const showUserMenu = ref(false)
 const showDownloadQR = ref(false)
 const showHistoryMenu = ref(false)
-const historyData=reactive([])
-const chapterCollections=reactive([])
+
 // 使用 userStore 的 isLoggedIn
 const isLoggedIn = computed(() => userStore.isLoggedIn)
 
@@ -249,20 +250,9 @@ onMounted(() => {
         showHistoryMenu.value = false
     })
 
-
-    // 获取历史记录
-    getHistory().then(res => {
-        if(res.code==100000){
-            historyData.value=res.data
-        }
-    })
-    // 获取章节集合
-    getChapterCollections().then(res => {
-        if(res.code==100000){
-            chapterCollections.value=res.data
-        }
-    })
-
+    // 获取历史记录和章节集合
+    historyStore.fetchHistory()
+    historyStore.fetchChapterCollections()
 })
 
 // 监听路由变化
@@ -294,7 +284,7 @@ const handleHistoryItemClick = (item) => {
         path: '/videoPlay',
         query: {
             bookId: item.bookId,
-            chapterId: item.watchChapterId
+            chapterId: item.watchChapterId||item.chapterId
         }
     })
 }
@@ -926,14 +916,16 @@ const handleHistoryItemClick = (item) => {
         margin-top: 16px;
         width: 100%;
         height: calc(100% - 47px);
-
+        
         .history-item {
             width: 100%;
             height: 154px;
             background: #21262D;
+            margin-bottom: 16px;
             display: flex;
             justify-content: space-between;
             gap: 16px;
+            overflow-y: auto;
 
             .history-left {
                 width: 120px;
