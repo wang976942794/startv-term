@@ -4,6 +4,9 @@
         "source": "/(.*)",
         "destination": "/index.html"
       },
-      { "src": "/api/(.*)", "dest": "http://api.startvs.net:18080", "methods": ["GET", "POST", "PUT"] }
+      {
+        "source": "/api/(.*)",
+        "destination": "http://api.startvs.net:18080/api/$1"
+      }
     ]
   }
