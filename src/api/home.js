@@ -55,6 +55,12 @@ export function getChapterCollectCancel(data) {
         data:data
     })
 }
-
+// 首页列表信息
+export function getHomePage() {
+    return request({
+        url: '/api/home/homePage',
+        method: 'get',
+    })
+}
 
 

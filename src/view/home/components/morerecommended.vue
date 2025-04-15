@@ -6,13 +6,13 @@
 
         <div class="content-container">
             <div class="content-grid">
-                <div class="content-item" v-for="(item, index) in contentList" :key="index">
+                <div class="content-item" v-for="(item, index) in popularBookList" :key="index" @click="handleItemClick(item)">
                     <div class="cover-image">
-                        <img :src="item.cover" :alt="item.title">
+                        <img :src="item.fontUrl" :alt="item.title">
                         <div class="text">{{ item.title }}</div>
                         <div class="episode-tag">
                             <span class="dot"></span>
-                            EP.{{ item.currentEp }} / EP.{{ item.totalEp }}
+                            EP.{{ item.completeNum}} / EP.{{ item.allNum }}
                         </div>
                     </div>
                 </div>
@@ -22,84 +22,30 @@
 </template>
 
 <script setup>
-import coverImage from '@/assets/images/image.png'
+import { ref, watch} from 'vue'
+import { useHomeStore } from '@/stores/home.js'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const homeStore = useHomeStore()
+const popularBookList = ref([])
+watch(() => homeStore.popularBookList, (newValue) => {
+    popularBookList.value = newValue
+},
+    { immediate: true } // immediate: true 会使得侦听器立即执行一次
+)
+const handleItemClick = (item) => {
+    console.log(item);
+    
+    router.push({
+        name: 'VideoPlay',
+        query: {
+            bookId: item.bookId,
+            chapterId: item.watchChapterId||item.chapterId ||1
+        }
+    });
+};
 
-const contentList = [
-    {
-        title: "Open Your Eyes, MyBillionaire Husband asdds",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes, ",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes,",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes, ",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes, ",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes, MyBillionaire Husband sfsdf",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes, MyBillionaire Husband",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
 
-    {
-        title: "Open Your Eyes, MyBillionaire Husband",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes, MyBillionaire Husband",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes, MyBillionaire Husband",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes, MyBillionaire Husband",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    {
-        title: "Open Your Eyes, MyBillionaire Husband",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
-    },
-    // ... 其他内容项保持不变
-];
 </script>
 
 <style lang="scss" scoped>

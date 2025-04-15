@@ -14,6 +14,12 @@ import History from './components/history.vue'
 import Continue from './components/Continue.vue'
 import NewRelease from './components/newrelease.vue'
 import MoreRecommended from './components/morerecommended.vue'
+import { onMounted } from 'vue'
+import { useHomeStore } from '@/stores/home'
+const homeStore = useHomeStore()
+onMounted(async () => {
+    await homeStore.fetchHomePage()
+})
 </script>
 
 <style scoped lang="scss">

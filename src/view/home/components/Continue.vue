@@ -14,13 +14,13 @@
 
         <div class="content-scroll">
             <div class="content-list">
-                <div class="content-item" v-for="(item, index) in contentList" :key="index" @click="handleItemClick(item)">
+                <div class="content-item" v-for="(item, index) in watchBookList" :key="index" @click="handleItemClick(item)">
                     <div class="cover-image">
-                        <img :src="item.cover" :alt="item.title">
+                        <img :src="item.fontUrl" :alt="item.title">
                         <div class="text">{{ item.title }}</div>
                         <div class="episode-tag">
                             <span class="dot"></span>
-                            EP.{{ item.currentEp }} / EP.{{ item.totalEp }}
+                            EP.{{ item.completeNum }} / EP.{{ item.allNum }}
                         </div>
                     </div>
                 </div>  
@@ -30,35 +30,27 @@
 </template>
 
 <script setup>
-import coverImage from '@/assets/images/image.png'
+import { ref ,watch} from 'vue'
 import {useRouter} from 'vue-router'
+import { useHomeStore } from '@/stores/home'
 const router = useRouter()
-const contentList = [
-    {
-        title: "Open Your Eyes, MyBillionaire Husband asdhjkh",
-        cover: coverImage,
-        currentEp: 1,
-        totalEp: 67
+const homeStore = useHomeStore()
+const watchBookList = ref([])
+
+watch(
+    () => homeStore.watchBookList,
+    (newValue) => {
+        watchBookList.value = newValue
     },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-        {
-            title: "The Senator's Son",
-            cover: coverImage,
-            currentEp: 1,
-            totalEp: 67
-        },
-       
-       
-];
+    { immediate: true } // immediate: true 会使得侦听器立即执行一次
+)
 const handleItemClick = (item) => {
     router.push({
         name: 'VideoPlay',
-        params: { videoInfo: item }
+        query: {
+            bookId: item.bookId,
+            chapterId: item.watchChapterId||item.chapterId||1
+        }
     });
 };
 

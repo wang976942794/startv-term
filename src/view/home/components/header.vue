@@ -1,36 +1,107 @@
 <template>
-    <div class="header">
+    <div class="header" :style="headerStyle">
         <div class="header-content">
             <div class="tag">New Release</div>
-            <h1 class="title">Heiress Crash Lands on Her Husband</h1>
+            <h1 class="title">{{ selectedItem.title }}</h1>
             <div class="action">
-                <button class="play-btn">
-                    <img src="@/assets/images/play.svg" alt="Play" class="play-icon">
+                <button class="play-btn" @click="handleItemClick">
+                    <img src="@/assets/images/play.svg" alt="Play" class="play-icon" >
                     Play
                 </button>
             </div>
         </div>
-        <div class="header-right">
-
-            <div class="header-right-content-item">
-                <img src="@/assets/images/image.png" alt="Play">
+        <div class="header-right" >
+            <div 
+                class="header-right-content-item" 
+                v-for="(item, index) in bannerList" 
+                :key="index"
+                :class="{ 'active': selectedIndex === index }"
+                @click="selectItem(index,item)"
+            >
+                <img :src="item.bannerUrl" alt="Book Cover">
             </div>
-            <div class="header-right-content-item">
-                <img src="@/assets/images/image.png" alt="Play">
-            </div>
-            <div class="header-right-content-item">
-                <img src="@/assets/images/image.png" alt="Play">
-            </div>
-            <div class="header-right-content-item">
-                <img src="@/assets/images/image.png" alt="Play">
-            </div>
-
         </div>
     </div>
 </template>
 
 <script setup>
+import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
+import { useHomeStore } from '@/stores/home'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const homeStore = useHomeStore()
+const bannerList = ref([])
+const selectedIndex = ref(0)//当前选中的图片索引
+const selectedItem = ref({})//当前选中的图片
+const autoPlayTimer = ref(null)
 
+const headerStyle = computed(() => ({
+    backgroundImage: `linear-gradient(to top,
+        rgba(13, 17, 23, 0.7),
+        rgba(13, 17, 23, 0.2)
+    ), url('${selectedItem.value?.bannerUrl || '@/assets/images/image.png'}')`
+}))
+
+const selectItem = (index,item) => {
+    selectedIndex.value = index
+    selectedItem.value = item
+    // 重置自动播放计时器
+    resetAutoPlay()
+}
+
+const startAutoPlay = () => {
+    stopAutoPlay() // 先清除之前的定时器
+    autoPlayTimer.value = setInterval(() => {
+        // 计算下一个索引
+        const nextIndex = (selectedIndex.value + 1) % bannerList.value.length
+        // 更新索引和选中项
+        selectItem(nextIndex, bannerList.value[nextIndex])
+    }, 3000) // 每3秒切换一次
+}
+
+const stopAutoPlay = () => {
+    if (autoPlayTimer.value) {
+        clearInterval(autoPlayTimer.value)
+        autoPlayTimer.value = null
+    }
+}
+
+const resetAutoPlay = () => {
+    startAutoPlay()
+}
+const handleItemClick = () => {
+  
+    
+    router.push({
+        name: 'VideoPlay',
+        query: {
+            bookId: selectedItem.value.bookId,
+            chapterId: selectedItem.value.watchChapterId||selectedItem.value.chapterId ||1
+        }
+    });
+};
+
+// 监听图片列表变化
+watch(() => homeStore.bannerBookList, (newValue) => {
+    bannerList.value = newValue
+    // 当图片列表更新时，初始化第一项并重置自动播放
+    if (newValue.length > 0) {
+        selectItem(0, newValue[0])
+        resetAutoPlay()
+    }
+}, { immediate: true })
+
+// 组件挂载时启动自动播放
+onMounted(() => {
+    if (bannerList.value.length > 0) {
+        startAutoPlay()
+    }
+})
+
+// 组件卸载时清除定时器
+onUnmounted(() => {
+    stopAutoPlay()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -48,13 +119,9 @@
     height: 450px;
     background-color: #0d1117;
     position: relative;
-    background-image: linear-gradient(to top,
-            rgba(13, 17, 23, 0.7), // 底部稍微深一些
-            rgba(13, 17, 23, 0.2) // 顶部更透明
-        ), url('@/assets/images/image.png');
     background-size: cover;
-    background-position: top 10% center; // 改为 top center 确保显示顶部
-    overflow: hidden; // 添加 overflow: hidden 来隐藏超出部分
+    background-position: top 10% center;
+    overflow: hidden;
 
     @include responsive-scale {
         height: calc(1024 / 1440 * 450px);
@@ -151,7 +218,7 @@
         top: 0;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        gap: 16px;
         @include responsive-scale {
             width: calc(1024 / 1440 * 224px);
             height: calc(1024 / 1440 * 450px);
@@ -163,7 +230,27 @@
             height: 84px;
             border: 2px solid #FFFFFF;
             border-radius: 12px;
-           
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #0000004D;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+
+            &.active {
+                &::after {
+                    opacity: 0;
+                }
+            }
 
             @include responsive-scale {
                 width: calc(1024 / 1440 * 160px);

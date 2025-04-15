@@ -916,7 +916,12 @@ const handleHistoryItemClick = (item) => {
         margin-top: 16px;
         width: 100%;
         height: calc(100% - 47px);
-        
+        overflow-y: auto;
+        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;  /* IE and Edge */
+        &::-webkit-scrollbar {
+          display: none;  /* Chrome, Safari and Opera */
+        }
         .history-item {
             width: 100%;
             height: 154px;
@@ -926,6 +931,7 @@ const handleHistoryItemClick = (item) => {
             justify-content: space-between;
             gap: 16px;
             overflow-y: auto;
+
 
             .history-left {
                 width: 120px;

@@ -154,7 +154,6 @@ const isEpisodeLocked = (episodeNum) => {
 }
 //点击收藏
 const handleCollect = async (type) => {
-console.log("是否手粗昂",type);
 if(type){
   const res = await getChapterCollectCancel({
     bookId: bookId.value,
