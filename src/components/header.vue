@@ -60,7 +60,7 @@
         <div class="right-section">
             <!-- 下载 -->
             <div class="download-wrapper">
-                <el-button class="download-btn" type="warning" @click="showDownloadQR = !showDownloadQR">
+                <el-button class="download-btn" type="warning" @click="handleDownloadClick">
                     <img src="@/assets/images/arrow-square-down.svg" alt="Download">
                     Down load
                 </el-button>
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <!-- 历史 -->
-            <div class="timer-btn" @click="showHistoryMenu = !showHistoryMenu">
+            <div class="timer-btn" @click="handleHistoryClick">
                 <img src="@/assets/images/timer.svg" alt="History">
                 <!-- 历史菜单悬浮窗 -->
                 <div class="history-dropdown" v-show="showHistoryMenu">
@@ -110,7 +110,7 @@
                         :key="item.bookId" 
                         @click="handleHistoryItemClick(item)">
                             <div class="history-left">
-                                <img :src="item.fontUrl" alt="">
+                               <img :src="item.fontUrl" alt="">
                             </div>
                             <div class="history-right">
                                 <div class="history-right-top">{{ item.title }}</div>
@@ -125,8 +125,32 @@
                 </div>
             </div>
             <!-- 语言 -->
-            <div class="timer-btn">
-                <img src="@/assets/images/langauge.svg" alt="Download">
+            <div class="timer-btn language-btn" @click="handleLanguageClick">
+                <img src="@/assets/images/langauge.svg" alt="Language">
+                <!-- 语言选择悬浮框 -->
+                <div class="language-dropdown" v-show="showLanguageMenu" @click.stop>
+                    <div class="language-item" 
+                         :class="{ active: locale === 'en' }" 
+                         @click="changeLanguage('en')">
+                        <span>English</span>
+                    </div>
+                    <div class="language-item" 
+                         :class="{ active: locale === 'ru' }" 
+                         @click="changeLanguage('ru')">
+                        <span>Русский</span>
+                    </div>
+                    <div class="language-item" 
+                         :class="{ active: locale === 'ar' }" 
+                         @click="changeLanguage('ar')"
+                         :dir="locale === 'ar' ? 'rtl' : 'ltr'">
+                        <span>العربية</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 主题 -->
+            <div class="timer-btn" @click="toggleTheme">
+             <img src="@/assets/images/sun.svg" alt="" v-if="isDarkMode" >
+             <img src="@/assets/images/moon.svg" alt="" v-else>
             </div>
             <!-- 头像 -->
             <div class="timer-btn-user" @click="handleUserClick">
@@ -155,6 +179,8 @@
                     </div>
                 </div>
             </div>
+           
+            
         </div>
     </div>
 
@@ -169,11 +195,19 @@ import { useUserStore } from '@/stores/user'  // 导入 userStore
 import LoginDialog from './LoginDialog.vue'
 import { getHistory,getChapterCollections } from '@/api/home'
 import { useHistoryStore } from '@/stores/history'  // 添加这行
+import { useHomeStore } from '@/stores/home'
+import { useThemeStore } from '@/stores/theme'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
+
 
 const route = useRoute()
 const router = useRouter()  // 获取路由实例
 const userStore = useUserStore()  // 使用 userStore
 const historyStore = useHistoryStore()  // 添加这行
+const homeStore = useHomeStore()
+const themeStore = useThemeStore()
+const { isDarkMode } = storeToRefs(themeStore)
 const currentPath = ref(route.path)
 
 const searchText = ref('')
@@ -182,6 +216,7 @@ const showLoginDialog = ref(false)
 const showUserMenu = ref(false)
 const showDownloadQR = ref(false)
 const showHistoryMenu = ref(false)
+const showLanguageMenu = ref(false)
 
 // 使用 userStore 的 isLoggedIn
 const isLoggedIn = computed(() => userStore.isLoggedIn)
@@ -212,68 +247,89 @@ const handleBlur = (e) => {
     }
 }
 
-// 修改历史菜单的点击监听器
-onMounted(() => {
+// 在 script setup 中添加一个关闭所有菜单的函数
+const closeAllMenus = (exceptMenu = null) => {
+    if (exceptMenu !== 'user') showUserMenu.value = false
+    if (exceptMenu !== 'history') showHistoryMenu.value = false
+    if (exceptMenu !== 'language') showLanguageMenu.value = false
+    if (exceptMenu !== 'download') showDownloadQR.value = false
+}
 
-    // 点击外部关闭菜单
-    document.addEventListener('click', (e) => {
-        const userBtn = e.target.closest('.timer-btn-user')
-        if (!userBtn) {
-            showUserMenu.value = false
-        }
-    })
-    // 点击外部关闭下载框
-    document.addEventListener('click', (e) => {
-        const downloadWrapper = e.target.closest('.download-wrapper')
-        if (!downloadWrapper) {
-            showDownloadQR.value = false
-        }
-    })
-    // 为历史菜单添加点击事件，阻止冒泡
-    const historyDropdown = document.querySelector('.history-dropdown')
-    if (historyDropdown) {
-        historyDropdown.addEventListener('click', (e) => {
-            e.stopPropagation()
-        })
-    }
-
-    // 为历史按钮添加点击事件，阻止冒泡
-    const historyBtn = document.querySelector('.timer-btn')
-    if (historyBtn) {
-        historyBtn.addEventListener('click', (e) => {
-            e.stopPropagation()
-        })
-    }
-
-    // 文档点击事件
-    document.addEventListener('click', () => {
-        showHistoryMenu.value = false
-    })
-
-    // 获取历史记录和章节集合
-    historyStore.fetchHistory()
-    historyStore.fetchChapterCollections()
-})
-
-// 监听路由变化
-watch(() => route.path, (newPath) => {
-    currentPath.value = newPath
-}, { immediate: true })
-
-// 处理用户头像点击
-const handleUserClick = () => {
-    if (userStore.isLoggedIn) {  // 使用 userStore 的 isLoggedIn
+// 修改各个点击处理函数
+const handleUserClick = (event) => {
+    event.stopPropagation()
+    if (userStore.isLoggedIn) {
+        closeAllMenus('user')
         showUserMenu.value = !showUserMenu.value
     } else {
         showLoginDialog.value = true
     }
 }
 
-// 处理登出
-const handleLogout = () => {
-    userStore.logout()
-    showUserMenu.value = false
+// 添加其他菜单的点击处理函数
+const handleHistoryClick = (event) => {
+    event.stopPropagation()
+    closeAllMenus('history')
+    showHistoryMenu.value = !showHistoryMenu.value
 }
+
+const handleLanguageClick = (event) => {
+    event.stopPropagation()
+    closeAllMenus('language')
+    showLanguageMenu.value = !showLanguageMenu.value
+}
+
+const handleDownloadClick = (event) => {
+    event.stopPropagation()
+    closeAllMenus('download')
+    showDownloadQR.value = !showDownloadQR.value
+}
+
+onMounted(() => {
+    // 使用单个统一的文档点击事件处理器
+    document.addEventListener('click', (e) => {
+        const userBtn = e.target.closest('.timer-btn-user')
+        const userDropdown = e.target.closest('.user-dropdown')
+        const historyBtn = e.target.closest('.timer-btn')
+        const historyDropdown = e.target.closest('.history-dropdown')
+        const languageBtn = e.target.closest('.language-btn')
+        const languageDropdown = e.target.closest('.language-dropdown')
+        const downloadWrapper = e.target.closest('.download-wrapper')
+        
+        // 如果点击的是空白区域，关闭所有菜单
+        if (!userBtn && !userDropdown && !historyBtn && !historyDropdown && 
+            !languageBtn && !languageDropdown && !downloadWrapper) {
+            closeAllMenus()
+        }
+    })
+
+    // 为各个下拉菜单添加阻止冒泡
+    const dropdowns = [
+        '.user-dropdown',
+        '.history-dropdown',
+        '.language-dropdown',
+        '.download-dropdown'
+    ]
+
+    dropdowns.forEach(selector => {
+        const dropdown = document.querySelector(selector)
+        if (dropdown) {
+            dropdown.addEventListener('click', (e) => {
+                e.stopPropagation()
+            })
+        }
+    })
+
+    // 获取历史记录和章节集合
+    historyStore.fetchHistory()
+    historyStore.fetchChapterCollections()
+    homeStore.fetchUserInfo()
+})
+
+// 监听路由变化
+watch(() => route.path, (newPath) => {
+    currentPath.value = newPath
+}, { immediate: true })
 
 // 处理历史记录项点击
 const handleHistoryItemClick = (item) => {
@@ -287,6 +343,31 @@ const handleHistoryItemClick = (item) => {
             chapterId: item.watchChapterId||item.chapterId
         }
     })
+}
+
+const toggleTheme = () => {
+    themeStore.toggleTheme()
+}
+
+const { locale } = useI18n()
+const currentLocale = ref(locale.value)
+
+const changeLanguage = (lang) => {
+    locale.value = lang
+    showLanguageMenu.value = false
+}
+
+// 在 script setup 中添加 handleLogout 函数
+const handleLogout = async () => {
+    try {
+        // 清除用户状态
+        userStore.logout()
+        // 关闭用户菜单
+        showUserMenu.value = false
+   
+    } catch (error) {
+        console.error('Logout failed:', error)
+    }
 }
 </script>
 
@@ -312,7 +393,7 @@ const handleHistoryItemClick = (item) => {
     width: 100%;
     height: 100px;
     padding: 27px 32px;
-    background-color: #0d1117;
+    background-color: var(--bg-primary);
 
     @include responsive-scale {
         height: calc(1024 / 1440 * 100px);
@@ -355,7 +436,7 @@ const handleHistoryItemClick = (item) => {
             line-height: 46px;
             font-size: 16px;
             padding: 0 12px;
-            color: #fff;
+            color: var( --text-primary);
             // border-bottom: 2px solid transparent;
 
             @include responsive-scale {
@@ -366,7 +447,7 @@ const handleHistoryItemClick = (item) => {
             }
 
             &:not(.is-active) {
-                color: #FFFFFF;
+                color: var( --text-primary);
                 border: none !important;
             }
 
@@ -406,7 +487,7 @@ const handleHistoryItemClick = (item) => {
             top: 100%;
             left: 0;
             width: 360px;
-            background: #1A1D1F;
+            background-color: var(--bg-primary);
             border-radius: 8px;
             padding: 16px;
             margin-top: 8px;
@@ -417,7 +498,7 @@ const handleHistoryItemClick = (item) => {
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 24px;
-                color: #fff;
+                color: var( --text-primary);
                 font-size: 14px;
 
                 .close-btn {
@@ -442,7 +523,7 @@ const handleHistoryItemClick = (item) => {
                 }
 
                 h3 {
-                    color: #fff;
+                    color: var( --text-primary);
                     font-size: 14px;
                     font-weight: 600;
                     margin-bottom: 16px;
@@ -454,7 +535,7 @@ const handleHistoryItemClick = (item) => {
                         align-items: center;
                         gap: 8px;
                         padding: 8px 0;
-                        color: #fff;
+                        color: var( --text-primary);
 
 
                         &:hover {
@@ -478,10 +559,10 @@ const handleHistoryItemClick = (item) => {
 
                     .tag {
                         padding: 6px 12px;
-                        background: #101D2B;
-                        border: 1px solid #2C2E31;
+                        background-color: var(--bg-primary);
+                        border: 1px solid var( --bg-secondary);
                         border-radius: 100px;
-                        color: #FFFFFF;
+                        color: var( --text-primary);
                         font-size: 14px;
 
 
@@ -498,7 +579,7 @@ const handleHistoryItemClick = (item) => {
     .right-section {
         display: flex;
         align-items: center;
-        width: 300px;
+        width: 400px;
         height: 40px;
         gap: 8px;
 
@@ -515,7 +596,7 @@ const handleHistoryItemClick = (item) => {
             height: 32px;
             background-color: transparent;
             border-color: #30363d;
-            color: #fff;
+            color: var( --text-primary);
 
             &:hover {
                 background-color: #21262d;
@@ -531,7 +612,7 @@ const handleHistoryItemClick = (item) => {
         .timer-btn {
             width: 46px;
             height: 46px;
-            color: #fff;
+            color: var( --text-primary);
             border-radius: 50%;
             border: 1px solid #2C2E31;
             display: flex;
@@ -546,7 +627,7 @@ const handleHistoryItemClick = (item) => {
             img {
                 width: 24px;
                 height: 24px;
-
+                filter: var(--icon-filter);
                 @include responsive-scale {
                     width: calc(1024 / 1440 * 24px);
                     height: calc(1024 / 1440 * 24px);
@@ -558,9 +639,9 @@ const handleHistoryItemClick = (item) => {
             position: relative;
             width: 46px;
             height: 46px;
-            color: #fff;
+            color: var( --text-primary);
             border-radius: 50%;
-            border: 1px solid #2C2E31;
+            border: 1px solid var( --text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -589,12 +670,13 @@ const handleHistoryItemClick = (item) => {
             .user-dropdown {
                 position: absolute;
                 top: calc(100% + 8px);
-                right: 0;
+                right: -50px;
                 width: 240px;
-                background: #1A1D1F;
+                background: var(--bg-primary);
                 border-radius: 20px;
                 padding: 16px 20px;
                 z-index: 1000;
+                border: 1px solid var(--bg-secondary);
 
                 @include responsive-scale {
                     width: calc(1024 / 1440 * 200px);
@@ -608,7 +690,7 @@ const handleHistoryItemClick = (item) => {
                     display: flex;
                     align-items: center;
                     gap: 12px;
-                    color: #FFFFFF;
+                    color: var( --text-primary);
                     font-size: 18px;
 
                     border-radius: 4px;
@@ -623,17 +705,18 @@ const handleHistoryItemClick = (item) => {
                     img {
                         width: 24px;
                         height: 24px;
-                        filter: brightness(0) invert(1);
+                        filter: var(--icon-filter);
                         transition: all 0.3s;
 
                         @include responsive-scale {
                             width: calc(1024 / 1440 * 24px);
                             height: calc(1024 / 1440 * 24px);
                         }
+                        
                     }
 
                     &:hover {
-                        background: #21262d;
+                        background: var(--bg-secondary);
                         color: #D0A944;
 
                         img {
@@ -647,24 +730,25 @@ const handleHistoryItemClick = (item) => {
 }
 
 :deep(.el-input__wrapper) {
-    background: transparent;
+    background: var(--bg-tertiary);
     box-shadow: none !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--bg-tertiary);
     border-radius: 100px;
     padding: 0 16px;
 
+
     &:hover,
     &.is-focus {
-        border-color: rgba(255, 255, 255, 0.2);
+        border-color: var(--bg-tertiary);
     }
 
     .el-input__inner {
-        color: #fff;
+        color: var( --text-primary);
         height: 40px;
         font-size: 14px;
 
         &::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: #88888C;
         }
     }
 }
@@ -678,7 +762,7 @@ const handleHistoryItemClick = (item) => {
 .timer-btn-user {
     width: 46px;
     height: 46px;
-    color: #fff;
+    color: var( --text-primary);
     border-radius: 50%;
     border: 1px solid #2C2E31;
     display: flex;
@@ -747,7 +831,8 @@ const handleHistoryItemClick = (item) => {
         transform: translateX(-50%);
         width: 470px;
         height: 200px;
-        background: #1A1D1F;
+        background: var(--bg-primary);
+        border: 1px solid var(--bg-secondary);
         border-radius: 20px;
         padding: 20px 24px;
         z-index: 1000;
@@ -774,7 +859,7 @@ const handleHistoryItemClick = (item) => {
             }
 
             p {
-                color: #FFFFFF;
+                color: var( --text-primary)FFF;
                 font-size: 20px;
 
                 @include responsive-scale {
@@ -801,7 +886,7 @@ const handleHistoryItemClick = (item) => {
                     background: #D0A944;
                     border: none;
                     border-radius: 100px;
-                    color: #FFFFFF;
+                    color: var( --text-primary)FFF;
 
                     font-size: 14px;
                     transition: all 0.3s;
@@ -842,7 +927,7 @@ const handleHistoryItemClick = (item) => {
         .qr-code {
             width: 160px;
             height: 160px;
-            background: #FFFFFF;
+            background: var( --text-primary)FFF;
             border-radius: 8px;
 
             @include responsive-scale {
@@ -867,10 +952,11 @@ const handleHistoryItemClick = (item) => {
 .history-dropdown {
     position: absolute;
     top: calc(100% + 8px);
-    right: 0;
+    right: 20px;
     width: 360px;
     height: 600px;
-    background: #1A1D1F;
+    background: var(--bg-primary);
+    border: 1px solid var(--bg-secondary);
     border-radius: 30px;
     padding: 16px 20px;
     z-index: 1000;
@@ -881,7 +967,7 @@ const handleHistoryItemClick = (item) => {
         display: flex;
         align-items: center;
         gap: 12px;
-        border-bottom: 1px solid #2C2E31;
+        border-bottom: 1px solid var(--bg-secondary);
 
         .history-nav-item {
             width: 63px;
@@ -889,7 +975,7 @@ const handleHistoryItemClick = (item) => {
             line-height: 47px;
             text-align: center;
             font-size: 18px;
-            color: #fff;
+            color: var( --text-primary);
             opacity: 0.7;
             cursor: pointer;
             transition: all 0.3s;
@@ -925,7 +1011,7 @@ const handleHistoryItemClick = (item) => {
         .history-item {
             width: 100%;
             height: 154px;
-            background: #21262D;
+            // background: var(--bg-secondary);
             margin-bottom: 16px;
             display: flex;
             justify-content: space-between;
@@ -936,12 +1022,12 @@ const handleHistoryItemClick = (item) => {
             .history-left {
                 width: 120px;
                 height: 154px;
-
                 img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                     border-radius: 16px;
+                    filter: none !important;
                 }
             }
 
@@ -954,7 +1040,7 @@ const handleHistoryItemClick = (item) => {
 
                 .history-right-top {
                     font-size: 16px;
-                    color: #fff;
+                    color: var( --text-primary);
                 }
 
                 .history-right-bottom {
@@ -990,5 +1076,60 @@ const handleHistoryItemClick = (item) => {
     &:hover {
         background: rgba(255, 255, 255, 0.1);
     }
+}
+
+.theme-switch {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    margin-right: 15px;
+}
+
+.icon-moon,
+.icon-sun {
+    font-size: 20px;
+    color: var(--text-primary);
+}
+
+.language-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 200px;
+    background: var(--bg-primary);
+    border: 1px solid var(--bg-secondary);
+    border-radius: 16px;
+    padding: 8px;
+    z-index: 1000;
+
+    .language-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        color: var(--text-primary);
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s;
+
+        &:hover {
+            background: var(--bg-secondary);
+        }
+
+        &.active {
+            color: #D0A944;
+        }
+
+        img {
+            width: 16px;
+            height: 16px;
+        }
+    }
+}
+
+.language-btn {
+    position: relative;  // 添加相对定位
 }
 </style>

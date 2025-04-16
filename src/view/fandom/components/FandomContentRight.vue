@@ -82,7 +82,7 @@ const reviewList = [
     h2 {
       font-size: 24px;
       font-weight: 600;
-      color: #fff;
+      color: var( --text-primary);
       margin-bottom: 24px;
       @include responsive-scale {
         font-size: calc(1024 / 1440 * 24px);
@@ -105,7 +105,7 @@ const reviewList = [
       .qr-code {
         width: 120px;
         height: 120px;
-        background-color: #fff;
+        background-color: var( --text-primary);
         border-radius: 8px;
         @include responsive-scale {
           width: calc(1024 / 1440 * 120px);
@@ -129,7 +129,7 @@ const reviewList = [
     h2 {
       font-size: 24px;
       font-weight: 600;
-      color: #fff;
+      color: var( --text-primary);
       margin-bottom: 24px;
       @include responsive-scale {
         margin-bottom: calc(1024 / 1440 * 24px);
@@ -177,7 +177,7 @@ const reviewList = [
 
           h3 {
             font-size: 16px;
-            color: #fff;
+            color: var( --text-primary);
             margin-bottom: 8px;
             line-height: 1.4;
             @include responsive-scale {

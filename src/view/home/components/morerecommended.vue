@@ -71,7 +71,7 @@ const handleItemClick = (item) => {
         .section-title {
             font-size: 24px;
             font-weight: bold;
-            color: #fff;
+            color: var( --text-primary);
             @include responsive-scale {
                 font-size: calc(1024 / 1440 * 24px);
             }
@@ -107,7 +107,7 @@ const handleItemClick = (item) => {
                 position: relative;
                 .text {
                     font-size: 16px;
-                    color: #fff;
+                    color: var( --text-primary);
                     font-weight: 700;
                     margin-top: 12px;
                     display: -webkit-box;

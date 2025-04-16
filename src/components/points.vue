@@ -5,7 +5,7 @@
       <div class="bonus-label">
         Bonus <span class="info-icon">i</span>
       </div>
-      <div class="bonus-amount">9,019.87</div>
+      <!-- <div class="bonus-amount">{{ userInfo.bonus||0 }}</div> -->
     </div>
 
     <!-- 签到区域 -->
@@ -16,15 +16,15 @@
       </div>
       
       <div class="days-container">
-        <div v-for="day in 7" :key="day" 
-             :class="['day-item', day === 2 ? 'active' : '']">
-          <div class="day-label">Day {{day}}</div>
+        <div v-for="day in [0,1,2,3,4,5,6]" :key="day" 
+             :class="['day-item', day < dailySignInfo.signDays ? 'active' : '']">
+          <div class="day-label">Day {{day+1}}</div>
           <div class="coin-icon">
-            <img src="@/assets/images/Vector.svg" alt="coin" v-if="day == 2" />
+            <img src="@/assets/images/Vector.svg" alt="coin" v-if="day<dailySignInfo.signDays" />
             <img src="@/assets/images/Vectorno.svg" alt="coin" v-else />
           </div>
           <div class="points-value">+20</div>
-          <div v-if="day === 2" class="check-mark">
+          <div v-if="day < dailySignInfo.signDays" class="check-mark">
             <img src="@/assets/images/Game.svg" alt="coin" />
           </div>
         </div>
@@ -64,11 +64,14 @@
 </template>
 
 <script setup>
+import { ref,watch,onMounted } from 'vue'
 import facebook2Icon from '@/assets/images/facebook2.svg'
 import instagramIcon from '@/assets/images/instagram.svg'
 import txIcon from '@/assets/images/tx.svg'
 import whatsappIcon from '@/assets/images/social-whatsapp.svg'
+import {getBonus} from '@/api/home'
 
+const dailySignInfo=ref({})
 const platforms = [
   { name: 'facebook2', icon: facebook2Icon },
   { name: 'instagram', icon: instagramIcon },
@@ -76,6 +79,12 @@ const platforms = [
   { name: 'tx', icon: txIcon },
   { name: 'social-whatsapp', icon: whatsappIcon }
 ]
+onMounted( () => {
+  getBonus().then(res => {
+    console.log(res)
+    dailySignInfo.value = res.data.dailySignInfo
+  })
+})
 </script>
 
 <style scoped lang="scss">
@@ -203,7 +212,7 @@ const platforms = [
       line-height: 62px;
       background: linear-gradient(180deg, #F0D89A 0%, #D0A944 100%);
       border-radius: 50px;
-      color: #fff;
+      color: var( --text-primary);
       font-size: 16px;
     }
   }

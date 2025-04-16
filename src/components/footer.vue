@@ -63,7 +63,7 @@
     width: 100%;
     height: 367px;
     padding: 0px 60px;
-
+    background-color: var(--bg-primary);
     @include responsive-scale {
         height: calc(1024 / 1440 * 367px);
         padding: 0px calc(1024 / 1440 * 60px);
@@ -108,7 +108,7 @@
             span {
                 font-size: 24px;
                 font-weight: 600;
-                color: #fff;
+                color: var( --text-primary);
 
                 @include responsive-scale {
                     font-size: calc(1024 / 1440 * 24px);
@@ -142,7 +142,7 @@
                     font-size: 20px;
                     font-weight: 600;
                     margin-bottom: 32px;
-                    color: #fff;
+                    color: var( --text-primary);
 
                     @include responsive-scale {
                         font-size: calc(1024 / 1440 * 20px);
@@ -183,7 +183,7 @@
     .footer-bottom {
         width: 100%;
         height: 86px;
-        border-top: 1px solid #fff;
+        border-top: 1px solid var( --text-primary);
         display: flex;
         align-items: center;
         justify-content: space-between;

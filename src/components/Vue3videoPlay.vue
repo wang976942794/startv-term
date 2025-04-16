@@ -37,7 +37,7 @@ const getProxyUrl = (url) => {
 const options = reactive({
   width: '100%', //播放器高度
   height: '100%', //播放器高度
-  color: "#409EFF", //主题色
+  color: "#D0A944", //主题色
   muted: false, //静音
   webFullScreen: false,
   speedRate: ["0.75", "1.0", "1.25", "1.5", "2.0"], //播放倍速

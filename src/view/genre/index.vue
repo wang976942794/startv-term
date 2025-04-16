@@ -76,9 +76,9 @@
 
 .genre-page {
     padding: 0 60px;
-    color: #fff;
+    color: var( --text-primary);
     min-height: 100vh;
-    background: #0f1014;
+    background: var(--bg-quinary);
     @include responsive-scale {
     padding: 0 calc(1024 / 1440 * 60px);
   }
@@ -87,14 +87,14 @@
 .breadcrumb {
     width: 100%;
     height: 74px;
-    border-bottom: 1px solid #2C2E31;
+    border-bottom: 1px solid var(--bg-quaternary);
     display: flex;
     align-items: center;
     @include responsive-scale {
         height: calc(1024 / 1440 * 74px);
     }
     .link {
-        color: #fff;
+        color: var( --text-primary);
         opacity: 0.7;
         &:hover {
             opacity: 1;
@@ -107,7 +107,7 @@
     }
 
     .current {
-        color: #fff;
+        color: var( --text-primary);
     }
 }
 
@@ -126,10 +126,10 @@
     .tag-btn {
         padding: 8px 16px;
         border-radius: 20px;
-        border: 1px solid #2C2E31;
+        border: 1px solid var(--bg-quaternary);
         font-size: 14px;
         font-weight: 500;
-        color: #fff;
+        color: var( --text-primary);
         @include responsive-scale {
             padding: calc(1024 / 1440 * 8px) calc(1024 / 1440 * 16px);
             font-size: calc(1024 / 1440 * 14px);
@@ -184,7 +184,7 @@
     .poster {
         width: 200px;
         height: 266px;
-        background: #2a2a2a;
+        background: var(--bg-secondary);
         @include responsive-scale {
             width: calc(1024 / 1440 * 200px);
             height: calc(1024 / 1440 * 266px);
@@ -228,7 +228,7 @@
             justify-content: center;
             gap: 12px;
             color: #B4B4B8;
-            background-color: #101D2B;
+            background-color: var(--bg-tertiary);
             font-size: 14px;
             font-weight: 600;
             @include responsive-scale {
@@ -276,7 +276,7 @@
             border-radius: 50px;
             border: none;
             background: linear-gradient(180deg, #F0D89A 0%, #D0A944 100%);
-            color: #fff;
+            color: var( --text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -290,7 +290,6 @@
                 font-size: calc(1024 / 1440 * 16px);
             }
             &.btn-play {
-
                 background: #E6B322;
                 color: #000;
             }
@@ -298,7 +297,10 @@
             &.btn-list {
                 border: 1px solid #2C2E31;
                 background: transparent;
-                color: #fff;
+                color: var( --text-primary);
+            }
+            img {
+                filter: var(--icon-filter);
             }
         }
     }

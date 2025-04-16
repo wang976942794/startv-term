@@ -7,7 +7,7 @@
           <img src="@/assets/images/coin-icon.svg" alt="coin" class="coin-icon">
           <div class="info">
             <h3>Coins <span class="info-icon">i</span></h3>
-            <div class="amount">9,019.87</div>
+            <div class="amount">{{ userInfo.coins||0 }}</div>
           </div>
         </div>
       </div>
@@ -15,7 +15,7 @@
         <div class="card-content">
           <div class="info">
             <h3>Bonus <span class="info-icon">i</span></h3>
-            <div class="amount">9,019.87</div>
+            <div class="amount">{{ userInfo.bonus||0 }}</div>
           </div>
           <span class="arrow">›</span>
         </div>
@@ -34,7 +34,7 @@
       </div>
       
       <div class="transaction-list">
-        <div v-for="(transaction, index) in transactions" :key="index" class="transaction-item">
+        <div v-for="(transaction, index) in userInfo.transactionRespList||[]" :key="index" class="transaction-item">
           <div class="transaction-info">
             <div class="amount-info">
               <p >
@@ -57,34 +57,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref,watch } from 'vue';
+import { useHomeStore } from '@/stores/home'
+const homeStore = useHomeStore()
+const userInfo = ref({})
+watch(()=>homeStore.userInfo,(newValue)=>{
+  userInfo.value = newValue
+})
 
-const transactions = ref([
-  {
-    coins: 1500,
-    price: '14.99',
-    date: '2025.03.28 12:09:45',
-    type: 'recharge'
-  },
-  {
-    coins: 200,
-    price: '14.99',
-    date: '2025.03.28 12:09:45',
-    type: 'buy'
-  },
-  {
-    coins: 1500,
-    price: '14.99',
-    date: '2025.03.28 12:09:45',
-    type: 'recharge'
-  },
-  {
-    coins: 200,
-    price: '14.99',
-    date: '2025.03.28 12:09:45',
-    type: 'buy'
-  }
-]);
+const transactions = ref();
 </script>
 
 <style scoped lang="scss">
@@ -166,7 +147,7 @@ const transactions = ref([
           .info-icon {
             width: 16px;
             height: 16px;
-            border: 1px solid #fff;
+            border: 1px solid var( --text-primary);
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
@@ -287,12 +268,12 @@ const transactions = ref([
         }
         &.recharge {
           background: #67C04880;
-          color: #fff;
+          color: var( --text-primary);
         }
 
         &.buy {
           background: #FD346E80;
-          color: #fff;
+          color: var( --text-primary);
 
         }
       }
@@ -305,4 +286,5 @@ const transactions = ref([
     }
   }
 }
+
 </style> 

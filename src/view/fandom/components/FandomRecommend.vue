@@ -72,7 +72,7 @@ const recommendList = [
     h2 {
       font-size: 20px;
       font-weight: 600;
-      color: #fff;
+      color: var( --text-primary);
       @include responsive-scale {
         font-size: calc(1024 / 1440 * 20px);
       }
@@ -143,7 +143,7 @@ const recommendList = [
           }
 
           .views {
-            color: #fff;
+            color: var( --text-primary);
             font-size: 12px;
             display: flex;
             align-items: center;
@@ -158,7 +158,7 @@ const recommendList = [
 
       .recommend-title {
         font-size: 14px;
-        color: #fff;
+        color: var( --text-primary);
         line-height: 1.4;
         overflow: hidden;
         text-overflow: ellipsis;

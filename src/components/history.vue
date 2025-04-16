@@ -105,7 +105,7 @@ position: relative;
   .title {
     font-size: 14px;
     margin: 0 0 6px 0;
-    color: #ffffff;
+    color: var( --text-primary)fff;
     font-weight: 500;
     display: -webkit-box;
     -webkit-line-clamp: 2;

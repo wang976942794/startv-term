@@ -70,7 +70,7 @@ import FandomRecommend from './FandomRecommend.vue'
     .main-title {
       font-size: 32px;
       font-weight: 600;
-      color: #fff;
+      color: var( --text-primary);
       line-height: 1.3;
       margin-bottom: 16px;
       @include responsive-scale {
@@ -116,7 +116,7 @@ import FandomRecommend from './FandomRecommend.vue'
 
       .description {
         p {
-          color: #FFFFFF;
+          color: var( --text-primary)FFF;
           font-size: 14px;
           line-height: 1.6;
           margin-bottom: 16px;
@@ -151,7 +151,7 @@ import FandomRecommend from './FandomRecommend.vue'
       }
 
       .repeated-desc {
-        color: #FFFFFF;
+        color: var( --text-primary)FFF;
         font-size: 15px;
         line-height: 1.6;
         @include responsive-scale {

@@ -32,7 +32,7 @@ onMounted(async () => {
 .home {
   width: 100%;
   height: 100%;
-  background-color: #0d1117;
+  background-color: var(--bg-primary);
   padding: 0 60px;
   @include responsive-scale {
     padding: 0 calc(1024 / 1440 * 60px);

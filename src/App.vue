@@ -1,17 +1,23 @@
 <script setup>
 import { useUserStore } from './stores/user'
 import { useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import Header from '@/components/header.vue'
 import Footer from '@/components/footer.vue'
+import { useThemeStore } from './stores/theme'
 
 const userStore = useUserStore()
 const route = useRoute()
+const themeStore = useThemeStore()
 
 // 计算属性来判断是否显示 Footer
 const showFooter = computed(() => {
   // 在 videoPlay 路由下不显示 Footer
   return !route.path.includes('/videoPlay')
+})
+
+onMounted(() => {
+  themeStore.initTheme()
 })
 </script>
 
@@ -42,6 +48,7 @@ const showFooter = computed(() => {
 
 .app-container {
     min-height: 100vh;
+    background-color: var( --bg-primary);
     position: relative;
 }
 
@@ -51,7 +58,7 @@ const showFooter = computed(() => {
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: #fff;
+    background-color: var( --bg-primary);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -59,6 +66,8 @@ const showFooter = computed(() => {
     padding-top: 100px; 
     /* 调整此值以匹配您的 header 实际高度 */
     min-height: calc(100vh - 100px);
+    background-color: var( --bg-primary);
+    
     @include responsive-scale {
         padding-top: calc(1024 / 1440 * 100px);
         min-height: calc(1024 / 1440 * (100vh - 100px));
@@ -81,6 +90,6 @@ const showFooter = computed(() => {
 
 /* 如果需要保持页面背景色一致 */
 body {
-  background-color: #000; /* 或者你项目中使用的背景色 */
+  background-color: var(--bg-primary); /* 或者你项目中使用的背景色 */
 }
 </style>

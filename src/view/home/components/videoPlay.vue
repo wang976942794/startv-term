@@ -23,7 +23,7 @@
         <span>/</span>
         <span>{{ videoInfo.title }}</span>
         <span>/</span>
-        <span>Episode {{ videoInfo.watchChapterId }}</span>
+        <span class="color-[var( --text-primary)]">Episode {{ chapterId  }}</span>
       </div>
 
       <!-- 标签页切换 -->
@@ -39,16 +39,16 @@
       <div class="interaction-buttons">
         <div :class="chapterInfo.matchLike ? 'action' : 'button'" >
           <img src="@/assets/images/hearttrue.svg" alt="" v-if="chapterInfo.matchLike">
-          <img src="@/assets/images/heart2.svg" alt="" v-else>
+          <img src="@/assets/images/heart2.svg" alt="" v-else style="filter: var(--icon-filter);">
           <span>{{ videoInfo.collectNum }}</span>
         </div>
         <div :class="matchCollect ? 'action' : 'button'" @click="handleCollect(matchCollect)">
           <img src="@/assets/images/startrue.svg" alt="" v-if="matchCollect">
-          <img src="@/assets/images/star2.svg" alt="" v-else>
+          <img src="@/assets/images/star2.svg" alt="" v-else style="filter: var(--icon-filter);">
           <span>{{ videoInfo.collectNum }}</span>
         </div>
         <div class="button">
-          <img src="@/assets/images/link-2.svg" alt="">
+          <img src="@/assets/images/link-2.svg" alt="" style="filter: var(--icon-filter);">
           <span>Share</span>
         </div>
       </div>
@@ -238,15 +238,18 @@ onMounted(async () => {
   display: flex;
   justify-content: space-around;
   gap: 24px;
-  color: #fff;
-  height: calc(100vh - 137px);
+  color: var( --text-primary);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: calc(100vh - 100px);
+  overflow: hidden;
+  
   @include responsive-scale {
-    padding:calc(1024 / 1440 * 60px);
-    height: calc(1024 / 1440 * 868px);
-
+    height: calc(1024 / 1440 * 100vh);
   }
   .video-player {
-    background: #000;
+    background: var(--bg-secondary);
     width: 952px;
     height: 868px;
     @include responsive-scale {
@@ -260,7 +263,7 @@ onMounted(async () => {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
+      color: var( --text-primary);
       font-size: 20px;
     }
   }
@@ -282,7 +285,7 @@ onMounted(async () => {
       }
 
       span {
-        margin: 0 8px;
+        margin: 0 6px;
         &:first-child {
           margin-left: 0;
         }
@@ -371,7 +374,7 @@ onMounted(async () => {
         padding: 8px 16px;
         border-radius: 50px;
         border-color: #2C2E31;
-        color: #FFFFFF;
+        color: var( --text-primary)FFF;
         @include responsive-scale {
           width: calc(1024 / 1440 * 119px);
           height: calc(1024 / 1440 * 46px);

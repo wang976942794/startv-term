@@ -62,5 +62,18 @@ export function getHomePage() {
         method: 'get',
     })
 }
-
+//获取用户信息
+export function getUserInfo() {
+    return request({
+        url: '/api/home/userInfo2',
+        method: 'get',
+    })
+}
+// 获取奖励信息
+export function getBonus() {
+    return request({
+        url: '/api/reward/bonus',
+        method: 'get',
+    })
+}
 

@@ -6,21 +6,21 @@
       <div class="header-content">
         <h1>Personal center</h1>
         <div class="user-info">
-          <img :src="coverImage" alt="user avatar" class="avatar">
+          <img :src="userInfo.avatarUrl" alt="user avatar" class="avatar">
           <div class="user-details">
-            <h2>{{ userName }}</h2>
-            <p class="user-id">UID {{ userId }}</p>
+            <h2>{{ userInfo.name }}</h2>
+            <p class="user-id">UID {{ userInfo.userId }}</p>
           </div>
           <button class="top-up-btn">Top Up</button>
         </div>
         <div class="user-stats">
           <div class="stat-item">
-            <span class="label">My likes</span>
-            <span class="value">{{ userLikes }}</span>
+            <span class="label">My Likes</span>
+            <span class="value">{{ userInfo.likes }}</span>
           </div>
           <div class="stat-item">
-            <span class="label">my collection</span>
-            <span class="value">{{ userCollection }}</span>
+            <span class="label">My Collection</span>
+            <span class="value">{{ userInfo.collectList||0 }}</span>
           </div>
         </div>
       </div>
@@ -54,18 +54,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed ,watch} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-
+import { useHomeStore } from '@/stores/home'
 import coverImage from '@/assets/images/image.png'
+const homeStore = useHomeStore()
 const route = useRoute();
 const router = useRouter();
-
-const userName = ref('David');
-const userId = ref('888802232');
-const userLikes = ref('64.3K');
-const userCollection = ref('64.3K');
-
+const userInfo = ref({})
 
 
 // 计算当前激活的导航项
@@ -77,6 +73,9 @@ const currentTab = computed(() => {
   if (path.includes('/points')) return 'points';
   return 'wallet'; // 默认显示wallet
 });
+watch(()=>homeStore.userInfo,(newValue)=>{
+  userInfo.value = newValue
+})
 
 // 处理导航点击
 const handleNavClick = (tab) => {
@@ -95,7 +94,7 @@ const handleNavClick = (tab) => {
 
 .personal-center {
   padding: 0 140px;
-  color: #fff;
+  color: var( --text-primary);
   min-height: 100vh;
   @include responsive-scale{
     padding: 0 calc(1024 / 1440 * 140px);
@@ -137,7 +136,7 @@ const handleNavClick = (tab) => {
 
       h1 {
         font-size: 24px;
-        color: #fff;
+        color: var( --text-primary);
         @include responsive-scale{
           font-size: calc(1024 / 1440 * 24px);
         }
@@ -170,7 +169,7 @@ const handleNavClick = (tab) => {
           h2 {
             font-size: 20px;
             margin-bottom: 4px;
-            color: #fff;
+            color: var( --text-primary);
             @include responsive-scale{
               font-size: calc(1024 / 1440 * 20px);
               margin-bottom: calc(1024 / 1440 * 4px);
@@ -222,7 +221,7 @@ const handleNavClick = (tab) => {
           }
 
           .value {
-            color: #fff;
+            color: var( --text-primary);
             font-weight: 500;
           }
         }

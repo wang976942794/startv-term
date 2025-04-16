@@ -93,7 +93,7 @@ const listItems = ref();
 
                 .item-title {
                     font-size: 16px;
-                    color: #fff;
+                    color: var( --text-primary);
                     line-height: 1.4;
 
                     @include responsive-scale {

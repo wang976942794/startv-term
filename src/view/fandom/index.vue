@@ -149,7 +149,7 @@ const articles = reactive([
       padding: 0 calc(1024 / 1440 * 172px);
   }
   .fandom-header{
-    color: #fff;
+    color: var( --text-primary);
     font-size: 24px;
     font-weight: 700;
     margin-top: 32px;
@@ -176,7 +176,7 @@ const articles = reactive([
 .card {
     width: 352px;
 height: 405px;
-  background: #2a2a2a;
+  background: var(--bg-secondary);
   border-radius: 8px;
   overflow: hidden;
   transition: transform 0.2s;
@@ -241,7 +241,7 @@ height: 405px;
 }
 
 .title {
-  color: white;
+  color: var( --text-primary);
   font-size: 18px;
   margin-bottom: 10px;
   line-height: 1.4;

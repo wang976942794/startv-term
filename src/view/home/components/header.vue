@@ -166,7 +166,7 @@ onUnmounted(() => {
     }
 
     .title {
-        color: white;
+        color:#fff;
         font-size: 32px;
         font-weight: 700;
 
@@ -182,7 +182,7 @@ onUnmounted(() => {
         align-items: center;
         justify-content: center;
         background: linear-gradient(180deg, #F0D89A 0%, #D0A944 100%);
-        color: #fff;
+        color: var( --text-primary);
         border: none;
         border-radius: 40px;
         font-size: 16px;
@@ -201,7 +201,7 @@ onUnmounted(() => {
         .play-icon {
             margin-right: 8px;
             font-size: 14px;
-
+            filter: var(--icon-filter);
             @include responsive-scale {
                 width: calc(1024 / 1440 * 14px);
                 height: calc(1024 / 1440 * 14px);
@@ -228,7 +228,7 @@ onUnmounted(() => {
         .header-right-content-item {
             width: 160px;
             height: 84px;
-            border: 2px solid #FFFFFF;
+            border: 2px solid var( --text-primary)FFF;
             border-radius: 12px;
             position: relative;
             cursor: pointer;

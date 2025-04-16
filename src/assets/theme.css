@@ -1,0 +1,25 @@
+:root {
+  /* 定义默认（黑暗）主题变量 */
+  --text-primary: #fff;
+  --text-secondary: #999;
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --border-color: #333;
+  --bg-tertiary: #101D2B;
+  --bg-quaternary: #2C2E31;
+  --bg-quinary: #0f1014;
+  --icon-filter: brightness(0) invert(1); /* 白色图标 */
+}
+
+/* 亮色主题变量 */
+.light-mode {
+  --text-primary: #000;
+  --text-secondary: #666;
+  --bg-primary: #fff;
+  --bg-secondary: #f5f5f5;
+  --border-color: #ddd;
+  --bg-tertiary: #d6d6d6;
+  --bg-quaternary: #fff;
+  --bg-quinary: #fff;
+  --icon-filter: brightness(0) saturate(0%); /* 黑色图标 */
+} 

@@ -5,12 +5,12 @@
         width="480px"
         :show-close="false"
         class="login-dialog"
-        style="background-color: #081420;"
+        style="background-color: var(--bg-primary);"
     >
         <div class="login-form">
             <!-- 用户名输入框 -->
             <div class="form-item">
-                <label>Username</label>
+                <label>{{ $t('Username') }}</label>
                 <el-input v-model="username" placeholder="Username" />
             </div>
 
@@ -147,7 +147,7 @@ const handleLogin = async () => {
                 border-bottom: 1px solid #2C2E31;
                 
                 .el-dialog__title {
-                    color: #fff;
+                    color: var( --text-primary);
                     font-size: 32px;
                     font-weight: 700;
                     line-height: 1.2;
@@ -156,7 +156,7 @@ const handleLogin = async () => {
 
             .el-dialog__body {
                 padding: 32px;
-                color: #fff;
+                color: var( --text-primary);
             }
         }
     }
@@ -168,7 +168,7 @@ const handleLogin = async () => {
             label {
                 display: block;
                 margin-bottom: 12px;
-                color: #fff;
+                color: var( --text-primary);
                 font-size: 18px;
                 font-weight: 500;
             }
@@ -188,7 +188,7 @@ const handleLogin = async () => {
                 }
 
                 .el-input__inner {
-                    color: #fff;
+                    color: var( --text-primary);
                     font-size: 16px;
                     
                     &::placeholder {
@@ -217,7 +217,7 @@ const handleLogin = async () => {
                         justify-content: center;
 
                         &::after {
-                            border-color: #fff;
+                            border-color: var( --text-primary);
                             height: 9px;
                             width: 4px;
                             left: 7px;
@@ -257,7 +257,7 @@ const handleLogin = async () => {
             background: linear-gradient(180deg, #F0D89A 0%, #D0A944 100%);
             border: none;
             border-radius: 100px;
-            color: #fff;
+            color: var( --text-primary);
             font-size: 16px;
             font-weight: 600;
              
@@ -304,7 +304,7 @@ const handleLogin = async () => {
                 background: transparent;
                 border: 1px solid #2C2E31;
                 border-radius: 100px;
-                color: #fff;
+                color: var( --text-primary);
                 font-size: 16px;
                  
                 transition: all 0.3s;
@@ -344,7 +344,7 @@ const handleLogin = async () => {
                         justify-content: center;
 
                         &::after {
-                            border-color: #fff;
+                            border-color: var( --text-primary);
                             height: 9px;
                             width: 4px;
                             left: 7px;

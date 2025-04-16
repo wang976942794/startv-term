@@ -99,7 +99,7 @@ const scrollContent = (direction) => {
         .section-title {
             font-size: 24px;
             font-weight: bold;
-            color: #fff;
+            color: var( --text-primary);
             @include responsive-scale {
                 font-size: calc(1024 / 1440 * 24px);
             }
@@ -126,7 +126,7 @@ const scrollContent = (direction) => {
                 transition: all 0.3s ease;
                 
                 &:hover {
-                    border-color: #fff;
+                    border-color: var( --text-primary);
                 }
 
                 @include responsive-scale {
@@ -191,7 +191,7 @@ const scrollContent = (direction) => {
 
                 .text {
                     font-size: 16px;
-                    color: #fff;
+                    color: var( --text-primary);
                     font-weight: 700;
                     margin-top: 12px;
                     margin-bottom: 8px;
