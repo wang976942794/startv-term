@@ -36,13 +36,13 @@
         My wallet
       </div>
       <div class="nav-item" :class="{ active: currentTab === 'list' }" @click="handleNavClick('list')">
-        My list
+        {{ $t('message.My_list') }}
       </div>
       <div class="nav-item" :class="{ active: currentTab === 'history' }" @click="handleNavClick('history')">
-        History
+        {{ $t('message.History') }}
       </div>
       <div class="nav-item" :class="{ active: currentTab === 'points' }" @click="handleNavClick('points')">
-        Points Center
+        {{ $t('message.Points_Center') }}
       </div>
     </div>
 
@@ -57,7 +57,9 @@
 import { ref, computed ,watch} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useHomeStore } from '@/stores/home'
-import coverImage from '@/assets/images/image.png'
+
+import{useI18n} from 'vue-i18n'
+const {t} = useI18n()
 const homeStore = useHomeStore()
 const route = useRoute();
 const router = useRouter();

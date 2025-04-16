@@ -10,24 +10,24 @@
         <div class="login-form">
             <!-- 用户名输入框 -->
             <div class="form-item">
-                <label>{{ $t('Username') }}</label>
-                <el-input v-model="username" placeholder="Username" />
+                <label>{{ t('message.Username') }}</label>
+                <el-input v-model="username" :placeholder="t('message.your_username')" />
             </div>
 
             <!-- 密码输入框 -->
             <div class="form-item">
-                <label>Password</label>
-                <el-input v-model="password" type="password" placeholder="Password" show-password />
+                <label>{{ t('message.Password') }}</label>
+                <el-input v-model="password" type="password" :placeholder="t('message.your_password')" show-password />
             </div>
 
             <!-- 记住我和忘记密码 -->
             <div class="form-options">
-                <el-checkbox v-model="rememberMe">Remember Me</el-checkbox>
-                <a href="#" class="forgot-password">Trouble Logging in?</a>
+                <el-checkbox v-model="rememberMe">{{ t('message.Remember_me') }}</el-checkbox>
+                <a href="#" class="forgot-password">{{ t('message.Trouble_logging_in') }}</a>
             </div>
 
             <!-- 登录按钮 -->
-            <button class="login-btn" @click="handleLogin">Login</button>
+            <button class="login-btn" @click="handleLogin">{{ t('message.Login') }}</button>
 
             <!-- 第三方登录 -->
             <div class="divider">
@@ -37,22 +37,22 @@
             <div class="social-login">
                 <button class="social-btn" @click="handleSocialLogin('GOOGLE')">
                     <img src="@/assets/images/google.svg" alt="Google">
-                    <span>Log in with Google</span>
+                    <span>{{ t('message.google_login') }}</span>
                 </button>
                 <button class="social-btn" @click="handleSocialLogin('FACEBOOK')">
                     <img src="@/assets/images/facebook.svg" alt="Facebook">
-                    <span>Log in with Facebook</span>
+                    <span>{{ t('message.facebook_login') }}</span>
                 </button>
                 <button class="social-btn" @click="handleSocialLogin('APPLE')">
                     <img src="@/assets/images/apple.svg" alt="Apple">
-                    <span>Log in with Apple</span>
+                    <span>{{ t('message.apple_login') }}</span>
                 </button>
             </div>
 
             <!-- 服务条款 -->
             <div class="terms">
                 <el-checkbox v-model="agreeTerms">
-                    By creating an account, I agree to start tv's Terms of Service and Privacy Policy.
+                    {{ t('message.By_creating_an_account') }}
                 </el-checkbox>
             </div>
         </div>
@@ -64,6 +64,9 @@ import { ref, onMounted } from 'vue'
 import { getOAuthUrl, getTokenByLogin } from '@/api/login'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 defineProps({
     visible: {
@@ -113,23 +116,30 @@ const handleSocialLogin = async (type) => {
 }
 
 const handleLogin = async () => {
-    console.log(username.value, password.value)
-    const res = await getTokenByLogin({
-        email: username.value,
-        password: password.value
-    })
-    // 使用正确定义的 emit
-    emit('update:visible', false)
-    if (res.code === 100000) {
-        // 保存账号密码和勾选状态
-        if (rememberMe.value) {
-            userStore.saveCredentials(username.value, password.value, rememberMe.value)
+    try {
+        const response = await getTokenByLogin({
+            email: username.value,
+            password: password.value
+        })
+        
+        if (response.code === 100000) {
+            // 保存账号密码和勾选状态
+            if (rememberMe.value) {
+                userStore.saveCredentials(username.value, password.value, rememberMe.value)
+            } else {
+                userStore.clearCredentials()
+            }
+            userStore.setToken(response.data)
+            emit('update:visible', false)
+        } else if (response.code === 100106) {
+            // 密码错误的处理
+            ElMessage.error(t('message.Incorrect_password'))
         } else {
-            userStore.clearCredentials()
+            ElMessage.error(response.msg || '')
         }
-        userStore.setToken(res.data)
-    } else {
-        ElMessage.error(res.msg)
+    } catch (error) {
+        console.error('Login error:', error)
+        ElMessage.error('登录失败，请稍后重试')
     }
 }
 </script>

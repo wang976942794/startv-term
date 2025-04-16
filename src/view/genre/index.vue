@@ -49,11 +49,11 @@
                     <div class="actions">
                         <button>
                             <img src="@/assets/images/play.svg" alt="Play" class="play-icon">
-                            Play
+                            {{ $t('message.Play') }}
                         </button>
                         <button class="btn-list">
                             <img src="@/assets/images/star.svg" alt="Add to My List" class="plus-icon">
-                            Add to My List
+                            {{ $t('message.Add_to_My_List') }}
                         </button>
                     </div>
                 </div>

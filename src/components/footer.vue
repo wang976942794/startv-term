@@ -7,7 +7,7 @@
             </div>
             <div class="footer-right">
                 <div class="footer-right-top">
-                    <p class="first"><a href="">About</a></p>
+                    <p class="first"><a href="">{{ $t('message.ABOUT') }}</a></p>
                     <div class="footer-right-top-bottom">
                         <p> <a href="">Connect us</a></p>
                         <p> <a href="">Terms of Service</a></p>
@@ -47,6 +47,9 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 // 无需额外的 script 逻辑
 </script>
 

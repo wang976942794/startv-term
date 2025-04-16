@@ -6,7 +6,7 @@
             <div class="action">
                 <button class="play-btn" @click="handleItemClick">
                     <img src="@/assets/images/play.svg" alt="Play" class="play-icon" >
-                    Play
+                    {{ $t('message.Play') }}
                 </button>
             </div>
         </div>

@@ -10,7 +10,7 @@
       >
         <img v-if="item.type === 'img'" src="@/assets/images/category.svg" :alt="item.text">
         <span v-else class="icon">{{ item.icon }}</span>
-        <span class="text">{{ item.text }}</span>
+        <span class="text">{{ $t(item.text) }}</span>
       </div>
     </div>
   </div>
@@ -18,11 +18,10 @@
 
 <script setup>
 import { ref } from 'vue'
-
 const activeIndex = ref(0)
 
 const menuItems = ref([
-  { type: 'img', icon: '@/assets/images/category.svg', text: '全部' },
+  { type: 'img', icon: '@/assets/images/category.svg', text:  'message.All' },
   { type: 'emoji', icon: '🕒', text: '观看历史' },
   { type: 'emoji', icon: '🆕', text: '新品发布' },
   { type: 'emoji', icon: '😊', text: '隐藏身份' },

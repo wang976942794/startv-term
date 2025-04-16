@@ -19,7 +19,7 @@
     <div class="video-info">
       <!-- 面包屑导航 -->
       <div class="breadcrumb">
-        <span>Home</span>
+        <span>{{ $t('message.Home') }}</span>
         <span>/</span>
         <span>{{ videoInfo.title }}</span>
         <span>/</span>
@@ -29,7 +29,7 @@
       <!-- 标签页切换 -->
       <div class="tab-container">
         <div class="tab-item active">Introduction</div>
-        <div class="tab-item">Comment ({{ videoInfo.commentCount }})</div>
+        <div class="tab-item">{{ $t('message.Comments') }}  ({{ videoInfo.commentCount }})</div>
       </div>
 
       <!-- 视频标题 -->
@@ -49,7 +49,7 @@
         </div>
         <div class="button">
           <img src="@/assets/images/link-2.svg" alt="" style="filter: var(--icon-filter);">
-          <span>Share</span>
+          <span>{{ $t('message.Share') }}</span>
         </div>
       </div>
 
@@ -57,7 +57,7 @@
       <div class="plot-summary">
         <h3>Plot of Episode {{ videoInfo.episode }}</h3>
         <p>{{ videoInfo.plot }}</p>
-        <div>{{ videoInfo.brief }} <span class="show-more">More</span></div>
+        <div>{{ videoInfo.brief }} <span class="show-more">{{ $t('message.More') }}</span></div>
       </div>
 
       <!-- 剧集选择 -->
@@ -71,7 +71,7 @@
           </span>
           <span :class="{ active: activeRange === -1 }"
                 @click="activeRange = -1">
-            All Episodes
+            {{ $t('message.All_Episodes') }}
           </span>
         </div>
         <div class="episode-grid">
@@ -100,7 +100,8 @@ import { useRoute } from 'vue-router'
 import Vue3VideoPlay from '@/components/Vue3videoPlay.vue'
 import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel } from '@/api/home'
 import { ElMessage } from 'element-plus'
-
+import{useI18n} from 'vue-i18n'
+const {t} = useI18n()
 const route = useRoute()
 const videoInfo = ref({})
 const chapterInfo = ref({})  // 添加章节信息的响应式引用

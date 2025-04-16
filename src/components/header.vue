@@ -8,8 +8,8 @@
             </div>
             <el-menu :router="true" mode="horizontal" :ellipsis="false" class="nav-menu" background-color="transparent"
                 :default-active="currentPath">
-                <el-menu-item index="/" class="menu-item">Home</el-menu-item>
-                <el-menu-item index="/genre" class="menu-item">Genre</el-menu-item>
+                <el-menu-item index="/" class="menu-item">{{ $t('message.Home') }}</el-menu-item>
+                <el-menu-item index="/genre" class="menu-item">{{ $t('message.Genre') }}</el-menu-item>
                 <el-menu-item index="/fandom" class="menu-item">Fandom</el-menu-item>
             </el-menu>
 
@@ -17,7 +17,7 @@
 
         <!-- 搜索框 -->
         <div class="search-container">
-            <el-input v-model="searchText" placeholder="Search..." clearable @focus="showDropdown = true"
+            <el-input v-model="searchText" :placeholder="$t('message.Search')" clearable @focus="showDropdown = true"
                 @blur="handleBlur">
                 <template #prefix>
                     <img src="@/assets/images/search-icon.svg" alt="search" class="search-icon">
@@ -35,7 +35,7 @@
 
                 <!-- 热门电影 -->
                 <div class="section">
-                    <h3>热门电影</h3>
+                    <h3>{{ $t('message.Hot_Movies') }}</h3>
                     <div class="movie-list">
                         <div class="movie-item" v-for="movie in hotMovies" :key="movie.title">
                             <span class="fire-icon">🔥</span>
@@ -46,7 +46,7 @@
 
                 <!-- 热门搜索 -->
                 <div class="section">
-                    <h3>热门搜索</h3>
+                    <h3>{{ $t('message.Trending_Searches') }}</h3>
                     <div class="tag-list">
                         <div class="tag" v-for="tag in searchTags" :key="tag">
                             {{ tag }}
@@ -62,13 +62,13 @@
             <div class="download-wrapper">
                 <el-button class="download-btn" type="warning" @click="handleDownloadClick">
                     <img src="@/assets/images/arrow-square-down.svg" alt="Download">
-                    Down load
+                    {{ $t('message.Download') }}
                 </el-button>
 
                 <!-- 下载二维码悬浮框 -->
                 <div class="download-dropdown" v-show="showDownloadQR">
                     <div class="download-content">
-                        <p>Scan QR code to<br> download START TV App</p>
+                        <p>{{ $t('message.Scan_QR_code_to_download_START_TV_App') }}</p>
                         <div class="download-buttons">
                             <button class="platform-btn android">
                                 <img src="@/assets/images/android.svg" alt="Android">
@@ -96,12 +96,12 @@
                         <div class="history-nav-item" 
                              :class="{ active: activeHistoryTab === 0 }"
                              @click="activeHistoryTab = 0">
-                            History
+                            {{ $t('message.History') }}
                         </div>
                         <div class="history-nav-item" 
                              :class="{ active: activeHistoryTab === 1 }"
                              @click="activeHistoryTab = 1">
-                            myList
+                            {{ $t('message.My_list') }}
                         </div>
                     </div>
                     <div class="history-content">
@@ -137,7 +137,7 @@
                     <div class="language-item" 
                          :class="{ active: locale === 'ru' }" 
                          @click="changeLanguage('ru')">
-                        <span>Русский</span>
+                        <span>Pусск</span>
                     </div>
                     <div class="language-item" 
                          :class="{ active: locale === 'ar' }" 
@@ -163,19 +163,19 @@
                     </router-link>
                     <router-link to="/user/list" class="menu-item">
                         <img src="@/assets/images/list.svg" alt="list">
-                        My list
+                        {{ $t('message.My_list') }}
                     </router-link>
                     <router-link to="/user/history" class="menu-item">
                         <img src="@/assets/images/history.svg" alt="history">
-                        History
+                        {{ $t('message.History') }}
                     </router-link>
                     <router-link to="/user/points" class="menu-item">
                         <img src="@/assets/images/points.svg" alt="points">
-                        Points Center
+                        {{ $t('message.Points_Center') }}
                     </router-link>
                     <div class="menu-item" @click="handleLogout">
                         <img src="@/assets/images/logout.svg" alt="logout">
-                        Log out
+                        {{ $t('message.Log_out') }}
                     </div>
                 </div>
             </div>
@@ -859,7 +859,7 @@ const handleLogout = async () => {
             }
 
             p {
-                color: var( --text-primary)FFF;
+                color: var( --text-primary);
                 font-size: 20px;
 
                 @include responsive-scale {
@@ -871,11 +871,11 @@ const handleLogout = async () => {
             .download-buttons {
                 display: flex;
                 gap: 12px;
-                margin-top: 53px;
+                margin-top: 30px;
 
                 @include responsive-scale {
                     gap: calc(1024 / 1440 * 12px);
-                    margin-top: calc(1024 / 1440 * 53px);
+                    margin-top: calc(1024 / 1440 * 30px);
                 }
 
                 .platform-btn {
