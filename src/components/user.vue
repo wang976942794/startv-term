@@ -4,18 +4,18 @@
     <div class="user-header">
       <div class="header-bg"></div>
       <div class="header-content">
-        <h1>Personal center</h1>
+        <h1>{{ $t('message.Personal_Center') }}</h1>
         <div class="user-info">
           <img :src="userInfo.avatarUrl" alt="user avatar" class="avatar">
           <div class="user-details">
             <h2>{{ userInfo.name }}</h2>
             <p class="user-id">UID {{ userInfo.userId }}</p>
           </div>
-          <button class="top-up-btn">Top Up</button>
+          <button class="top-up-btn" @click="showPaymentDialog = true">{{ $t('message.Top_Up') }}</button>
         </div>
         <div class="user-stats">
           <div class="stat-item">
-            <span class="label">My Likes</span>
+            <span class="label">{{ $t('message.My_Likes') }}</span>
             <span class="value">{{ userInfo.likes }}</span>
           </div>
           <div class="stat-item">
@@ -50,6 +50,10 @@
        <router-view></router-view>
           </div>
 
+    <!-- 支付弹窗 -->
+    <div v-if="showPaymentDialog" class="dialog-overlay" @click.self="showPaymentDialog = false">
+      <PaymentDialog @close="showPaymentDialog = false" />
+    </div>
   </div>
 </template>
 
@@ -57,7 +61,7 @@
 import { ref, computed ,watch} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useHomeStore } from '@/stores/home'
-
+import PaymentDialog from '@/components/PaymentDialog.vue'
 import{useI18n} from 'vue-i18n'
 const {t} = useI18n()
 const homeStore = useHomeStore()
@@ -65,6 +69,8 @@ const route = useRoute();
 const router = useRouter();
 const userInfo = ref({})
 
+// 添加支付弹窗控制变量
+const showPaymentDialog = ref(false)
 
 // 计算当前激活的导航项
 const currentTab = computed(() => {
@@ -291,5 +297,19 @@ const handleNavClick = (tab) => {
       padding: 0 calc(1024 / 1440 * 32px);
     }
   }
+}
+
+/* 添加弹窗遮罩层样式 */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 </style>

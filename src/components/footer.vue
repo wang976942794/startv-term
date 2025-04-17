@@ -9,17 +9,17 @@
                 <div class="footer-right-top">
                     <p class="first"><a href="">{{ $t('message.ABOUT') }}</a></p>
                     <div class="footer-right-top-bottom">
-                        <p> <a href="">Connect us</a></p>
-                        <p> <a href="">Terms of Service</a></p>
-                        <p> <a href="">Privacy policy</a></p>
+                        <p> <a href="">{{ $t('message.Contact_Us') }}</a></p>
+                        <p> <a href="">{{ $t('message.Terms_of_Service') }}</a></p>
+                        <p> <a href="">{{ $t('message.Privacy_Policy') }}</a></p>
                     </div>
                 </div>
                 <div class="footer-right-top">
-                    <p class="first"><a href="">Company</a></p>
+                    <p class="first"><a href="">{{ $t('message.Company') }}</a></p>
                     <div class="footer-right-top-bottom">
-                        <p> <a href="">Feedback</a></p>
-                        <p> <a href="">Meida&Public Relations</a></p>
-                        <p> <a href="">Contact us</a></p>
+                        <p> <a href="">{{ $t('message.Feedback') }}</a></p>
+                        <p> <a href="">{{ $t('message.Media_Public_Relations') }}</a></p>
+                        <p> <a href="">{{ $t('message.Contact_Us') }}</a></p>
                     </div>
                 </div>
                 <div class="footer-right-top">
@@ -33,7 +33,7 @@
         </div>
         <div class="footer-bottom">
             <div class="footer-bottom-left">
-                <p>© 2025 START TV. All rights reserved.</p>
+                <p>{{ $t('message.All_rights_reserved') }}</p>
             </div>
             <div class="footer-bottom-right">
                 <img src="@/assets/images/tiktok.svg" alt="">

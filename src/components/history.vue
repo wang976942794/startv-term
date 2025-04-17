@@ -17,7 +17,7 @@
     </div>
     <button class="load-more" @click="loadMore">
       <span class="loading-icon">↻</span>
-      Load More
+      {{ $t('message.Load_More') }}
     </button>
   </div>
 </template>
@@ -25,6 +25,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useHistoryStore } from '@/stores/history'  
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const historyStore = useHistoryStore()  
 
 onMounted(async () => {

@@ -584,7 +584,7 @@ const handleLogout = async () => {
         gap: 8px;
 
         @include responsive-scale {
-            width: calc(1024 / 1440 * 300px);
+            width: calc(1024 / 1440 * 400px);
             height: calc(1024 / 1440 * 40px);
             gap: calc(1024 / 1440 * 8px);
         }

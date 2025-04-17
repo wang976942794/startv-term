@@ -6,7 +6,7 @@
         <div class="card-content">
           <img src="@/assets/images/coin-icon.svg" alt="coin" class="coin-icon">
           <div class="info">
-            <h3>Coins <span class="info-icon">i</span></h3>
+            <h3>{{ $t('message.Coins') }} <span class="info-icon">i</span></h3>
             <div class="amount">{{ userInfo.coins||0 }}</div>
           </div>
         </div>
@@ -14,7 +14,7 @@
       <div class="wallet-card bonus">
         <div class="card-content">
           <div class="info">
-            <h3>Bonus <span class="info-icon">i</span></h3>
+            <h3>{{ $t('message.Bonus') }} <span class="info-icon">i</span></h3>
             <div class="amount">{{ userInfo.bonus||0 }}</div>
           </div>
           <span class="arrow">›</span>
@@ -25,10 +25,10 @@
     <!-- 交易记录 -->
     <div class="transaction-section">
       <div class="section-header">
-        <h2>Details</h2>
+        <h2>{{ $t('message.Details') }}</h2>
         <div class="filter-buttons">
-          <button class="active">All records</button>
-          <button>Recharge record</button>
+          <button class="active">{{ $t('message.All_Records') }}</button>
+          <button>{{  $t('message.Recharge_Record') }}</button>
           <button>Payment record</button>
         </div>
       </div>
@@ -59,6 +59,8 @@
 <script setup>
 import { ref,watch } from 'vue';
 import { useHomeStore } from '@/stores/home'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const homeStore = useHomeStore()
 const userInfo = ref({})
 watch(()=>homeStore.userInfo,(newValue)=>{

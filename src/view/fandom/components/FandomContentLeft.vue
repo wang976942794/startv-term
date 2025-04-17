@@ -1,7 +1,7 @@
 <template>
   <div class="fandom-content-left">
     <div class="fandom-content-left-top">
-      <p class="tag">Movie Cast List</p>
+      <p class="tag">{{ $t('message.Movie_Cast_List') }}</p>
       <h1 class="main-title">Ray Astor and Jocelyn West in Twilight Romance Flash Marriage to Mature Tycoon</h1>
       <div class="meta-info">
         <span class="date">2025-03-28</span>
@@ -36,6 +36,9 @@
 <script setup>
 import coverImage from '@/assets/images/image.png'
 import FandomRecommend from './FandomRecommend.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 </script>
 
 <style lang="scss" scoped>
@@ -116,7 +119,7 @@ import FandomRecommend from './FandomRecommend.vue'
 
       .description {
         p {
-          color: var( --text-primary)FFF;
+          color: var( --text-primary);
           font-size: 14px;
           line-height: 1.6;
           margin-bottom: 16px;
@@ -151,7 +154,7 @@ import FandomRecommend from './FandomRecommend.vue'
       }
 
       .repeated-desc {
-        color: var( --text-primary)FFF;
+        color: var( --text-primary);
         font-size: 15px;
         line-height: 1.6;
         @include responsive-scale {

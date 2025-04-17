@@ -8,6 +8,7 @@
   --bg-tertiary: #101D2B;
   --bg-quaternary: #2C2E31;
   --bg-quinary: #0f1014;
+  --bg-senary: #2a2f35;
   --icon-filter: brightness(0) invert(1); /* 白色图标 */
 }
 
@@ -21,5 +22,6 @@
   --bg-tertiary: #d6d6d6;
   --bg-quaternary: #fff;
   --bg-quinary: #fff;
+  --bg-senary: #fff;
   --icon-filter: brightness(0) saturate(0%); /* 黑色图标 */
 } 

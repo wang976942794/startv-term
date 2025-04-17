@@ -2,7 +2,7 @@
   <div class="fandom-content-left-bottom">
     <div class="recommend-header">
       <h2>You might like</h2>
-      <span class="more">More</span>
+      <span class="more">{{ $t('message.More') }}</span>
     </div>
     
     <div class="recommend-list">

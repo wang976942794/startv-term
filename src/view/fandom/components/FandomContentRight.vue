@@ -1,17 +1,17 @@
 <template>
   <div class="fandom-content-right">
     <div class="download-section">
-      <h2>Down Load</h2>
+      <h2>{{ $t('message.Download') }}</h2>
       <div class="qr-box">
         <div class="qr-code">
           <!-- 这里放二维码图片 -->
         </div>
-        <p>Scan QR code to download START TV App</p>
+        <p>{{ $t('message.Scan_QR_code_to_download_START_TV_App') }}</p>
       </div>
     </div>
 
     <div class="latest-reviews">
-      <h2>Latest Movie Reviews</h2>
+      <h2>{{ $t('message.Latest_Movie_Reviews') }}</h2>
       <div class="review-list">
         <div class="review-item" v-for="review in reviewList" :key="review.id">
           <div class="review-cover">
@@ -29,6 +29,9 @@
 
 <script setup>
 import coverImage from '@/assets/images/image.png'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const reviewList = [
   {

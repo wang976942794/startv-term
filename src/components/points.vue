@@ -11,8 +11,8 @@
     <!-- 签到区域 -->
     <div class="signin-section">
       <div class="signin-header">
-        <span>Sign in to receive points</span>
-        <span class="total-bonus">A Total of 1270 Bonus</span>
+        <span>{{ $t('message.Log_in_to_earn_points') }}</span>
+        <span class="total-bonus">{{ $t('message.Total_of_1270_Coins') }}</span>
       </div>
       
       <div class="days-container">
@@ -30,13 +30,14 @@
         </div>
       </div>
 
-      <div class="check-in-btn">Check in</div>
+      <div class="check-in-btn">{{ $t('message.Check_in') }}</div>
     </div>
 
     <!-- 分享区域 -->
     <div class="share-section">
       <div class="section-header">
-        Share <span class="bonus-tag">+20 Bonus</span>
+        <span>{{ $t('message.Share') }}</span>
+        <span class="bonus-tag">+20 {{ $t('message.Bonus') }}</span>
       </div>
       <div class="share-buttons">
         <div class="share-btn active" v-for="item in platforms" 
@@ -55,12 +56,12 @@
     <!-- 下载APP区域 -->
     <div class="download-section">
       <div class="download-content">
-        <span>Download APP</span>
-        <span class="bonus-tag">+20 Bonus</span>
+        <span>{{ $t('message.Download_APP') }}</span>
+        <span class="bonus-tag">+20 {{ $t('message.Bonus') }}</span>
       </div>
       <div class="arrow-icon">›</div>
     </div>
-  </div>
+  </div>  
 </template>
 
 <script setup>
@@ -97,7 +98,7 @@ onMounted( () => {
 
 .points-container {
 
-  color: white;
+  color: var(--text-primary);
   
   .bonus-section {
     background: linear-gradient(94.32deg, rgba(253, 52, 110, 0) 4.29%, rgba(253, 52, 110, 0.15) 100%);
@@ -134,12 +135,12 @@ onMounted( () => {
 
   .signin-section {
     height: 349px;
-    background: #101D2B;
+    background: var(--bg-tertiary);
     border-radius: 12px;
     padding: 20px;
     font-size: 24px;
     margin-bottom: 32px;
-    border: 1px solid #2C2E31;
+    border: 1px solid var(--bg-quaternary);
 
     .signin-header {
       display: flex;
@@ -170,7 +171,7 @@ onMounted( () => {
         justify-content: space-between;
         gap: 8px;
         padding: 12px;
-        border: 1px solid #2C2E31;
+        border: 1px solid var(--bg-quaternary);
         border-radius: 16px;
         position: relative;
 
@@ -218,12 +219,12 @@ onMounted( () => {
   }
 
   .share-section {
-    background: #101D2B;
+    background: var(--bg-tertiary);
     height: 211px;
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
-    border: 1px solid #2C2E31;
+    border: 1px solid var(--bg-quaternary);
 
     .section-header {
       display: flex;
@@ -248,7 +249,7 @@ onMounted( () => {
         height: 80px;
         flex: 1;
         background: transparent;
-        border: 1px solid #2C2E31;
+        border: 1px solid var(--bg-quaternary);
         border-radius: 16px;
         display: flex;
         align-items: center;
@@ -289,7 +290,7 @@ onMounted( () => {
   }
 
   .download-section {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-tertiary);
     border-radius: 12px;
     padding: 20px;
     display: flex;

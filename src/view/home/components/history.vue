@@ -23,13 +23,7 @@ const activeIndex = ref(0)
 const menuItems = ref([
   { type: 'img', icon: '@/assets/images/category.svg', text:  'message.All' },
   { type: 'emoji', icon: '🕒', text: '观看历史' },
-  { type: 'emoji', icon: '🆕', text: '新品发布' },
-  { type: 'emoji', icon: '😊', text: '隐藏身份' },
-  { type: 'emoji', icon: '💗', text: '一见钟情' },
-  { type: 'emoji', icon: '❤️', text: '第二次机会' },
-  { type: 'emoji', icon: '👶', text: '怀孕与婴儿' },
-  { type: 'emoji', icon: '🤔', text: '亚洲故事' },
-  { type: 'emoji', icon: '🐺', text: '狼人与吸血鬼' },
+  { type: 'emoji', icon: '🆕', text: 'message.New_Release' },
  
 ])
 </script>
