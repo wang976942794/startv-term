@@ -59,6 +59,8 @@ const messages = {
       Total_of_1270_Coins:'Total of 1270 Coins',
       Check_in:'Check in',
       Download_APP:'Download APP',
+
+
       
     }
   },
@@ -122,6 +124,12 @@ const messages = {
       Check_in:'Зарегистрироваться',
       Download_APP:'Скачать приложение',
     
+
+
+
+
+
+
     }
   },
   ar: {
@@ -183,6 +191,12 @@ const messages = {
       Total_of_1270_Coins:'إجمالي 1270 عملة ذهبية',
       Check_in:'تسجيل الوصول',
       Download_APP:'تحميل التطبيق',
+
+
+
+
+
+
     }
   }
 }

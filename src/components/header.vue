@@ -10,7 +10,7 @@
                 :default-active="currentPath">
                 <el-menu-item index="/" class="menu-item">{{ $t('message.Home') }}</el-menu-item>
                 <el-menu-item index="/genre" class="menu-item">{{ $t('message.Genre') }}</el-menu-item>
-                <el-menu-item index="/fandom" class="menu-item">Fandom</el-menu-item>
+                <!-- <el-menu-item index="/fandom" class="menu-item">Fandom</el-menu-item> -->
             </el-menu>
 
         </div>

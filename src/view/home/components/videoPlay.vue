@@ -250,7 +250,7 @@ onMounted(async () => {
     height: calc(1024 / 1440 * 100vh);
   }
   .video-player {
-    background: var(--bg-secondary);
+    // background: var(--bg-secondary);
     width: 952px;
     height: 868px;
     @include responsive-scale {

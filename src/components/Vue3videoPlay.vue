@@ -1,132 +1,324 @@
 <template>
-    <vue3-video-play
-    v-bind="options" 
-    @play="onPlay"
-    @pause="onPause" 
-    @timeupdate="onTimeupdate" 
-    @canplay="onCanplay"
-    />
+  <div class="video-container">
+    <video
+      ref="videoPlayer"
+      :src="videoOptions.src"
+      :poster="videoOptions.poster"
+      crossorigin="use-credentials"
+      :playsinline="videoOptions.playsinline"
+      class="video-player"
+    >
+    </video>
+  </div>
 </template>
   
 <script setup>
-import { reactive, watch } from 'vue'
-import Vue3VideoPlay from 'vue3-video-play'
-import 'vue3-video-play/dist/style.css'
-import Hls from 'hls.js'  // 需要先安装 hls.js
+import { ref, reactive, onMounted, onBeforeUnmount, watch } from 'vue'
+import Plyr from 'plyr'
+import 'plyr/dist/plyr.css'
+import Hls from 'hls.js'
+import subtitleEn from '@/assets/subtitle/1.vtt'
 
-// 定义 props
+const videoPlayer = ref(null)
+let player = null
+
 const props = defineProps({
   fontUrl: {
     type: String,
-    default: ''
+    required: true
   },
   url: {
     type: String,
-    default: ''
+    required: true
   }
 })
-
-console.log('Props received:', props.url)
 
 // 处理视频URL，将原始地址转换为使用代理的地址
 const getProxyUrl = (url) => {
   if (!url) return ''
-  return url.replace('https://zhongdong-stream.startvs.net', '/hls')
+  // 只替换域名部分，保持原始路径不变
+  return url.replace('https://zhongdong-stream.startvs.net/', '/hls/')
 }
 
-const options = reactive({
-  width: '100%', //播放器高度
-  height: '100%', //播放器高度
-  color: "#D0A944", //主题色
-  muted: false, //静音
-  webFullScreen: false,
-  speedRate: ["0.75", "1.0", "1.25", "1.5", "2.0"], //播放倍速
-  autoPlay: false, //自动播放
-  loop: false, //循环播放
-  mirror: false, //镜像画面
-  ligthOff: false,  //关灯模式
-  volume: 0.3, //默认音量大小
-  control: true, //是否显示控制器
-  controlBtns: [
-    "audioTrack",
-    "quality",
-    "speedRate",
-    "volume",
-    "setting",
-    "pip",
-    "pageFullScreen",
-    "fullScreen",
+const videoOptions = reactive({
+  src: getProxyUrl(props.url),
+  poster: props.fontUrl,
+  crossorigin: 'use-credentials',
+  playsinline: true
+})
+
+// 添加 SVG sprite URL
+const spriteUrl = 'https://cdn.plyr.io/3.7.8/plyr.svg'
+
+const plyrOptions = {
+  controls: [
+    'play-large',
+    'play',
+    'progress',
+    'mute',
+    'volume',
+    'captions',
+    'settings',
+    'fullscreen'
   ],
-  title: '', //视频名称
-  src: getProxyUrl(props.url), // 使用代理URL
-  poster: props.fontUrl, //封面
-  type: 'application/x-mpegURL',  // 添加这行，指定视频类型为 HLS
-  tracks: [ // 字幕配置
-    {
-      default: true, // 默认显示的字幕
-      kind: 'subtitles',
-      label: '中文',
-      src: '/path/to/chinese.vtt', // 中文字幕文件路径
-      srclang: 'zh'
-    },
-    {
-      kind: 'subtitles',
-      label: 'English',
-      src: '/path/to/english.vtt', // 英文字幕文件路径
-      srclang: 'en'
+  settings: ['captions', 'quality'],
+  quality: {
+    default: 1080,
+    options: [2160, 1440, 1080, 720, 576, 480, 360, 240]
+  },
+  speed: {
+    selected: 1,
+    options: [0.5, 0.75, 1, 1.25, 1.5, 2]
+  },
+  captions: {
+    active: true,
+    language: 'en',
+    update: true
+  },
+  volume: 0.8,
+  muted: false,
+  clickToPlay: true,
+  hideControls: true,
+  resetOnEnd: false,
+  keyboard: { focused: true, global: false },
+  tooltips: { controls: true, seek: true },
+  i18n: {
+    restart: '重新播放',
+    play: '播放',
+    pause: '暂停',
+    mute: '静音',
+    unmute: '取消静音',
+    enableCaptions: '字幕',
+    disableCaptions: '禁用',
+    enterFullscreen: '全屏',
+    exitFullscreen: '退出全屏',
+    captions: '字幕',
+    settings: '设置',
+    normal: '正常',
+    quality: '画质',
+    loop: '循环',
+    enabled: '启用',
+    disabled: '禁用',
+    auto: '自动',
+    subtitleOptions: '字幕选项',
+    'en': 'English',
+    'ru': 'Русский',
+    'ar': 'العربية',
+    'captions-select': '选择字幕',
+  },
+  loadSprite: true,
+  iconUrl: spriteUrl,  // 设置图标 URL
+  iconPrefix: 'plyr',
+  blankVideo: null,
+  preload: 'auto',
+  // 自定义主题色
+  color: "#409eff"
+}
+
+// 监听 url 的变化
+watch(() => props.url, (newUrl) => {
+  if (newUrl) {
+    const proxyUrl = getProxyUrl(newUrl)
+    videoOptions.src = proxyUrl
+    
+    if (videoPlayer.value) {
+      const video = videoPlayer.value
+      
+      if (newUrl.includes('.m3u8')) {
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            xhrSetup: function(xhr) {
+              xhr.withCredentials = true;
+            }
+          })
+          hls.loadSource(proxyUrl)
+          hls.attachMedia(video)
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            if (player) {
+              player.destroy()
+            }
+            player = new Plyr(video, plyrOptions)
+          })
+        }
+      } else {
+        if (player) {
+          player.destroy()
+        }
+        player = new Plyr(video, plyrOptions)
+      }
     }
-  ]
+  }
 })
 
 // 监听 fontUrl 的变化
 watch(() => props.fontUrl, (newUrl) => {
-  console.log('fontUrl changed:', newUrl)
   if (newUrl) {
-    options.src = newUrl
-    console.log('Video source updated:', options.src)
+    videoOptions.poster = newUrl
   }
 })
 
-// 监听 url 的变化
-watch(() => props.url, (newUrl) => {
-  console.log('url changed:', newUrl)
-  if (newUrl) {
-    const proxyUrl = getProxyUrl(newUrl)
-    options.src = proxyUrl
-    console.log('Video source updated:', options.src)
+onMounted(() => {
+  if (videoPlayer.value) {
+    const video = videoPlayer.value
+
+    // 添加英语字幕轨道
+    const trackEn = document.createElement('track')
+    trackEn.kind = 'captions'
+    trackEn.label = 'English'
+    trackEn.srclang = 'en'
+    trackEn.src = subtitleEn
+    trackEn.default = true  // 设置为默认字幕
+    video.appendChild(trackEn)
+
+    // 暂时注释掉其他语言字幕，等有对应文件再添加
     
-    // 检查浏览器是否原生支持 HLS
-    if (Hls.isSupported()) {
-      const hls = new Hls()
-      hls.loadSource(newUrl)
-      // 获取 video 元素
-      const video = document.querySelector('video')
-      if (video) {
+    // 添加俄语字幕轨道 
+    const trackRu = document.createElement('track')
+    trackRu.kind = 'captions'
+    trackRu.label = 'Русский'
+    trackRu.srclang = 'ru'
+    trackRu.src = '/path/to/russian/subtitle.vtt'
+    video.appendChild(trackRu)
+
+    // 添加阿拉伯语字幕轨道
+    const trackAr = document.createElement('track')
+    trackAr.kind = 'captions'
+    trackAr.label = 'العربية'
+    trackAr.srclang = 'ar' 
+    trackAr.src = '/path/to/arabic/subtitle.vtt'
+    video.appendChild(trackAr)
+    
+
+    if (videoOptions.src.includes('.m3u8')) {
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          xhrSetup: function(xhr) {
+            xhr.withCredentials = true;
+          }
+        })
+        hls.loadSource(videoOptions.src)
         hls.attachMedia(video)
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play()
+          player = new Plyr(video, plyrOptions)
         })
       }
-    }
-    // 对于原生支持 HLS 的浏览器（如 Safari）
-    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = newUrl
+    } else {
+      player = new Plyr(video, plyrOptions)
     }
   }
 })
 
-
-const onPlay = (ev) => {
-  console.log('播放')
-}
-const onPause = (ev) => {
-  console.log(ev, '暂停')
-}
-
-const onTimeupdate = (ev) => {
-//   console.log(ev, '时间更新')
-}
-const onCanplay = (ev) => {
-  console.log(ev, '可以播放')
-}
+onBeforeUnmount(() => {
+  if (player) {
+    player.destroy()
+  }
+})
 </script>
+
+<style lang="scss">
+@mixin responsive-scale {
+  transition: all 0.3s ease-in-out;
+    @media screen and (min-width: 500px) and (max-width: 1439px) {
+        @content;
+    }
+} 
+/* 全局样式 */
+:root {
+  --plyr-color-main: #D0A944;
+  --plyr-control-icon-size: 16px;
+  --plyr-control-background-hover: transparent;
+}
+
+/* 控制栏样式 */
+.plyr--video .plyr__controls {
+  opacity: 0 !important; /* 默认隐藏 */
+  transform: translateY(100%) !important; /* 默认位于下方 */
+  transition: all 0.3s ease !important;
+  padding: 0 !important;
+  background: #2C2E31 !important;
+  height: 50px;
+  bottom: 0 !important; /* 确保控制栏在底部 */
+    @include responsive-scale {
+      height: calc(1024 / 1440 * 50px);
+    }
+}
+
+/* 当鼠标悬停在播放器上时显示控制栏 */
+.plyr--video:hover .plyr__controls {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* 进度条样式 */
+.plyr--full-ui input[type='range'] {
+  width: 100% !important;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 !important;
+  padding: 0 !important;
+  @include responsive-scale {
+    height: calc(1024 / 1440 * 4px);
+  }
+}
+
+/* 进度条容器样式 */
+.plyr__progress__container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* 进度条实际可点击区域 */
+.plyr__progress {
+  margin: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+
+<style lang="scss" scoped>
+@mixin responsive-scale {
+  transition: all 0.3s ease-in-out;
+  @media screen and (min-width: 500px) and (max-width: 1439px) {
+    @content;
+  }
+}
+
+.video-container {
+  // aspect-ratio: 488 / 868;
+  width: 488px;
+  height: auto;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out !important;
+  @include responsive-scale {
+    width: calc(1024 / 1440 * 488px);
+    height: auto;
+  }
+
+}
+
+.video-player {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: all 0.3s ease-in-out !important;
+}
+</style>

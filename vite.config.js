@@ -47,7 +47,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      'vue3-video-play': path.resolve(__dirname, 'node_modules/vue3-video-play')
     }
   },
   
@@ -68,7 +67,12 @@ export default defineConfig({
       '/hls': {
         target: 'https://zhongdong-stream.startvs.net',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/hls/, '')
+        rewrite: (path) => path.replace(/^\/hls/, ''),
+        headers: {
+          Referer: 'https://zhongdong-stream.startvs.net',
+          Origin: 'https://zhongdong-stream.startvs.net',
+          Host: 'zhongdong-stream.startvs.net'
+        }
       }
     }
   },
@@ -89,5 +93,6 @@ export default defineConfig({
         }
       }
     }
-  }
+  },
+  assetsInclude: ['**/*.vtt'],
 })
