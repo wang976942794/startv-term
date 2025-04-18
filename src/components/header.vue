@@ -199,6 +199,7 @@ import { useHomeStore } from '@/stores/home'
 import { useThemeStore } from '@/stores/theme'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
+import { setI18nLanguage } from '@/language';
 
 
 const route = useRoute()
@@ -355,6 +356,7 @@ const currentLocale = ref(locale.value)
 const changeLanguage = (lang) => {
     locale.value = lang
     showLanguageMenu.value = false
+    setI18nLanguage(lang)
 }
 
 // 在 script setup 中添加 handleLogout 函数
