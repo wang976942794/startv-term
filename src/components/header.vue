@@ -8,8 +8,8 @@
             </div>
             <el-menu :router="true" mode="horizontal" :ellipsis="false" class="nav-menu" background-color="transparent"
                 :default-active="currentPath">
-                <el-menu-item index="/" class="menu-item">{{ $t('message.Home') }}</el-menu-item>
-                <el-menu-item index="/genre" class="menu-item">{{ $t('message.Genre') }}</el-menu-item>
+                <el-menu-item index="/" class="menu-item">{{ t('message.Home') }}</el-menu-item>
+                <el-menu-item index="/genre" class="menu-item">{{ t('message.Genre') }}</el-menu-item>
                 <!-- <el-menu-item index="/fandom" class="menu-item">Fandom</el-menu-item> -->
             </el-menu>
 
@@ -17,7 +17,7 @@
 
         <!-- 搜索框 -->
         <div class="search-container">
-            <el-input v-model="searchText" :placeholder="$t('message.Search')" clearable @focus="showDropdown = true"
+            <el-input v-model="searchText" :placeholder="t('message.Search')" clearable @focus="showDropdown = true"
                 @blur="handleBlur">
                 <template #prefix>
                     <img src="@/assets/images/search-icon.svg" alt="search" class="search-icon">
@@ -35,7 +35,7 @@
 
                 <!-- 热门电影 -->
                 <div class="section">
-                    <h3>{{ $t('message.Hot_Movies') }}</h3>
+                    <h3>{{ t('message.Hot_Movies') }}</h3>
                     <div class="movie-list">
                         <div class="movie-item" v-for="movie in hotMovies" :key="movie.title">
                             <span class="fire-icon">🔥</span>
@@ -46,7 +46,7 @@
 
                 <!-- 热门搜索 -->
                 <div class="section">
-                    <h3>{{ $t('message.Trending_Searches') }}</h3>
+                    <h3>{{ t('message.Trending_Searches') }}</h3>
                     <div class="tag-list">
                         <div class="tag" v-for="tag in searchTags" :key="tag">
                             {{ tag }}
@@ -62,13 +62,13 @@
             <div class="download-wrapper">
                 <el-button class="download-btn" type="warning" @click="handleDownloadClick">
                     <img src="@/assets/images/arrow-square-down.svg" alt="Download">
-                    {{ $t('message.Download') }}
+                    {{ t('message.Download') }}
                 </el-button>
 
                 <!-- 下载二维码悬浮框 -->
                 <div class="download-dropdown" v-show="showDownloadQR">
                     <div class="download-content">
-                        <p>{{ $t('message.Scan_QR_code_to_download_START_TV_App') }}</p>
+                        <p>{{ t('message.Scan_QR_code_to_download_START_TV_App') }}</p>
                         <div class="download-buttons">
                             <button class="platform-btn android">
                                 <img src="@/assets/images/android.svg" alt="Android">
@@ -96,12 +96,12 @@
                         <div class="history-nav-item" 
                              :class="{ active: activeHistoryTab === 0 }"
                              @click="activeHistoryTab = 0">
-                            {{ $t('message.History') }}
+                            {{ t('message.History') }}
                         </div>
                         <div class="history-nav-item" 
                              :class="{ active: activeHistoryTab === 1 }"
                              @click="activeHistoryTab = 1">
-                            {{ $t('message.My_list') }}
+                            {{ t('message.My_list') }}
                         </div>
                     </div>
                     <div class="history-content">
@@ -163,19 +163,19 @@
                     </router-link>
                     <router-link to="/user/list" class="menu-item">
                         <img src="@/assets/images/list.svg" alt="list">
-                        {{ $t('message.My_list') }}
+                        {{ t('message.My_list') }}
                     </router-link>
                     <router-link to="/user/history" class="menu-item">
                         <img src="@/assets/images/history.svg" alt="history">
-                        {{ $t('message.History') }}
+                        {{ t('message.History') }}
                     </router-link>
                     <router-link to="/user/points" class="menu-item">
                         <img src="@/assets/images/points.svg" alt="points">
-                        {{ $t('message.Points_Center') }}
+                        {{ t('message.Points_Center') }}
                     </router-link>
                     <div class="menu-item" @click="handleLogout">
                         <img src="@/assets/images/logout.svg" alt="logout">
-                        {{ $t('message.Log_out') }}
+                        {{ t('message.Log_out') }}
                     </div>
                 </div>
             </div>
@@ -238,6 +238,8 @@ const searchTags = ref([
     'Hidden',
     'Enemies to Lovers'
 ])
+
+const { t, locale } = useI18n()
 
 const handleBlur = (e) => {
     // 检查点击是否在下拉框内
@@ -324,6 +326,15 @@ onMounted(() => {
     historyStore.fetchHistory()
     historyStore.fetchChapterCollections()
     homeStore.fetchUserInfo()
+
+    try {
+        const savedLanguage = localStorage.getItem('language')
+        if (savedLanguage) {
+            locale.value = savedLanguage
+        }
+    } catch (e) {
+        console.warn('Failed to initialize language:', e)
+    }
 })
 
 // 监听路由变化
@@ -349,12 +360,14 @@ const toggleTheme = () => {
     themeStore.toggleTheme()
 }
 
-const { locale } = useI18n()
-const currentLocale = ref(locale.value)
-
 const changeLanguage = (lang) => {
-    locale.value = lang
-    showLanguageMenu.value = false
+    try {
+        locale.value = lang
+        localStorage.setItem('language', lang)
+        showLanguageMenu.value = false
+    } catch (e) {
+        console.warn('Failed to change language:', e)
+    }
 }
 
 // 在 script setup 中添加 handleLogout 函数
