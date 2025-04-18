@@ -72,14 +72,14 @@
                         <div class="download-buttons">
                             <button class="platform-btn android">
                                 <img src="@/assets/images/android.svg" alt="Android">
-                                Android
+                                {{ $t('message.Android') }}
                             </button>
                             <button class="platform-btn ios">
                                 <img src="@/assets/images/ios.svg" alt="iOS">
-                                iOS
+                                {{ $t('message.iOS') }}
                             </button>
                         </div>
-                        <p class="download-tip">Download on iOS or Android</p>
+                        <p class="download-tip">{{ $t('message.Download_on_iOS_or_Android') }}</p>
                     </div>
                     <div class="qr-code">
                         <!-- <img src="@/assets/images/qr-code.png" alt="QR Code"> -->
@@ -159,7 +159,7 @@
                 <div class="user-dropdown" v-show="showUserMenu && isLoggedIn">
                     <router-link to="/user/wallet" class="menu-item">
                         <img src="@/assets/images/wallet.svg" alt="wallet">
-                        My wallet
+                        {{ $t('message.Wallet') }}
                     </router-link>
                     <router-link to="/user/list" class="menu-item">
                         <img src="@/assets/images/list.svg" alt="list">

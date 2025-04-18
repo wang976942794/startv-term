@@ -1,7 +1,7 @@
 <template>
     <div class="header" :style="headerStyle">
         <div class="header-content">
-            <div class="tag">New Release</div>
+            <div class="tag">{{ $t('message.New_Release') }}</div>
             <h1 class="title">{{ selectedItem.title }}</h1>
             <div class="action">
                 <button class="play-btn" @click="handleItemClick">

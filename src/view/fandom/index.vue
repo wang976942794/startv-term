@@ -6,7 +6,7 @@
       <div v-for="(item, index) in articles" :key="index" class="card" @click="goToDetail(item)">
         <div class="card-image">
           <img :src="coverImage" alt="article cover">
-          <span class="topic-tag">General Topic</span>
+          <span class="topic-tag">{{ $t('message.General_Topic') }}</span>
         </div>
         <div class="card-content">
           <div class="date">{{ item.date }}</div>

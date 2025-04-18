@@ -51,17 +51,30 @@ export default {
         Details:'التفاصيل',
         All_Records:'جميع السجلات',
         Recharge_Record:'سجل إعادة الشحن',
-        Payment_Record:'سجل الاستهلاك',
+        Payment_Record:'سجل الدفع',
         Load_More:'تحميل المزيد',
         Log_in_to_earn_points:'تسجيل الدخول للحصول على النقاط',
         Total_of_1270_Coins:'إجمالي 1270 عملة ذهبية',
         Check_in:'تسجيل الوصول',
         Download_APP:'تحميل التطبيق',
-  
-  
-  
-  
-  
-  
+        Credit_Card:'بطاقة ائتمان',
+        SHART_TV_has:'تقدم SHART TV محتوى مجانيًا ومدفوعًا للجميع. أنت من يقرر أي محتوى تريد فتحه.',
+        Coins_will:'سيتم استخدام العملات الذهبية لفتح المحتوى المدفوع.',
+        Refill:'تعبئة العملات الذهبية تساوي مبلغ المكافأة. التعبئة لا تدعم الاسترداد.',
+        Payment_Method:'طريقة الدفع',
+        Tips:'تذكير ودي',
+        If_you_have_other_problems:'إذا كانت لديك أي أسئلة أخرى، يرجى التواصل معنا.',
+        We_promise:'نحن نلتزم بتخصيص 20% من مبلغ تعبئتك للأعمال الخيرية، حيث ستساعد كل تعبئة شخصًا بلا مأوى في الحصول على طعام أو ملابس دافئة خلال هذا الشتاء البارد!',
+        Wallet:'محفظة',
+        Download_on_iOS_or_Android:'للتنزيل على iOS أو Android',
+        Android:'أندرويد',
+        iOS:'iآي أو إس',
+        Unlock_time:'آي أو إس',
+        Plot_of_Episode:'قصة هذه الحلقة',
+        General_Topic:'الموضوع الأساسي',
+        Continue_Watching:'مواصلة المشاهدة',
+        More_Recommended:'المزيد من التوصيات',
+        Total:'الإجمالي'
+
       }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="continue-watching">
         <div class="continue-watching-header">
-            <h2 class="section-title">Continue Watching</h2>
+            <h2 class="section-title">{{ $t('message.Continue_Watching') }}</h2>
             <div class="nav-btn-container">
                 <button class="nav-btn prev" @click="scrollContent('prev')">
                     <img src="@/assets/images/left.svg" alt="">

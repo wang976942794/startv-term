@@ -2,14 +2,14 @@
     <div class="genre-page">
         <!-- 面包屑导航 -->
         <div class="breadcrumb">
-            <span class="link">Home</span>
+            <span class="link">{{ $t('message.Home') }}</span>
             <span class="separator">/</span>
             <span class="current">Reunion</span>
         </div>
 
         <!-- 类型标签列表 -->
         <div class="genre-tags">
-            <button class="tag-btn">All</button>
+            <button class="tag-btn">{{ $t('message.All') }}</button>
             <button v-for="i in 13" :key="i" class="tag-btn" :class="{ active: i === 1 }">
                 Reunion
             </button>
@@ -18,7 +18,7 @@
         <!-- 电影列表标题 -->
         <div class="movies-header">
             <h1 class="title">Reunion Movies</h1>
-            <span class="count">Total 56</span>
+            <span class="count">{{ $t('message.Total') }} 56</span>
         </div>
 
         <!-- 电影列表 -->

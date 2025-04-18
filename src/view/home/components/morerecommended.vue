@@ -1,7 +1,7 @@
 <template>
     <div class="continue-watching">
         <div class="continue-watching-header">
-            <h2 class="section-title">More Recommended</h2>
+            <h2 class="section-title">{{ $t('message.More_Recommended') }}</h2>
         </div>
 
         <div class="content-container">

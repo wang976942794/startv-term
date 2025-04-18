@@ -9,7 +9,7 @@
                     <h3 class="item-title">{{ item.title }}</h3>
                     <div class="coin-info">
                         <span class="coin-amount">{{ item.coins }} Coins</span>
-                        <span class="unlock-time">Unlock time: {{ formatTime(item.updateTime) }}</span>
+                        <span class="unlock-time">{{ $t('message.Unlock_time') }}: {{ formatTime(item.updateTime) }}</span>
                     </div>
                 </div>
             </div>

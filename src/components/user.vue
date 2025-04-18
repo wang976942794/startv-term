@@ -33,7 +33,7 @@
     <!-- 导航菜单 -->
     <div class="nav-menu">
       <div class="nav-item" :class="{ active: currentTab === 'wallet' }" @click="handleNavClick('wallet')">
-        My wallet
+        {{ $t('message.Wallet') }}
       </div>
       <div class="nav-item" :class="{ active: currentTab === 'list' }" @click="handleNavClick('list')">
         {{ $t('message.My_list') }}

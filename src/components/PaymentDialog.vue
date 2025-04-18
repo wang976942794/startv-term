@@ -1,6 +1,6 @@
 <template>
   <div class="payment-dialog">
-    <p class="payment-title">Payment Method</p>
+    <p class="payment-title">{{ $t('message.Payment_Method') }}</p>
 
     <!-- 支付方式选择 -->
     <div class="payment-methods">
@@ -11,15 +11,14 @@
       </button>
       <button class="method-btn credit-btn" :class="{ active: selectedMethod === 'credit' }"
         @click="selectedMethod = 'credit'">
-        Credit Card
+        {{ $t('message.Credit_Card') }}
       </button>
     </div>
 
     <!-- 慈善活动说明 -->
     <div class="charity-info">
-      <h3>Top Up</h3>
-      <p>We promise that we will take out 20% of your recharge amount on charity activities, every time you top up your
-        account, you will help a homeless person to get a piece of food or warm clothing in this cold winter!</p>
+      <h3>{{ $t('message.Top_Up') }}</h3>
+        <p>{{ $t('message.We_promise') }}</p>
     </div>
 
     <!-- 充值选项 -->
@@ -28,8 +27,8 @@
         :class="{ active: selectedOption === index }" @click="selectOption(index)">
         <div class="bonus-tag">+10%</div>
         <div class="recharge-content">
-          <div class="coins">{{ option.coins }} <span>Coins</span></div>
-          <div class="bouns">+{{ option.bouns }} <span>Bouns</span></div>
+          <div class="coins">{{ option.coins }} <span>{{ $t('message.Coins') }}</span></div>
+          <div class="bouns">+{{ option.bouns }} <span>{{ $t('message.Bonus') }}</span></div>
         </div>
 
         <div class="price">${{ option.price }}</div>
@@ -38,12 +37,12 @@
 
     <!-- 提示信息 -->
     <div class="tips">
-      <p>Tips:</p>
+      <p>{{ $t('message.Tips') }}:</p>
       <ol>
-        <li>1.SHART TV has free and paid content for everyone. You decide which content to unlock.</li>
-        <li>2.Coins will be used to unlock paid content.</li>
-        <li>3.Refill coins and bonus are equal value. Recharge does not support refund.</li>
-        <li>4.If you have other problems, please contact us.</li>
+        <li>{{ $t('message.SHART_TV_has') }}</li>
+        <li>{{ $t('message.Coins_will') }}</li>
+        <li>{{ $t('message.Refill') }}</li>
+        <li>{{ $t('message.If_you_have_other_problems') }}</li>
       </ol>
     </div>
   </div>

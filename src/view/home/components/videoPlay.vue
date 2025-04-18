@@ -55,7 +55,7 @@
 
       <!-- 剧情简介 -->
       <div class="plot-summary">
-        <h3>Plot of Episode {{ videoInfo.episode }}</h3>
+        <h3> {{ $t('message.Plot_of_Episode') }} {{ videoInfo.episode }}</h3>
         <p>{{ videoInfo.plot }}</p>
         <div>{{ videoInfo.brief }} <span class="show-more">{{ $t('message.More') }}</span></div>
       </div>

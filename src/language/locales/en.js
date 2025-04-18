@@ -56,8 +56,25 @@ export default {
         Total_of_1270_Coins:'Total of 1270 Coins',
         Check_in:'Check in',
         Download_APP:'Download APP',
-  
-  
-        
+        Payment_Record:'Payment Record',
+        Credit_Card:'Credit Card',
+        SHART_TV_has:'1.SHART TV has free and paid content for everyone. You decide which content to unlock.',
+        Coins_will:'2.Coins will be used to unlock paid content.',
+        Refill:'3.Refill coins and bonus are equal value. Recharge does not support refund.',
+        Payment_Method:'Payment Method',
+        Tips:'Tips',
+        If_you_have_other_problems:'4.If you have other problems, please contact us.',
+        We_promise:'We promise that we will take out 20% of your recharge amount on charity activities, every time you top up your account, you will help a homeless person to get a piece of food or warm clothing in this cold winter!',
+        Wallet:'Wallet',
+        Download_on_iOS_or_Android:'Download on iOS or Android',
+        Android:'Android',
+        iOS:'iOS',
+        Unlock_time:'Unlock time',
+        Plot_of_Episode:'Plot of Episode',
+        General_Topic:'General Topic',
+        Continue_Watching:'Continue Watching',
+        More_Recommended:'More Recommended',
+        Total:'Total',
+
       }
 }
