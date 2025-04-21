@@ -102,7 +102,7 @@ const plyrOptions = {
     auto: '自动',
     subtitleOptions: '字幕选项',
     'en': 'English',
-    'ru': 'Русский',
+    // 'ru': 'Русский',
     'ar': 'العربية',
     'captions-select': '选择字幕',
   },
@@ -173,12 +173,12 @@ onMounted(() => {
     // 暂时注释掉其他语言字幕，等有对应文件再添加
     
     // 添加俄语字幕轨道 
-    const trackRu = document.createElement('track')
-    trackRu.kind = 'captions'
-    trackRu.label = 'Русский'
-    trackRu.srclang = 'ru'
-    trackRu.src = '/path/to/russian/subtitle.vtt'
-    video.appendChild(trackRu)
+    // const trackRu = document.createElement('track')
+    // trackRu.kind = 'captions'
+    // trackRu.label = 'Русский'
+    // trackRu.srclang = 'ru'
+    // trackRu.src = '/path/to/russian/subtitle.vtt'
+    // video.appendChild(trackRu)
 
     // 添加阿拉伯语字幕轨道
     const trackAr = document.createElement('track')
