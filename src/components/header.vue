@@ -134,11 +134,11 @@
                          @click="changeLanguage('en')">
                         <span>English</span>
                     </div>
-                    <div class="language-item" 
+                    <!-- <div class="language-item" 
                          :class="{ active: locale === 'ru' }" 
                          @click="changeLanguage('ru')">
                         <span>Pусск</span>
-                    </div>
+                    </div> -->
                     <div class="language-item" 
                          :class="{ active: locale === 'ar' }" 
                          @click="changeLanguage('ar')"

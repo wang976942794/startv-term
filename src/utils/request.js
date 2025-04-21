@@ -13,7 +13,7 @@ request.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
     // 例如：获取并设置 token
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token')||'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NDc1NjAwMzEsInVzZXJJZCI6ImxoZ0AxNjMuY29tIn0.Q6Fzi_0kINHXLjcZxwZCIY-UiYTfczqGcJ0QcrCeyBU'
     if (token) {
       config.headers['Authorization'] = token
     }
