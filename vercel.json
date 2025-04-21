@@ -1,12 +1,12 @@
 {
     "rewrites": [
       {
-        "source": "/(.*)",
-        "destination": "/index.html"
+        "source": "/api/:path*",
+        "destination": "http://api.startvs.net:18080/:path*"
       },
       {
-        "source": "/api/(.*)",
-        "destination": "http://api.startvs.net:18080/api/$1"
+        "source": "/hls/:path*",
+        "destination": "https://zhongdong-stream.startvs.net/:path*"
       }
     ],
     "headers": [
@@ -16,7 +16,7 @@
           { "key": "Access-Control-Allow-Credentials", "value": "true" },
           { "key": "Access-Control-Allow-Origin", "value": "*" },
           { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
-          { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
+          { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization" }
         ]
       }
     ]

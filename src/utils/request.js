@@ -16,7 +16,7 @@ request.interceptors.request.use(
     // 例如：获取并设置 token
     const token = localStorage.getItem('token')||'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NDc1NjAwMzEsInVzZXJJZCI6ImxoZ0AxNjMuY29tIn0.Q6Fzi_0kINHXLjcZxwZCIY-UiYTfczqGcJ0QcrCeyBU'
     if (token) {
-      config.headers['Authorization'] = token
+      config.headers.Authorization = token
     }
     return config
   },
@@ -31,17 +31,20 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   response => {
     console.log('Response:', response)
-    // 对响应数据做点什么
-    const res = response.data  // 获取响应中的 data
+    const res = response.data
     
-    // 这里根据后端的数据结构进行处理
+    // 不要过滤响应数据，直接返回
+    return res
+    
+    // 如果确实需要过滤，建议先检查数据结构
+    /*
     if (res.code === 100000) {
-      return res  // 返回完整的响应数据
+      return res
     } else {
-      // 处理业务错误
-      // console.error('业务错误：', res.msg)
+      console.log('返回的数据结构:', res)
       return res
     }
+    */
   },
   error => {
     console.log('Error:', error)
