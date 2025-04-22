@@ -3,7 +3,7 @@
         <!-- Logo区域 -->
         <div class="flex items-center">
 
-            <div class="logo">
+            <div class="logo" @click="handleLogoClick">
                 <img src="../assets/images/logo.svg" alt="START TV" />
             </div>
             <el-menu :router="true" mode="horizontal" :ellipsis="false" class="nav-menu" background-color="transparent"
@@ -371,6 +371,11 @@ const handleLogout = async () => {
         console.error('Logout failed:', error)
     }
 }
+
+// Add this function to handle logo clicks
+const handleLogoClick = () => {
+    router.push('/')
+}
 </script>
 
 <style lang="scss" scoped>
@@ -408,6 +413,7 @@ const handleLogout = async () => {
         width: 192px;
         height: 46px;
         margin-right: 15px;
+  
 
         @include responsive-scale {
             width: calc(1024 / 1440 * 192px);
@@ -421,6 +427,10 @@ const handleLogout = async () => {
             @include responsive-scale {
                 height: calc(1024 / 1440 * 46px);
             }
+        }
+
+        &:hover {
+            opacity: 0.8;
         }
     }
 
