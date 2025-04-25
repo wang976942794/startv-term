@@ -3,6 +3,9 @@
     <!-- 左侧播放器预留位置 -->
     <div class="video-player">
       <!-- 等待数据加载完成后再渲染播放器 -->
+       <div class="video-player-bg" @click="handleBack">
+        <img src="@/assets/images/arrow-left.svg" alt="">
+       </div>
       <Vue3VideoPlay 
         v-if="videoInfo.fontUrl && !isLoading" 
         ref="videoPlayer"
@@ -96,13 +99,14 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
 import Vue3VideoPlay from '@/components/Vue3videoPlay.vue'
 import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel } from '@/api/home'
 import { ElMessage } from 'element-plus'
 import{useI18n} from 'vue-i18n'
 const {t} = useI18n()
 const route = useRoute()
+const router = useRouter()
 const videoInfo = ref({})
 const chapterInfo = ref({})  // 添加章节信息的响应式引用
 
@@ -214,6 +218,12 @@ const handleEpisodeClick = async (episodeNum) => {
     isLoading.value = false
   }
 }
+const handleBack = () => {
+  router.push({
+    path: '/',
+   
+  })
+}
 
 // 修改 onMounted
 onMounted(async () => {
@@ -257,6 +267,20 @@ onMounted(async () => {
       width: calc(1024 / 1440 * 952px);
       height: calc(1024 / 1440 * 868px);
     }
+    .video-player-bg{
+      width: 60px ;
+      height: 60px;
+      background: var(--bg-tertiary);
+      border-radius: 50%;
+      padding-top: 0.1px;
+     img{
+      width: 24px;
+      height: 24px;
+      object-fit: cover;
+      margin-top: 18px;
+      margin-left: 18px;
+     }
+    }
 
     .loading-state {
       width: 100%;
@@ -272,7 +296,8 @@ onMounted(async () => {
   .video-info {
     width: 488px;
     height: 868px;
-    padding: 20px;
+    padding: 32px;
+    border-left: 1px solid #2C2E31;
     @include responsive-scale {
       width: calc(1024 / 1440 * 488px);
       height: calc(1024 / 1440 * 868px);
@@ -281,6 +306,8 @@ onMounted(async () => {
     .breadcrumb {
       color: #999;
       margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #2C2E31;
       @include responsive-scale {
         margin-bottom: calc(1024 / 1440 * 20px);
       }
@@ -415,6 +442,8 @@ onMounted(async () => {
     }
 
     .episode-selection {
+      border-top: 1px solid #2C2E31;
+      padding-top: 24px;
       .episode-tabs {
         display: flex;
         gap: 16px;

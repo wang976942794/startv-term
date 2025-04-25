@@ -11,10 +11,10 @@ const route = useRoute()
 const themeStore = useThemeStore()
 
 // 计算属性来判断是否显示 Footer
-const showFooter = computed(() => {
-  // 在 videoPlay 路由下不显示 Footer
-  return !route.path.includes('/videoPlay')
-})
+// const showFooter = computed(() => {
+//   // 在 videoPlay 路由下不显示 Footer
+//   return !route.path.includes('/videoPlay')
+// })
 
 onMounted(() => {
   themeStore.initTheme()
@@ -29,7 +29,7 @@ onMounted(() => {
         <main class="main-content">
             <router-view></router-view>
         </main>
-        <Footer v-show="showFooter"></Footer>
+        <Footer ></Footer>
     </div>
 </template>
 
