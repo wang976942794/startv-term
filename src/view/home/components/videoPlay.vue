@@ -1,11 +1,12 @@
 <template>
   <div class="video-container">
+    <div class="video-player-bg" @click="handleBack">
+        <img src="@/assets/images/arrow-left.svg" alt="">
+       </div>
     <!-- 左侧播放器预留位置 -->
     <div class="video-player">
       <!-- 等待数据加载完成后再渲染播放器 -->
-       <div class="video-player-bg" @click="handleBack">
-        <img src="@/assets/images/arrow-left.svg" alt="">
-       </div>
+       
       <Vue3VideoPlay 
         v-if="videoInfo.fontUrl && !isLoading" 
         ref="videoPlayer"
@@ -255,24 +256,20 @@ onMounted(async () => {
   width: 100%;
   height: calc(100vh - 100px);
   overflow: hidden;
-  
+  position: relative;
   @include responsive-scale {
     height: calc(1024 / 1440 * 100vh);
   }
-  .video-player {
-    // background: var(--bg-secondary);
-    width: 952px;
-    height: 868px;
-    @include responsive-scale {
-      width: calc(1024 / 1440 * 952px);
-      height: calc(1024 / 1440 * 868px);
-    }
-    .video-player-bg{
+  .video-player-bg{
       width: 60px ;
       height: 60px;
-      background: var(--bg-tertiary);
+      background:#2C2E31;
       border-radius: 50%;
       padding-top: 0.1px;
+      position: absolute;
+      top: 0;
+      left: 120px;
+      z-index: 100;
      img{
       width: 24px;
       height: 24px;
@@ -281,6 +278,15 @@ onMounted(async () => {
       margin-left: 18px;
      }
     }
+  .video-player {
+    // background: var(--bg-secondary);
+    width: 952px;
+    height: 868px;
+    @include responsive-scale {
+      width: calc(1024 / 1440 * 952px);
+      height: calc(1024 / 1440 * 868px);
+    }
+
 
     .loading-state {
       width: 100%;
