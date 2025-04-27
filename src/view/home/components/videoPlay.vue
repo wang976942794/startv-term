@@ -59,12 +59,12 @@
           <div :class="chapterInfo.matchLike ? 'action' : 'button'" >
             <img src="@/assets/images/hearttrue.svg" alt="" v-if="chapterInfo.matchLike">
             <img src="@/assets/images/heart2.svg" alt="" v-else style="filter: var(--icon-filter);">
-            <span>{{ videoInfo.collectNum }}</span>
+            <span>{{ chapterInfo.likeNum }}</span>
           </div>
           <div :class="matchCollect ? 'action' : 'button'" @click="handleCollect(matchCollect)">
             <img src="@/assets/images/startrue.svg" alt="" v-if="matchCollect">
             <img src="@/assets/images/star2.svg" alt="" v-else style="filter: var(--icon-filter);">
-            <span>{{ videoInfo.collectNum }}</span>
+            <span>{{ chapterInfo.likeNum }}</span>
           </div>
           <div class="button">
             <img src="@/assets/images/link-2.svg" alt="" style="filter: var(--icon-filter);">
@@ -224,6 +224,9 @@ const postComment = async () => {
   })
   if(res.code === 100000){
     ElMessage.success(t('message.Comment_Success'))
+    commentContent.value = ''
+    handleComment()
+
   }
 }
 // 封装获取视频和章节信息的函数

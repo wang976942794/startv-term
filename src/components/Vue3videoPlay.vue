@@ -17,7 +17,6 @@ import { ref, reactive, onMounted, onBeforeUnmount, watch } from 'vue'
 import Plyr from 'plyr'
 import 'plyr/dist/plyr.css'
 import Hls from 'hls.js'
-import subtitleEn from '@/assets/subtitle/1.vtt'
 
 const videoPlayer = ref(null)
 let player = null
@@ -40,6 +39,8 @@ const props = defineProps({
     required: true
   }
 })
+
+
 // 处理视频URL，将原始地址转换为使用代理的地址
 const getProxyUrl = (url) => {
   if (!url) return ''
@@ -68,15 +69,8 @@ const plyrOptions = {
     'settings',
     'fullscreen'
   ],
-  settings: ['captions', 'quality'],
-  quality: {
-    default: 1080,
-    options: [2160, 1440, 1080, 720, 576, 480, 360, 240]
-  },
-  speed: {
-    selected: 1,
-    options: [0.5, 0.75, 1, 1.25, 1.5, 2]
-  },
+  settings: ['captions'],
+
   captions: {
     active: true,
     language: 'en',
@@ -164,57 +158,189 @@ watch(() => props.fontUrl, (newUrl) => {
   }
 })
 
-// 修改字幕 URL 的处理
+// 修改 convertSrtToVtt 函数，添加更多错误处理和日志
+const convertSrtToVtt = async (srtUrl) => {
+  try {
+    console.log('Converting subtitle:', srtUrl)
+    const response = await fetch(processSubtitleUrl(srtUrl))
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const srtContent = await response.text()
+    console.log('Subtitle content received, length:', srtContent.length)
+    
+    // 转换 SRT 为 VTT 格式
+    let vttContent = 'WEBVTT\n\n'
+    
+    // 移除 BOM 和空行
+    const lines = srtContent.trim().replace(/^\uFEFF/, '').split(/\r?\n/)
+    
+    let currentBlock = []
+    let index = 0
+    for (const line of lines) {
+      if (line.trim() === '') {
+        if (currentBlock.length > 0) {
+          // 处理时间戳
+          const timeLine = currentBlock[1]
+          if (timeLine) {
+            // 将 SRT 时间格式转换为 VTT 格式（将逗号改为点）
+            const vttTime = timeLine.replace(/,/g, '.')
+            currentBlock[1] = vttTime
+          }
+          
+          // 添加到 VTT 内容
+          vttContent += currentBlock.slice(1).join('\n') + '\n\n'
+          currentBlock = []
+        }
+      } else {
+        currentBlock.push(line)
+      }
+      index++
+    }
+    
+    // 处理最后一个块
+    if (currentBlock.length > 0) {
+      const timeLine = currentBlock[1]
+      if (timeLine) {
+        const vttTime = timeLine.replace(/,/g, '.')
+        currentBlock[1] = vttTime
+      }
+      vttContent += currentBlock.slice(1).join('\n') + '\n\n'
+    }
+    
+    console.log('VTT content generated, length:', vttContent.length)
+    
+    // 创建 Blob 和 URL
+    const blob = new Blob([vttContent], { type: 'text/vtt' })
+    const url = URL.createObjectURL(blob)
+    console.log('Blob URL created:', url)
+    return url
+  } catch (error) {
+    console.error('Error converting SRT to VTT:', error)
+    return null
+  }
+}
+
+// 修改字幕处理函数
 const processSubtitleUrl = (url) => {
   if (!url) return url
-  // 将原始 S3 URL 转换为使用本地代理的 URL
   return url.replace('https://subtitle-zhongdong.s3.me-central-1.amazonaws.com', '/subtitle')
 }
 
-onMounted(() => {
+// 修改 onMounted 函数
+onMounted(async () => {
   if (videoPlayer.value) {
     const video = videoPlayer.value
 
-    // 添加英语字幕轨道
-    const trackEn = document.createElement('track')
-    trackEn.kind = 'captions'
-    trackEn.label = 'English'
-    trackEn.srclang = 'en'
-    trackEn.src = processSubtitleUrl(props.enUrl)
-    trackEn.default = true  // 设置为默认字幕
-    video.appendChild(trackEn)
+    try {
+      // 等待所有字幕转换完成
+      const [enVttUrl, arVttUrl] = await Promise.all([
+        props.enUrl ? convertSrtToVtt(props.enUrl) : null,
+        props.arUrl ? convertSrtToVtt(props.arUrl) : null
+      ])
 
-    // 添加阿拉伯语字幕轨道
-    const trackAr = document.createElement('track')
-    trackAr.kind = 'captions'
-    trackAr.label = 'العربية'
-    trackAr.srclang = 'ar' 
-    trackAr.src = processSubtitleUrl(props.arUrl)
-    video.appendChild(trackAr)
-    
-
-    if (videoOptions.src.includes('.m3u8')) {
-      if (Hls.isSupported()) {
-        const hls = new Hls({
-          xhrSetup: function(xhr) {
-            xhr.withCredentials = true;
-          }
-        })
-        hls.loadSource(videoOptions.src)
-        hls.attachMedia(video)
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          player = new Plyr(video, plyrOptions)
-        })
+      // 添加英语字幕轨道
+      if (enVttUrl) {
+        const trackEn = document.createElement('track')
+        trackEn.kind = 'captions'
+        trackEn.label = 'English'
+        trackEn.srclang = 'en'
+        trackEn.src = enVttUrl
+        trackEn.default = true
+        video.appendChild(trackEn)
+        console.log('English track added:', trackEn.src)
       }
-    } else {
-      player = new Plyr(video, plyrOptions)
+
+      // 添加阿拉伯语字幕轨道
+      if (arVttUrl) {
+        const trackAr = document.createElement('track')
+        trackAr.kind = 'captions'
+        trackAr.label = 'العربية'
+        trackAr.srclang = 'ar'
+        trackAr.src = arVttUrl
+        video.appendChild(trackAr)
+        console.log('Arabic track added:', trackAr.src)
+      }
+
+      // 确保在添加字幕轨道后再初始化 Plyr
+      if (videoOptions.src.includes('.m3u8')) {
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            xhrSetup: function(xhr) {
+              xhr.withCredentials = true;
+            }
+          })
+          hls.loadSource(videoOptions.src)
+          hls.attachMedia(video)
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            player = new Plyr(video, plyrOptions)
+            // 强制启用字幕
+            player.captions.toggle(true)
+          })
+        }
+      } else {
+        player = new Plyr(video, plyrOptions)
+        // 强制启用字幕
+        player.captions.toggle(true)
+      }
+    } catch (error) {
+      console.error('Error setting up video player:', error)
     }
   }
 })
 
+// 添加字幕变化监听
+watch([() => props.enUrl, () => props.arUrl], async ([newEnUrl, newArUrl]) => {
+  if (videoPlayer.value && player) {
+    // 移除现有字幕轨道
+    while (videoPlayer.value.getElementsByTagName('track').length > 0) {
+      videoPlayer.value.getElementsByTagName('track')[0].remove()
+    }
+
+    // 添加新的字幕轨道
+    if (newEnUrl) {
+      const enVttUrl = await convertSrtToVtt(newEnUrl)
+      if (enVttUrl) {
+        const trackEn = document.createElement('track')
+        trackEn.kind = 'captions'
+        trackEn.label = 'English'
+        trackEn.srclang = 'en'
+        trackEn.src = enVttUrl
+        trackEn.default = true
+        videoPlayer.value.appendChild(trackEn)
+      }
+    }
+
+    if (newArUrl) {
+      const arVttUrl = await convertSrtToVtt(newArUrl)
+      if (arVttUrl) {
+        const trackAr = document.createElement('track')
+        trackAr.kind = 'captions'
+        trackAr.label = 'العربية'
+        trackAr.srclang = 'ar'
+        trackAr.src = arVttUrl
+        videoPlayer.value.appendChild(trackAr)
+      }
+    }
+
+    // 刷新 Plyr 字幕
+    player.captions.toggle(false)
+    player.captions.toggle(true)
+  }
+}, { immediate: false })
+
 onBeforeUnmount(() => {
   if (player) {
     player.destroy()
+  }
+  // 清理所有创建的 Blob URLs
+  const tracks = videoPlayer.value?.getElementsByTagName('track')
+  if (tracks) {
+    Array.from(tracks).forEach(track => {
+      if (track.src.startsWith('blob:')) {
+        URL.revokeObjectURL(track.src)
+      }
+    })
   }
 })
 </script>

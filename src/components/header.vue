@@ -18,7 +18,7 @@
         <!-- 搜索框 -->
         <div class="search-container">
             <el-input v-model="searchText" :placeholder="$t('message.Search')" clearable @focus="showDropdown = true"
-                @blur="handleBlur">
+                @blur="handleBlur" @keyup.enter="handleSearch">
                 <template #prefix>
                     <img src="@/assets/images/search-icon.svg" alt="search" class="search-icon">
                 </template>
@@ -26,33 +26,46 @@
 
             <!-- 搜索下拉框 -->
             <div class="search-dropdown" v-show="showDropdown">
-                <!-- <div class="dropdown-header">
-                    <span>{{ searchText || '热门搜索' }}</span>
-                    <button class="close-btn" @click="showDropdown = false">
-                        <span class="close-icon">×</span>
-                    </button>
-                </div> -->
-
-                <!-- 热门电影 -->
-                <div class="section">
-                    <h3>{{ $t('message.Hot_Movies') }}</h3>
+                <!-- Search Results -->
+                <div class="section" v-if="searchResults.length > 0">
+                    <h3>{{ $t('message.Search_Results') }}</h3>
                     <div class="movie-list">
-                        <div class="movie-item" v-for="movie in hotMovies" :key="movie.title">
-                            <span class="fire-icon">🔥</span>
-                            <span class="movie-title">{{ movie.title }}</span>
+                        <div class="movie-item" 
+                             v-for="item in searchResults" 
+                             :key="item.bookId"
+                             @click="handleSearchResultClick(item)">
+                            <img :src="item.fontUrl" class="search-result-img" alt="">
+                            <div class="search-result-info">
+                                <span class="movie-title">{{ item.title }}</span>
+                                <span class="movie-desc">{{ item.brief }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 热门搜索 -->
-                <div class="section">
-                    <h3>{{ $t('message.Trending_Searches') }}</h3>
-                    <div class="tag-list">
-                        <div class="tag" v-for="tag in searchTags" :key="tag">
-                            {{ tag }}
+                <!-- 当没有搜索结果时显示热门内容 -->
+                <template v-else>
+                    <!-- 热门电影 -->
+                    <div class="section">
+                        <h3>{{ $t('message.Hot_Movies') }}</h3>
+                        <div class="movie-list">
+                            <div class="movie-item" v-for="movie in hotMovies" :key="movie.title">
+                                <span class="fire-icon">🔥</span>
+                                <span class="movie-title" style="color: var(--text-primary);">{{ movie.title }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                    <!-- 热门搜索 -->
+                    <div class="section">
+                        <h3>{{ $t('message.Trending_Searches') }}</h3>
+                        <div class="tag-list">
+                            <div class="tag" v-for="tag in searchTags" :key="tag">
+                                {{ tag }}
+                            </div>
+                        </div>
+                    </div>
+                </template>
             </div>
         </div>
 
@@ -193,7 +206,7 @@ import { ref, onMounted, watch, computed, reactive } from 'vue'
 import { useRoute, useRouter} from 'vue-router'
 import { useUserStore } from '@/stores/user'  // 导入 userStore
 import LoginDialog from './LoginDialog.vue'
-import { getHistory,getChapterCollections } from '@/api/home'
+import { getHistory,getChapterCollections, findBook } from '@/api/home'
 import { useHistoryStore } from '@/stores/history'  // 添加这行
 import { useHomeStore } from '@/stores/home'
 import { useThemeStore } from '@/stores/theme'
@@ -240,12 +253,21 @@ const searchTags = ref([
     'Enemies to Lovers'
 ])
 
+const searchHistory = ref([])  // Store search history
+const searchResults = ref([])  // Store search results
+
 const handleBlur = (e) => {
-    // 检查点击是否在下拉框内
-    const isClickInDropdown = e.relatedTarget && e.relatedTarget.closest('.search-dropdown')
-    if (!isClickInDropdown) {
-        showDropdown.value = false
-    }
+    // 给一个小延时，让点击事件先触发
+    setTimeout(() => {
+        // 检查点击是否在下拉框内
+        const isClickInDropdown = document.activeElement && 
+            (document.activeElement.closest('.search-dropdown') || 
+             document.activeElement.closest('.search-container'));
+        
+        if (!isClickInDropdown) {
+            showDropdown.value = false;
+        }
+    }, 200);
 }
 
 // 在 script setup 中添加一个关闭所有菜单的函数
@@ -325,6 +347,12 @@ onMounted(() => {
     historyStore.fetchHistory()
     historyStore.fetchChapterCollections()
     homeStore.fetchUserInfo()
+
+    // Load search history on mount
+    const savedHistory = localStorage.getItem('searchHistory')
+    if (savedHistory) {
+        searchHistory.value = JSON.parse(savedHistory)
+    }
 })
 
 // 监听路由变化
@@ -375,6 +403,55 @@ const handleLogout = async () => {
 // Add this function to handle logo clicks
 const handleLogoClick = () => {
     router.push('/')
+}
+
+// 添加对 searchText 的监听
+watch(searchText, (newValue) => {
+    // 当搜索框被清空时，清空搜索结果
+    if (!newValue || newValue.trim() === '') {
+        searchResults.value = []
+    }
+})
+
+// 修改 handleSearch 函数
+const handleSearch = async () => {
+    const searchValue = searchText.value.trim()
+    if (!searchValue) {
+        searchResults.value = []
+        return
+    }
+    
+    try {
+        const response = await findBook({ bookName: searchValue })
+        console.log("response",response);
+        
+        searchResults.value = response.data || []
+        
+        // Add to search history if not already present
+        if (!searchHistory.value.includes(searchValue)) {
+            searchHistory.value.unshift(searchValue)
+            // Keep only last 5 searches
+            if (searchHistory.value.length > 5) {
+                searchHistory.value.pop()
+            }
+            // Save to localStorage
+            localStorage.setItem('searchHistory', JSON.stringify(searchHistory.value))
+        }
+    } catch (error) {
+        console.error('Search failed:', error)
+        searchResults.value = []
+    }
+}
+
+// Handle search result click
+const handleSearchResultClick = (item) => {
+    router.push({
+        path: '/videoPlay',
+        query: {
+            bookId: item.bookId
+        }
+    })
+    showDropdown.value = false
 }
 </script>
 
@@ -545,21 +622,43 @@ const handleLogoClick = () => {
                     .movie-item {
                         display: flex;
                         align-items: center;
-                        gap: 8px;
-                        padding: 8px 0;
-                        color: var( --text-primary);
-
+                        gap: 12px;
+                        padding: 12px;
+                        border-radius: 8px;
+                        transition: all 0.3s;
 
                         &:hover {
+                            background: var(--bg-secondary);
                             color: #D0A944;
                         }
 
-                        .fire-icon {
-                            font-size: 16px;
+                        .search-result-img {
+                            width: 60px;
+                            height: 80px;
+                            border-radius: 8px;
+                            object-fit: cover;
                         }
 
-                        .movie-title {
-                            font-size: 14px;
+                        .search-result-info {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 4px;
+
+                            .movie-title {
+                                color: var( --text-primary);
+                                font-size: 14px;
+                                font-weight: 500;
+                            }
+
+                            .movie-desc {
+                                font-size: 12px;
+                                color: var( --text-primary);
+                                display: -webkit-box;
+                                -webkit-line-clamp: 2;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
                         }
                     }
                 }
@@ -584,6 +683,16 @@ const handleLogoClick = () => {
                         }
                     }
                 }
+            }
+
+            .tag, .movie-item {
+                cursor: pointer;
+                user-select: none;  // 防止文本被选中
+            }
+            
+            .movie-list, .tag-list {
+                // 确保这些容器可以接收点击事件
+                pointer-events: auto;
             }
         }
     }
@@ -1143,5 +1252,34 @@ const handleLogoClick = () => {
 
 .language-btn {
     position: relative;  // 添加相对定位
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .clear-history {
+        color: #88888C;
+        font-size: 14px;
+        cursor: pointer;
+        
+        &:hover {
+            color: #D0A944;
+        }
+    }
+}
+
+.movie-item {
+    cursor: pointer;
+    
+    &:hover {
+        color: #D0A944;
+    }
+}
+
+.search-container {
+    pointer-events: auto;  // 确保下拉框可以接收点击事件
 }
 </style>

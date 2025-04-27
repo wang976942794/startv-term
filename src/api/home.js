@@ -100,3 +100,11 @@ export function sendComment(data) {
         params:data
     })
 }
+//搜索
+export function findBook(data) {
+    return request({
+        url: '/api/book/searchBook',
+        method: 'get',
+        params:data
+    })
+}
