@@ -76,4 +76,27 @@ export function getBonus() {
         method: 'get',
     })
 }
-
+//获取评论
+export function getComment(params) {
+    return request({
+        url: '/api/comment/getRootComment',
+        method: 'get',
+        params
+    })
+}
+// 发表评论
+export function sendComment(data) {
+    return request({
+        url: '/api/comment/send',
+        method: 'post',
+        data
+    })
+}
+//获取字幕
+    export function getSubtitle(data) {
+    return request({
+        url: '/api/book/subtitle',
+        method: 'get',
+        params:data
+    })
+}

@@ -4,14 +4,25 @@ const request = axios.create({
   baseURL: '/api',
   timeout: 50000, // 请求超时时间
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'language': (() => {
+      const languageStr = localStorage.getItem('language')
+      if (languageStr) {
+        try {
+          const languageObj = JSON.parse(languageStr)
+          return languageObj.languageMode.name
+        } catch (e) {
+          return 'en'
+        }
+      }
+      return 'en'
+    })()
   }
 })
 
 // 请求拦截器
 request.interceptors.request.use(
   config => {
-    console.log('Request Config:', config)
     // 在发送请求之前做些什么
     // 例如：获取并设置 token
     const token = localStorage.getItem('token')||'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NDc1NjAwMzEsInVzZXJJZCI6ImxoZ0AxNjMuY29tIn0.Q6Fzi_0kINHXLjcZxwZCIY-UiYTfczqGcJ0QcrCeyBU'
@@ -22,7 +33,6 @@ request.interceptors.request.use(
   },
   error => {
     // 对请求错误做些什么
-    console.error('请求错误：', error)
     return Promise.reject(error)
   }
 )
@@ -30,7 +40,7 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
   response => {
-    console.log('Response:', response)
+ 
     const res = response.data
     
     // 不要过滤响应数据，直接返回
@@ -47,7 +57,6 @@ request.interceptors.response.use(
     */
   },
   error => {
-    console.log('Error:', error)
     // 对响应错误做点什么
     let message = ''
     if (error.response) {

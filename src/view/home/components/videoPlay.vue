@@ -12,6 +12,8 @@
         ref="videoPlayer"
         :fontUrl="videoInfo.fontUrl" 
         :url="chapterInfo.url" 
+        :arUrl="subtitle.arUrl"
+        :enUrl="subtitle.enUrl"
       />
       <!-- 添加加载中的状态显示 -->
       <div v-if="isLoading" class="loading-state">
@@ -32,66 +34,100 @@
 
       <!-- 标签页切换 -->
       <div class="tab-container">
-        <div class="tab-item active">Introduction</div>
-        <div class="tab-item">{{ $t('message.Comments') }}  ({{ videoInfo.commentCount }})</div>
-      </div>
-
-      <!-- 视频标题 -->
-      <h1 class="video-title">{{ videoInfo.title }}</h1>
-
-      <!-- 互动按钮 -->
-      <div class="interaction-buttons">
-        <div :class="chapterInfo.matchLike ? 'action' : 'button'" >
-          <img src="@/assets/images/hearttrue.svg" alt="" v-if="chapterInfo.matchLike">
-          <img src="@/assets/images/heart2.svg" alt="" v-else style="filter: var(--icon-filter);">
-          <span>{{ videoInfo.collectNum }}</span>
+        <div 
+          class="tab-item" 
+          :class="{ active: activeTab === 'introduction' }"
+          @click="activeTab = 'introduction'"
+        >
+          Introduction
         </div>
-        <div :class="matchCollect ? 'action' : 'button'" @click="handleCollect(matchCollect)">
-          <img src="@/assets/images/startrue.svg" alt="" v-if="matchCollect">
-          <img src="@/assets/images/star2.svg" alt="" v-else style="filter: var(--icon-filter);">
-          <span>{{ videoInfo.collectNum }}</span>
-        </div>
-        <div class="button">
-          <img src="@/assets/images/link-2.svg" alt="" style="filter: var(--icon-filter);">
-          <span>{{ $t('message.Share') }}</span>
+        <div 
+          class="tab-item" 
+          :class="{ active: activeTab === 'comments' }"
+          @click="activeTab = 'comments'"
+        >
+          {{ $t('message.Comments') }} ({{ comments.length }})
         </div>
       </div>
 
-      <!-- 剧情简介 -->
-      <div class="plot-summary">
-        <h3> {{ $t('message.Plot_of_Episode') }} {{ videoInfo.episode }}</h3>
-        <p>{{ videoInfo.plot }}</p>
-        <div>{{ videoInfo.brief }} <span class="show-more">{{ $t('message.More') }}</span></div>
-      </div>
-
-      <!-- 剧集选择 -->
-      <div class="episode-selection">
-        <div class="episode-tabs">
-          <span v-for="(range, index) in episodeRanges" 
-                :key="index"
-                :class="{ active: activeRange === index }"
-                @click="activeRange = index">
-            {{ range.start }}-{{ range.end }}
-          </span>
-          <span :class="{ active: activeRange === -1 }"
-                @click="activeRange = -1">
-            {{ $t('message.All_Episodes') }}
-          </span>
-        </div>
-        <div class="episode-grid">
-          <div v-for="n in getVisibleEpisodes()" 
-               :key="n" 
-               :class="['episode-item', { active: n === Number(chapterId) }]"
-               @click="handleEpisodeClick(n)">
-            <span v-if="n !== Number(chapterId)">{{ n }}</span>
-            <img src="@/assets/gif/viderPlay.gif" alt="" v-else>
-            
-            <!-- 添加空值检查 -->
-            <img v-if="isEpisodeLocked(n)" 
-                 src="@/assets/images/lock.svg" 
-                 alt="" 
-                 class="lock-icon">
+      <!-- 内容区域 -->
+      <div v-if="activeTab === 'introduction'">
+        <!-- 原有的介绍内容 -->
+        <h1 class="video-title">{{ videoInfo.title }}</h1>
+        <!-- 互动按钮 -->
+        <div class="interaction-buttons">
+          <div :class="chapterInfo.matchLike ? 'action' : 'button'" >
+            <img src="@/assets/images/hearttrue.svg" alt="" v-if="chapterInfo.matchLike">
+            <img src="@/assets/images/heart2.svg" alt="" v-else style="filter: var(--icon-filter);">
+            <span>{{ videoInfo.collectNum }}</span>
           </div>
+          <div :class="matchCollect ? 'action' : 'button'" @click="handleCollect(matchCollect)">
+            <img src="@/assets/images/startrue.svg" alt="" v-if="matchCollect">
+            <img src="@/assets/images/star2.svg" alt="" v-else style="filter: var(--icon-filter);">
+            <span>{{ videoInfo.collectNum }}</span>
+          </div>
+          <div class="button">
+            <img src="@/assets/images/link-2.svg" alt="" style="filter: var(--icon-filter);">
+            <span>{{ $t('message.Share') }}</span>
+          </div>
+        </div>
+
+        <!-- 剧情简介 -->
+        <div class="plot-summary">
+          <h3> {{ $t('message.Plot_of_Episode') }} {{ videoInfo.episode }}</h3>
+          <p>{{ videoInfo.plot }}</p>
+          <div>{{ videoInfo.brief }} <span class="show-more">{{ $t('message.More') }}</span></div>
+        </div>
+
+        <!-- 剧集选择 -->
+        <div class="episode-selection">
+          <div class="episode-tabs">
+            <span v-for="(range, index) in episodeRanges" 
+                  :key="index"
+                  :class="{ active: activeRange === index }"
+                  @click="activeRange = index">
+              {{ range.start }}-{{ range.end }}
+            </span>
+            <span :class="{ active: activeRange === -1 }"
+                  @click="activeRange = -1">
+              {{ $t('message.All_Episodes') }}
+            </span>
+          </div>
+          <div class="episode-grid">
+            <div v-for="n in getVisibleEpisodes()" 
+                 :key="n" 
+                 :class="['episode-item', { active: n === Number(chapterId) }]"
+                 @click="handleEpisodeClick(n)">
+              <span v-if="n !== Number(chapterId)">{{ n }}</span>
+              <img src="@/assets/gif/viderPlay.gif" alt="" v-else>
+              
+              <!-- 添加空值检查 -->
+              <img v-if="isEpisodeLocked(n)" 
+                   src="@/assets/images/lock.svg" 
+                   alt="" 
+                   class="lock-icon">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else-if="activeTab === 'comments'" class="comments-section">
+        <div class="comment-list">
+          <div v-for="comment in comments" :key="comment.id" class="comment-item">
+            <div class="user-avatar">
+              <img :src="comment.avatarUrl" alt="avatar">
+            </div>
+            <div class="comment-content">
+              <div class="user-name">{{ comment.name }}</div>
+              <div class="comment-text">{{ comment.userCommentPO.content }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="comment-input">
+          <input type="text" :placeholder="$t('message.SendMessage')" v-model="commentContent" />
+          <button class="send-button" @click="postComment">
+            <img src="@/assets/images/send.svg" alt="send">
+          </button>
         </div>
       </div>
     </div>
@@ -102,7 +138,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute,useRouter } from 'vue-router'
 import Vue3VideoPlay from '@/components/Vue3videoPlay.vue'
-import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel } from '@/api/home'
+import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel,getComment,sendComment,getSubtitle } from '@/api/home'
 import { ElMessage } from 'element-plus'
 import{useI18n} from 'vue-i18n'
 const {t} = useI18n()
@@ -110,12 +146,16 @@ const route = useRoute()
 const router = useRouter()
 const videoInfo = ref({})
 const chapterInfo = ref({})  // 添加章节信息的响应式引用
+const subtitle = ref({})
 
 // 获取路由参数
 const bookId = ref(route.query.bookId)
 const chapterId = ref(route.query.chapterId==0?1:route.query.chapterId)
 const matchCollect = ref(false)
 const activeRange = ref(0)
+const activeTab = ref('introduction')
+const commentContent = ref('')
+const comments = ref([])  
 
 // 计算集数区间
 const episodeRanges = computed(() => {
@@ -174,11 +214,22 @@ if(type){
   matchCollect.value = true
 }
 }
-
+// 发表评论
+const postComment = async () => {
+  const res = await sendComment({
+    bookId: bookId.value,
+    chapterId: chapterId.value,
+    content: commentContent.value,
+    parentId: 0
+  })
+  if(res.code === 100000){
+    ElMessage.success(t('message.Comment_Success'))
+  }
+}
 // 封装获取视频和章节信息的函数
 const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
   try {
-    const [videoRes, chapterRes] = await Promise.all([
+    const [videoRes, chapterRes,subtitleRes] = await Promise.all([
       getVideoInfo({
         bookId,
         chapterId
@@ -187,9 +238,11 @@ const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
         bookId,
         chapterId
       }),
-    ])
-    console.log("collectRes",chapterRes);
-      
+      getSubtitle({
+        bookId,
+        chapterId
+      }),
+    ]) 
     if (videoRes.code === 100000) {
       videoInfo.value = videoRes.data.bookInfoResp
     }
@@ -198,7 +251,10 @@ const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
       chapterInfo.value = chapterRes.data
       matchCollect.value = chapterRes.data.matchCollect
     }
-
+    if (subtitleRes.code === 100000) {
+      console.log("subtitleRes",subtitleRes);
+      subtitle.value = subtitleRes.data
+    }
     return { videoRes, chapterRes }
   } catch (error) {
     console.error('Failed to fetch data:', error)
@@ -225,6 +281,18 @@ const handleBack = () => {
    
   })
 }
+//获取评论
+const handleComment = async () => {
+  const res = await getComment({
+    bookId: bookId.value,
+    chapterId: chapterId.value
+  })
+  console.log("res",res);
+  
+  if(res.code === 100000){
+    comments.value = res.data
+  }
+}
 
 // 修改 onMounted
 onMounted(async () => {
@@ -236,6 +304,7 @@ onMounted(async () => {
   } catch (error) {
     console.error('Failed to fetch initial data:', error)
   }
+  handleComment()
 })
 </script>
 
@@ -248,7 +317,7 @@ onMounted(async () => {
 }
 .video-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   gap: 24px;
   color: var( --text-primary);
   margin: 0;
@@ -280,10 +349,11 @@ onMounted(async () => {
     }
   .video-player {
     // background: var(--bg-secondary);
-    width: 952px;
-    height: 868px;
+    // width: 952px;
+    // height: 868px;
+    margin: 0 auto;
     @include responsive-scale {
-      width: calc(1024 / 1440 * 952px);
+      // width: calc(1024 / 1440 * 952px);
       height: calc(1024 / 1440 * 868px);
     }
 
@@ -301,12 +371,12 @@ onMounted(async () => {
 
   .video-info {
     width: 488px;
-    height: 868px;
-    padding: 32px;
+    // height: 868px;
+    padding: 0 32px;
     border-left: 1px solid #2C2E31;
     @include responsive-scale {
       width: calc(1024 / 1440 * 488px);
-      height: calc(1024 / 1440 * 868px);
+      // height: calc(1024 / 1440 * 868px);
     }
 
     .breadcrumb {
@@ -335,7 +405,7 @@ onMounted(async () => {
       }
 
       .tab-item {
-
+        cursor: pointer;
         padding-bottom: 8px;
         @include responsive-scale {
           padding-bottom: calc(1024 / 1440 * 8px);
@@ -533,6 +603,116 @@ onMounted(async () => {
             }
           }
         }
+      }
+    }
+  }
+}
+
+.comments-section {
+  height: calc(100vh - 240px);
+  display: flex;
+  flex-direction: column;
+  @include responsive-scale {
+    height: calc(1024 / 1440 * 100vh -  calc(1024 / 1440 * 240px));
+  }
+  .comment-list {
+    flex: 1;
+    height: 400px;
+    overflow-y: auto;
+    padding: 16px 0;
+    @include responsive-scale {
+      padding: calc(1024 / 1440 * 16px) 0;
+    }
+    
+    .comment-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      @include responsive-scale {
+        margin-bottom: calc(1024 / 1440 * 16px);
+        gap: calc(1024 / 1440 * 12px);
+      }
+      
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        @include responsive-scale {
+          width: calc(1024 / 1440 * 40px);
+          height: calc(1024 / 1440 * 40px);
+        }
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      
+      .comment-content {
+        flex: 1;
+        
+        .user-name {
+          font-weight: 500;
+          margin-bottom: 4px;
+        }
+        
+        .comment-text {
+          color: var(--text-secondary);
+        }
+      }
+    }
+  }
+  
+  .comment-input {
+    display: flex;
+    gap: 12px;
+    padding: 16px 0;
+    border-top: 1px solid #2C2E31;
+    @include responsive-scale {
+      padding: calc(1024 / 1440 * 16px) 0;
+      gap: calc(1024 / 1440 * 12px);
+    }
+    
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      background: #2C2E31;
+      width: 424px;
+      height: 48px;
+      border-radius: 30px;
+      padding-left: 16px;
+      outline: none;
+      
+      &::placeholder {
+        color: var(--text-secondary);
+      }
+      @include responsive-scale {
+        width: calc(1024 / 1440 * 424px);
+        height: calc(1024 / 1440 * 48px);
+        border-radius: calc(1024 / 1440 * 30px);
+        padding-left: calc(1024 / 1440 * 16px);
+      }
+    }
+    
+    .send-button {
+      background: transparent;
+      border: none;
+      padding: 8px;
+      img {
+        width: 24px;
+        height: 24px;
+        filter: var(--icon-filter);
+        @include responsive-scale {
+          width: calc(1024 / 1440 * 24px);
+          height: calc(1024 / 1440 * 24px);
+        }
+      }
+      
+      &:hover {
+        opacity: 0.8;
       }
     }
   }

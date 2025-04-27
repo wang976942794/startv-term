@@ -59,7 +59,7 @@ export default defineConfig({
     proxy: {
       // 配置代理
       '/api': {
-        target: 'http://api.startvs.net:18080', // 替换为您的后端API地址
+        target: 'http://192.168.200.122:18080', // 替换为您的后端API地址
         changeOrigin: true, // 允许跨域
         rewrite: (path) => path.replace(/^\/api/, ''), // 重写路径
         secure: false, // 如果是https接口，需要配置这个参数
@@ -73,6 +73,12 @@ export default defineConfig({
           Origin: 'https://zhongdong-stream.startvs.net',
           Host: 'zhongdong-stream.startvs.net'
         }
+      },
+      // 添加字幕文件的代理
+      '/subtitle': {
+        target: 'https://subtitle-zhongdong.s3.me-central-1.amazonaws.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/subtitle/, '')
       }
     }
   },

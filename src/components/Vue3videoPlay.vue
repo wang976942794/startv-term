@@ -30,9 +30,16 @@ const props = defineProps({
   url: {
     type: String,
     required: true
+  },
+  arUrl: {
+    type: String,
+    required: true
+  },
+  enUrl: {
+    type: String,
+    required: true
   }
 })
-
 // 处理视频URL，将原始地址转换为使用代理的地址
 const getProxyUrl = (url) => {
   if (!url) return ''
@@ -157,6 +164,13 @@ watch(() => props.fontUrl, (newUrl) => {
   }
 })
 
+// 修改字幕 URL 的处理
+const processSubtitleUrl = (url) => {
+  if (!url) return url
+  // 将原始 S3 URL 转换为使用本地代理的 URL
+  return url.replace('https://subtitle-zhongdong.s3.me-central-1.amazonaws.com', '/subtitle')
+}
+
 onMounted(() => {
   if (videoPlayer.value) {
     const video = videoPlayer.value
@@ -166,26 +180,16 @@ onMounted(() => {
     trackEn.kind = 'captions'
     trackEn.label = 'English'
     trackEn.srclang = 'en'
-    trackEn.src = subtitleEn
+    trackEn.src = processSubtitleUrl(props.enUrl)
     trackEn.default = true  // 设置为默认字幕
     video.appendChild(trackEn)
-
-    // 暂时注释掉其他语言字幕，等有对应文件再添加
-    
-    // 添加俄语字幕轨道 
-    // const trackRu = document.createElement('track')
-    // trackRu.kind = 'captions'
-    // trackRu.label = 'Русский'
-    // trackRu.srclang = 'ru'
-    // trackRu.src = '/path/to/russian/subtitle.vtt'
-    // video.appendChild(trackRu)
 
     // 添加阿拉伯语字幕轨道
     const trackAr = document.createElement('track')
     trackAr.kind = 'captions'
     trackAr.label = 'العربية'
     trackAr.srclang = 'ar' 
-    trackAr.src = '/path/to/arabic/subtitle.vtt'
+    trackAr.src = processSubtitleUrl(props.arUrl)
     video.appendChild(trackAr)
     
 
@@ -316,8 +320,8 @@ onBeforeUnmount(() => {
 }
 
 .video-player {
-  width: 100%;
-  height: 100%;
+    // width: 100%;
+    // height: 100%;
   object-fit: contain;
   transition: all 0.3s ease-in-out !important;
 }
