@@ -12,8 +12,8 @@
         ref="videoPlayer"
         :fontUrl="videoInfo.fontUrl" 
         :url="chapterInfo.url" 
-        :arUrl="subtitle.arUrl"
-        :enUrl="subtitle.enUrl"
+        :arUrl="subtitle?.arUrl"
+        :enUrl="subtitle?.enUrl"
       />
       <!-- 添加加载中的状态显示 -->
       <div v-if="isLoading" class="loading-state">
@@ -138,7 +138,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute,useRouter } from 'vue-router'
 import Vue3VideoPlay from '@/components/Vue3videoPlay.vue'
-import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel,getComment,sendComment,getSubtitle } from '@/api/home'
+import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel,getComment,sendComment,getSubtitle,getUnlockChapter } from '@/api/home'
 import { ElMessage } from 'element-plus'
 import{useI18n} from 'vue-i18n'
 const {t} = useI18n()
@@ -150,8 +150,8 @@ const subtitle = ref({})
 
 // 获取路由参数
 const bookId = ref(route.query.bookId)
-const chapterId = ref(route.query.chapterId==0?1:route.query.chapterId)
-const matchCollect = ref(false)
+const chapterId = ref(route.query.chapterId)
+const matchCollect = ref(false)// 是否匹配收藏
 const activeRange = ref(0)
 const activeTab = ref('introduction')
 const commentContent = ref('')
@@ -191,11 +191,11 @@ const getVisibleEpisodes = () => {
 
 const videoPlayer = ref(null)
 const isLoading = ref(false)
-
+const unlockChapterIdomfp = ref({})
 // 添加判断集数是否锁定的方法
 const isEpisodeLocked = (episodeNum) => {
   // 如果 unlockChapterId 为 null 或 undefined，默认只解锁第一集
-  const unlockedEpisode = videoInfo.value?.unlockChapterId ?? 1
+  const unlockedEpisode = unlockChapterIdomfp.value?.unlockChapterId 
   return episodeNum > unlockedEpisode
 }
 //点击收藏
@@ -232,7 +232,7 @@ const postComment = async () => {
 // 封装获取视频和章节信息的函数
 const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
   try {
-    const [videoRes, chapterRes,subtitleRes] = await Promise.all([
+    const [videoRes, chapterRes,subtitleRes,] = await Promise.all([
       getVideoInfo({
         bookId,
         chapterId
@@ -245,9 +245,11 @@ const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
         bookId,
         chapterId
       }),
+    
     ]) 
     if (videoRes.code === 100000) {
       videoInfo.value = videoRes.data.bookInfoResp
+      unlockChapterIdomfp.value = videoRes.data.userBookRelationResp
     }
 
     if (chapterRes.code === 100000) {
@@ -255,7 +257,6 @@ const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
       matchCollect.value = chapterRes.data.matchCollect
     }
     if (subtitleRes.code === 100000) {
-      console.log("subtitleRes",subtitleRes);
       subtitle.value = subtitleRes.data
     }
     return { videoRes, chapterRes }
@@ -267,6 +268,13 @@ const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
 
 // 修改点击处理函数
 const handleEpisodeClick = async (episodeNum) => {
+  router.push({
+    path: 'VideoPlay',
+    query: {
+      bookId: bookId.value,
+      chapterId: episodeNum
+    }
+  })
   try {
     isLoading.value = true
     chapterId.value = episodeNum

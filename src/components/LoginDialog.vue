@@ -39,14 +39,14 @@
                     <img src="@/assets/images/google.svg" alt="Google">
                     <span>{{ t('message.google_login') }}</span>
                 </button>
-                <button class="social-btn" @click="handleSocialLogin('FACEBOOK')">
+                <!-- <button class="social-btn" @click="handleSocialLogin('FACEBOOK')">
                     <img src="@/assets/images/facebook.svg" alt="Facebook">
                     <span>{{ t('message.facebook_login') }}</span>
                 </button>
                 <button class="social-btn" @click="handleSocialLogin('APPLE')">
                     <img src="@/assets/images/apple.svg" alt="Apple">
                     <span>{{ t('message.apple_login') }}</span>
-                </button>
+                </button> -->
             </div>
 
             <!-- 服务条款 -->

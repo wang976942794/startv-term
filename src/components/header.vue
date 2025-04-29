@@ -445,10 +445,13 @@ const handleSearch = async () => {
 
 // Handle search result click
 const handleSearchResultClick = (item) => {
+    console.log("item",item);
+    
     router.push({
         path: '/videoPlay',
         query: {
-            bookId: item.bookId
+            bookId: item.bookId,
+            chapterId: 1
         }
     })
     showDropdown.value = false

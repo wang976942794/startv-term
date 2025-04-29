@@ -275,13 +275,13 @@ onMounted(async () => {
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
             player = new Plyr(video, plyrOptions)
             // 强制启用字幕
-            player.captions.toggle(true)
+            // player.captions.toggle(true)
           })
         }
       } else {
         player = new Plyr(video, plyrOptions)
         // 强制启用字幕
-        player.captions.toggle(true)
+        // player.captions.toggle(true)
       }
     } catch (error) {
       console.error('Error setting up video player:', error)
@@ -325,7 +325,7 @@ watch([() => props.enUrl, () => props.arUrl], async ([newEnUrl, newArUrl]) => {
 
     // 刷新 Plyr 字幕
     player.captions.toggle(false)
-    player.captions.toggle(true)
+    // player.captions.toggle(true)
   }
 }, { immediate: false })
 

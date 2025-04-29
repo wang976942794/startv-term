@@ -76,6 +76,13 @@ export function getBonus() {
         method: 'get',
     })
 }
+//签到
+export function signIn() {
+    return request({
+        url: '/api/reward/signIn',
+        method: 'put',
+    })
+}
 //获取评论
 export function getComment(params) {
     return request({
@@ -104,6 +111,23 @@ export function sendComment(data) {
 export function findBook(data) {
     return request({
         url: '/api/book/searchBook',
+        method: 'get',
+        params:data
+    })
+}
+
+//查看解锁章节
+export function getUnlockChapter(data) {
+    return request({
+        url: '/api/book/unlockList',
+        method: 'get',
+        params:data
+    })
+}
+//获取热门书籍
+export function getHotBook(data) {
+    return request({
+        url: '/api/home/slide',
         method: 'get',
         params:data
     })

@@ -16,11 +16,20 @@
             <div class="content-list">
                 <div class="content-item" v-for="(item, index) in popularBookList" :key="index" @click="handleItemClick(item)">
                     <div class="cover-image">
-                        <img :src="item.fontUrl" :alt="item.title">
-                        <div class="text">{{ item.title }}</div>
+                        <img :src="item.bookInfoResp.fontUrl" :alt="item.bookInfoResp.title">
+                        <div class="text">{{ item.bookInfoResp.title }}</div>
                         <div class="episode-tag">
                             <span class="dot"></span>
-                            EP.{{ item.completeNum}} / EP.{{ item.allNum }}
+                            EP.{{ item.bookInfoResp.completeNum}} / EP.{{ item.bookInfoResp.allNum }}
+                        </div>
+                        <div class="hot-tag-container">
+                            <div class="hot-tag">
+                                <span>Hot</span>
+                            </div>
+                            <div class="view-count">
+                                <img src="@/assets/images/eye.svg" alt="views">
+                                <span> {{formatViewCount(item.views)}}</span>
+                            </div>
                         </div>
                     </div>
                 </div>  
@@ -30,19 +39,26 @@
 </template>
 
 <script setup>
-import coverImage from '@/assets/images/image.png'
-import {useRouter} from 'vue-router'
-import { useHomeStore } from '@/stores/home.js'
-import { ref, watch} from 'vue'
-const router = useRouter()
-const homeStore = useHomeStore()
-const popularBookList = ref([])
-watch(() => homeStore.popularBookList, (newValue) => {
-    popularBookList.value = newValue
-},
-    { immediate: true } // immediate: true 会使得侦听器立即执行一次
-)
 
+import {useRouter} from 'vue-router'
+import { getHotBook } from '@/api/home'
+import { ref, watch,onMounted} from 'vue'
+const router = useRouter()
+
+const popularBookList = ref([])
+onMounted(async () => {
+    const res = await getHotBook()
+    if (res.code === 100000) {
+        popularBookList.value = res.data
+    }
+})
+
+const formatViewCount = (views) => {
+    if (views >= 1000) {
+        return `${(views / 1000).toFixed(1)}k`;
+    }
+    return views;
+};
 
 const handleItemClick = (item) => {
     router.push({
@@ -224,6 +240,48 @@ const scrollContent = (direction) => {
                         @include responsive-scale {
                             width: calc(1024 / 1440 * 6px);
                             height: calc(1024 / 1440 * 6px);
+                        }
+                    }
+                }
+                .hot-tag-container {
+                    position: absolute;
+                    top: 12px;
+                    left: 12px;
+                    width: 96px;
+                    height: 28px;
+                    background: #1F1D2BC2;
+                    border-radius: 24px;
+                    color: white;
+                    font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-around;
+                
+                    .hot-tag {
+                        width: 38px;
+                        height: 24px;
+                        background: #FF4081;
+                        border-radius: 24px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: white;
+                        
+                    }
+                    .view-count {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 4px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: white;
+                        padding: 0 8px;
+                        img {
+                            width: 16px;
+                            height: 16px;
                         }
                     }
                 }

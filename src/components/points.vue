@@ -17,20 +17,24 @@
       
       <div class="days-container">
         <div v-for="day in [0,1,2,3,4,5,6]" :key="day" 
-             :class="['day-item', day < dailySignInfo.signDays ? 'active' : '']">
+             :class="['day-item', isDaySigned(day) ? 'active' : '']">
           <div class="day-label">Day {{day+1}}</div>
           <div class="coin-icon">
-            <img src="@/assets/images/Vector.svg" alt="coin" v-if="day<dailySignInfo.signDays" />
+            <img src="@/assets/images/Vector.svg" alt="coin" v-if="isDaySigned(day)" />
             <img src="@/assets/images/Vectorno.svg" alt="coin" v-else />
           </div>
           <div class="points-value">+20</div>
-          <div v-if="day < dailySignInfo.signDays" class="check-mark">
+          <div v-if="isDaySigned(day)" class="check-mark">
             <img src="@/assets/images/Game.svg" alt="coin" />
           </div>
         </div>
       </div>
 
-      <div class="check-in-btn">{{ $t('message.Check_in') }}</div>
+      <div class="check-in-btn" 
+           :class="{ 'disabled': !dailySignInfo.signAvailable }"
+           @click="handleSignIn">
+       {{ $t('message.Check_in') }}
+      </div>
     </div>
 
     <!-- 分享区域 -->
@@ -70,9 +74,19 @@ import facebook2Icon from '@/assets/images/facebook2.svg'
 import instagramIcon from '@/assets/images/instagram.svg'
 import txIcon from '@/assets/images/tx.svg'
 import whatsappIcon from '@/assets/images/social-whatsapp.svg'
-import {getBonus} from '@/api/home'
+import {getBonus, signIn} from '@/api/home'
 
-const dailySignInfo=ref({})
+const dailySignInfo = ref({
+  signDays: 0,
+  signAvailable: false
+})
+
+// Calculate if a day is signed based on signDays (handles 7-day cycle)
+const isDaySigned = (dayIndex) => {
+  const currentCycleDay = dailySignInfo.value.signDays % 7
+  return dayIndex < currentCycleDay
+}
+
 const platforms = [
   { name: 'facebook2', icon: facebook2Icon },
   { name: 'instagram', icon: instagramIcon },
@@ -80,11 +94,29 @@ const platforms = [
   { name: 'tx', icon: txIcon },
   { name: 'social-whatsapp', icon: whatsappIcon }
 ]
-onMounted( () => {
-  getBonus().then(res => {
-    console.log(res)
+
+const handleSignIn = async () => {
+  if (!dailySignInfo.value.signAvailable) return
+  
+  try {
+    const res = await signIn()
+    if (res.code === 100000) {
+      dailySignInfo.value.signDays++
+      dailySignInfo.value.signAvailable = false
+      getBonusInfo()
+    }
+  } catch (error) {
+    console.error('Sign in failed:', error)
+  }
+}
+const getBonusInfo = async () => {
+  const res = await getBonus()
+  if (res.code === 100000) {
     dailySignInfo.value = res.data.dailySignInfo
-  })
+  }
+}
+onMounted( () => {
+  getBonusInfo()
 })
 </script>
 
@@ -215,6 +247,12 @@ onMounted( () => {
       border-radius: 50px;
       color: var( --text-primary);
       font-size: 16px;
+
+      &.disabled {
+        background: #666;
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
     }
   }
 
