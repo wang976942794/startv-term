@@ -200,7 +200,7 @@ const { t } = useI18n()
             height: 22px;
             font-size: 16px;
             font-weight: 400;
-            color: #B4B4B8;
+            color: var(--text-secondary);
 
             @include responsive-scale {
                 width: calc(1024 / 1440 * 340px);
@@ -224,7 +224,7 @@ const { t } = useI18n()
             img {
                 width: 20px;
                 height: 20px;
-
+                filter: var(--icon-filter);
                 @include responsive-scale {
                     width: calc(1024 / 1440 * 20px);
                     height: calc(1024 / 1440 * 20px);

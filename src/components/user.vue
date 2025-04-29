@@ -6,7 +6,7 @@
       <div class="header-content">
         <h1>{{ $t('message.Personal_Center') }}</h1>
         <div class="user-info">
-          <img :src="userInfo.avatarUrl" alt="user avatar" class="avatar">
+          <img src="@/assets/images/user.svg" alt="user avatar" class="avatar">
           <div class="user-details">
             <h2>{{ userInfo.name }}</h2>
             <p class="user-id">UID {{ userInfo.userId }}</p>
@@ -58,12 +58,13 @@
 </template>
 
 <script setup>
-import { ref, computed ,watch} from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useHomeStore } from '@/stores/home'
 import PaymentDialog from '@/components/PaymentDialog.vue'
-import{useI18n} from 'vue-i18n'
-const {t} = useI18n()
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 const homeStore = useHomeStore()
 const route = useRoute();
 const router = useRouter();
@@ -71,6 +72,29 @@ const userInfo = ref({})
 
 // 添加支付弹窗控制变量
 const showPaymentDialog = ref(false)
+
+// 获取用户信息的函数
+const getUserInfo = async () => {
+  // 如果 store 中已有数据，直接使用
+  if (homeStore.userInfo) {
+    userInfo.value = homeStore.userInfo
+  }
+  // 无论是否有数据，都重新获取一次最新数据
+  await homeStore.fetchUserInfo() // 假设 store 中有这个 action
+  userInfo.value = homeStore.userInfo
+}
+
+// 监听 store 中的数据变化
+watch(() => homeStore.userInfo, (newValue) => {
+  if (newValue) {
+    userInfo.value = newValue
+  }
+}, { immediate: true })
+
+// 在组件挂载时获取数据
+onMounted(() => {
+  getUserInfo()
+})
 
 // 计算当前激活的导航项
 const currentTab = computed(() => {
@@ -81,9 +105,6 @@ const currentTab = computed(() => {
   if (path.includes('/points')) return 'points';
   return 'wallet'; // 默认显示wallet
 });
-watch(()=>homeStore.userInfo,(newValue)=>{
-  userInfo.value = newValue
-})
 
 // 处理导航点击
 const handleNavClick = (tab) => {

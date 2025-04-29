@@ -268,20 +268,56 @@ const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
 
 // 修改点击处理函数
 const handleEpisodeClick = async (episodeNum) => {
-  router.push({
-    path: 'VideoPlay',
-    query: {
-      bookId: bookId.value,
-      chapterId: episodeNum
-    }
-  })
   try {
     isLoading.value = true
     chapterId.value = episodeNum
     
-    await fetchVideoAndChapterInfo(bookId.value, episodeNum)
+    // 直接调用 getChapterInfo 检查解锁状态
+    const chapterRes = await getChapterInfo({
+      bookId: bookId.value,
+      chapterId: episodeNum
+    })
+    
+    if (chapterRes.code ==100000) {
+      // 解锁成功，更新状态并继续加载
+      unlockChapterIdomfp.value = {
+        ...unlockChapterIdomfp.value,
+        unlockChapterId: Math.max(unlockChapterIdomfp.value?.unlockChapterId || 0, episodeNum)
+      }
+      
+      // 更新章节信息
+      chapterInfo.value = chapterRes.data
+      matchCollect.value = chapterRes.data.matchCollect
+      
+      // 导航到新的集数
+      router.push({
+        path: 'VideoPlay',
+        query: {
+          bookId: bookId.value,
+          chapterId: episodeNum
+        }
+      })
+      
+      // 获取其他必要信息
+      const [videoRes, subtitleRes] = await Promise.all([
+        getVideoInfo({ bookId: bookId.value, chapterId: episodeNum }),
+        getSubtitle({ bookId: bookId.value, chapterId: episodeNum })
+      ])
+      
+      if (videoRes.code === 100000) {
+        videoInfo.value = videoRes.data.bookInfoResp
+      }
+      
+      if (subtitleRes.code === 100000) {
+        subtitle.value = subtitleRes.data
+      }
+    } else {
+      // 未解锁，显示提示
+      ElMessage.warning("解锁失败，请先购买金币")
+    }
   } catch (error) {
     console.error('Failed to fetch episode data:', error)
+    ElMessage.error(t('message.Unlock_Failed'))
   } finally {
     isLoading.value = false
   }

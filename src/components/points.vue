@@ -111,6 +111,8 @@ const handleSignIn = async () => {
 }
 const getBonusInfo = async () => {
   const res = await getBonus()
+  console.log("res",res);
+  
   if (res.code === 100000) {
     dailySignInfo.value = res.data.dailySignInfo
   }
