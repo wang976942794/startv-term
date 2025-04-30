@@ -23,15 +23,15 @@
 
     <!-- 充值选项 -->
     <div class="recharge-options">
-      <div v-for="(option, index) in rechargeOptions" :key="index" class="recharge-item"
-        :class="{ active: selectedOption === index }" @click="selectOption(index)">
+      <div v-for="(item, index) in rechargeOptions" :key="index" class="recharge-item"
+        :class="{ active: selectedOption === index }" @click="selectOption(item,index)">
         <div class="bonus-tag">+10%</div>
         <div class="recharge-content">
-          <div class="coins">{{ option.coins }} <span>{{ $t('message.Coins') }}</span></div>
-          <div class="bouns">+{{ option.bouns }} <span>{{ $t('message.Bonus') }}</span></div>
+          <div class="coins">{{ item.priceUsdCent }} <span>{{ $t('message.Coins') }}</span></div>
+          <div class="bouns">+{{ item.coinNum }} <span>{{ $t('message.Bonus') }}</span></div>
         </div>
 
-        <div class="price">${{ option.price }}</div>
+        <div class="price">${{ item.priceCent }}</div>
       </div>
     </div>
 
@@ -48,28 +48,31 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'PaymentDialog',
-  data() {
-    return {
-      selectedMethod: 'paypal',
-      selectedOption: null,
-      rechargeOptions: [
-        { coins: 500, bouns: 50, price: 4.98 },
-        { coins: 500, bouns: 50, price: 4.98 },
-        { coins: 500, bouns: 50, price: 4.98 },
-        { coins: 500, bouns: 50, price: 4.98 },
-        { coins: 500, bouns: 50, price: 4.98 }
-      ]
-    }
-  },
-  methods: {
-    selectOption(index) {
-      this.selectedOption = index
-    }
-  }
+<script setup>
+import { ref,onMounted } from 'vue'
+import { getProduct,getOrder } from '@/api/home'
+const selectedMethod = ref('paypal')
+const selectedOption = ref(null)
+const rechargeOptions = ref([])
+const getProductInfo = async () => {
+  const res = await getProduct()
+  console.log("res",res);
+  rechargeOptions.value = res.data
+
 }
+const selectOption = async (item,index) => {
+  console.log(item,index);
+  const res = await getOrder({
+    goodId:item.id,
+    redirectUrl:'http://api.startvs.net/api/paypal/Dreamo9/success'
+  })
+  console.log("res",res);
+  selectedOption.value = index
+}
+
+onMounted(() => {
+  getProductInfo()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -209,12 +212,7 @@ export default {
   }
 }
 
-
-
-
-
 .tips {
-
   width: 100%;
   height: 117px;
   border-radius: 8px;
@@ -229,9 +227,5 @@ export default {
   padding-left: 20px;
   color: #8c8c8c;
 }
-
-
 }
-
-
 </style>

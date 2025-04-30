@@ -132,3 +132,20 @@ export function getHotBook(data) {
         params:data
     })
 }
+
+//下单
+export function getOrder(data) {
+    return request({
+        url: '/api/paypal/createOrder',
+        method: 'post',
+        data
+    })
+}
+// 获取商品
+export function getProduct() {
+    return request({
+        url: '/api/store/goods',
+        method: 'get',
+        
+    })
+}

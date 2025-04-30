@@ -23,12 +23,12 @@
 
         <!-- 电影列表 -->
         <div class="movies-grid">
-            <div class="movie-card" v-for="i in 2" :key="i">
+            <div class="movie-card" v-for="item in popularBookList" :key="item.id">
                 <div class="poster">
-                    <img src="" alt="movie poster" />
+                    <img :src="item.fontUrl" alt="movie poster" />
                 </div>
                 <div class="info">
-                    <p class="movie-title">pisode 1 - Pregnant and Spoiled by the Billionaire Full Movie</p>
+                    <p class="movie-title">{{item.title}}</p>
                     <div class="stats">
                         <div class="stat">
                             <img src="@/assets/images/heart.svg" alt="heart">
@@ -40,14 +40,10 @@
                         </div>
                     </div>
                     <p class="description">
-                        After her father's business goes bankrupt, Skylar Stone is forced to work as Lucas Ford's maid
-                        as collateral. But just when she thinks things can't get worse, an unexpected pregnancy shatters
-                        her world. Lucas, convinced of her betrayal, demands she get an abortion, leaving her
-                        devastated. Heartbreak forces her to leave her homeland, but six years later, she returns—with
-                        her child and a story far from over.
+                        {{item.brief}}
                     </p>
                     <div class="actions">
-                        <button>
+                        <button @click="handleItemClick(item)">
                             <img src="@/assets/images/play.svg" alt="Play" class="play-icon">
                             {{ $t('message.Play') }}
                         </button>
@@ -63,6 +59,32 @@
 </template>
 
 <script setup>
+import { ref,watch,onMounted } from 'vue'
+
+import { useRouter } from 'vue-router'
+import { getHomePage } from '@/api/home'
+const router = useRouter()
+const popularBookList = ref([])
+onMounted(() => {
+    getPopularBookList()
+})
+const getPopularBookList = async () => {
+    const res = await getHomePage()
+    console.log(res);
+    popularBookList.value = res.data.popularBookList
+    console.log(popularBookList.value);
+}
+const handleItemClick = (item) => {
+    console.log(item);
+    router.push({
+        name: 'VideoPlay',
+        query: {
+            bookId: item.bookId,
+            chapterId: item.watchChapterId||item.chapterId ||1
+        }
+    });
+};
+
 // 这里可以添加需要的逻辑
 </script>
 

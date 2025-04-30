@@ -117,8 +117,11 @@ const getBonusInfo = async () => {
     dailySignInfo.value = res.data.dailySignInfo
   }
 }
-onMounted( () => {
+//获取商品
+
+onMounted( async () => {
   getBonusInfo()
+  
 })
 </script>
 

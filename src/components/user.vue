@@ -52,7 +52,7 @@
 
     <!-- 支付弹窗 -->
     <div v-if="showPaymentDialog" class="dialog-overlay" @click.self="showPaymentDialog = false">
-      <PaymentDialog @close="showPaymentDialog = false" />
+      <PaymentDialog @close="showPaymentDialog = false" :productInfo="productInfo" />
     </div>
   </div>
 </template>
@@ -60,7 +60,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useHomeStore } from '@/stores/home'
+import { useHomeStore  } from '@/stores/home'
 import PaymentDialog from '@/components/PaymentDialog.vue'
 import { useI18n } from 'vue-i18n'
 
@@ -69,7 +69,7 @@ const homeStore = useHomeStore()
 const route = useRoute();
 const router = useRouter();
 const userInfo = ref({})
-
+const productInfo = ref({})
 // 添加支付弹窗控制变量
 const showPaymentDialog = ref(false)
 
@@ -94,6 +94,7 @@ watch(() => homeStore.userInfo, (newValue) => {
 // 在组件挂载时获取数据
 onMounted(() => {
   getUserInfo()
+
 })
 
 // 计算当前激活的导航项
