@@ -7,23 +7,23 @@
             </div>
             <div class="footer-right">
                 <div class="footer-right-top">
-                    <p class="first"><a href="">{{ $t('message.ABOUT') }}</a></p>
+                    <p class="first"><a>{{ $t('message.ABOUT') }}</a></p>
                     <div class="footer-right-top-bottom">
-                        <p> <a href="">{{ $t('message.Contact_Us') }}</a></p>
-                        <p> <a href="">{{ $t('message.Terms_of_Service') }}</a></p>
-                        <p> <a href="">{{ $t('message.Privacy_Policy') }}</a></p>
+                        <p> <a >{{ $t('message.Contact_Us') }}</a></p>
+                        <p> <a >{{ $t('message.Terms_of_Service') }}</a></p>
+                        <p> <a >{{ $t('message.Privacy_Policy') }}</a></p>
                     </div>
                 </div>
                 <div class="footer-right-top">
-                    <p class="first"><a href="">{{ $t('message.Company') }}</a></p>
+                    <p class="first"><a >{{ $t('message.Company') }}</a></p>
                     <div class="footer-right-top-bottom">
-                        <p> <a href="">{{ $t('message.Feedback') }}</a></p>
-                        <p> <a href="">{{ $t('message.Media_Public_Relations') }}</a></p>
-                        <p> <a href="">{{ $t('message.Contact_Us') }}</a></p>
+                        <p> <a >{{ $t('message.Feedback') }}</a></p>
+                        <p> <a >{{ $t('message.Media_Public_Relations') }}</a></p>
+                        <p> <a >{{ $t('message.Contact_Us') }}</a></p>
                     </div>
                 </div>
                 <div class="footer-right-top">
-                    <p class="first"><a href="">Contact</a></p>
+                    <p class="first"><a >Contact</a></p>
                     <div class="qr">
 
                     </div>
