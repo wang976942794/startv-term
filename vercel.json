@@ -7,6 +7,10 @@
       {
         "source": "/hls/:path*",
         "destination": "https://zhongdong-stream.startvs.net/:path*"
+      },
+      {
+        "source": "/(.*)",
+        "destination": "/index.html"
       }
     ],
     "headers": [
