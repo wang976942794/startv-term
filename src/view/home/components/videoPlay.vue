@@ -312,8 +312,7 @@ const handleEpisodeClick = async (episodeNum) => {
         subtitle.value = subtitleRes.data
       }
     } else {
-      // 未解锁，显示提示
-      ElMessage.warning("解锁失败，请先购买金币")
+      ElMessage.warning(chapterRes.msg)
     }
   } catch (error) {
     console.error('Failed to fetch episode data:', error)

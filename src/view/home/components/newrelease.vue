@@ -145,6 +145,7 @@ const scrollContent = (direction) => {
                 img {
                     width: 20px;
                     height: 20px;
+                    filter: var(--icon-filter);
                     @include responsive-scale {
                         width: calc(1024 / 1440 * 20px);
                         height: calc(1024 / 1440 * 20px);

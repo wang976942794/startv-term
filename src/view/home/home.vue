@@ -2,9 +2,10 @@
   <div class="home">
     <Header></Header>
     <History></History>
-    <Continue></Continue>
+
     <NewRelease></NewRelease>
     <MoreRecommended></MoreRecommended>
+    <Continue></Continue>
   </div>
 </template>
 
