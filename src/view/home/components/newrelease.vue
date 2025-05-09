@@ -61,10 +61,12 @@ const formatViewCount = (views) => {
 };
 
 const handleItemClick = (item) => {
+    console.log("itemasdasdasdas",item);
+    
     router.push({
         name: 'VideoPlay',
         query: {
-            bookId: item.bookId,
+            bookId: item.bookInfoResp.bookId,
             chapterId: item.watchChapterId||item.chapterId ||1
         }
     });

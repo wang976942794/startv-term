@@ -115,7 +115,7 @@
         <div class="comment-list">
           <div v-for="comment in comments" :key="comment.id" class="comment-item">
             <div class="user-avatar">
-              <img :src="comment.avatarUrl" alt="avatar">
+              <img src="@/assets/images/userlogo.svg" alt="avatar">
             </div>
             <div class="comment-content">
               <div class="user-name">{{ comment.name }}</div>
@@ -691,6 +691,7 @@ onMounted(async () => {
         img {
           width: 100%;
           height: 100%;
+          border-radius: 50%;
           object-fit: cover;
         }
       }

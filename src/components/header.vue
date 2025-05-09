@@ -167,7 +167,7 @@
             </div>
             <!-- 头像 -->
             <div class="timer-btn-user" @click="handleUserClick">
-                <img src="@/assets/images/user.svg" alt="User">
+                <img src="@/assets/images/userlogo.svg" alt="User">
                 <!-- 用户菜单悬浮窗 -->
                 <div class="user-dropdown" v-show="showUserMenu && isLoggedIn">
                     <router-link to="/user/wallet" class="menu-item">
@@ -907,7 +907,7 @@ const handleSearchResultClick = (item) => {
     img {
         width: 46px;
         height: 46px;
-
+        border-radius: 50%;
         @include responsive-scale {
             width: calc(1024 / 1440 * 46px);
             height: calc(1024 / 1440 * 46px);
