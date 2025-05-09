@@ -12,7 +12,7 @@
                         <div class="text">{{ item.title }}</div>
                         <div class="episode-tag">
                             <span class="dot"></span>
-                            EP.{{ item.completeNum}} / EP.{{ item.allNum }}
+                            EP.{{ item.allNum }}
                         </div>
                     </div>
                 </div>

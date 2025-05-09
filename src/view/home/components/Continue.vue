@@ -20,7 +20,7 @@
                         <div class="text">{{ item.title }}</div>
                         <div class="episode-tag">
                             <span class="dot"></span>
-                            EP.{{ item.completeNum }} / EP.{{ item.allNum }}
+                            EP.{{ item.watchChapterId }} / EP.{{ item.allNum }}
                         </div>
                     </div>
                 </div>  
@@ -49,7 +49,7 @@ const handleItemClick = (item) => {
         name: 'VideoPlay',
         query: {
             bookId: item.bookId,
-            chapterId: item.watchChapterId||item.chapterId||1
+            chapterId: item.watchChapterId||1
         }
     });
 };

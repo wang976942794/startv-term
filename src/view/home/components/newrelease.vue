@@ -20,7 +20,7 @@
                         <div class="text">{{ item.bookInfoResp.title }}</div>
                         <div class="episode-tag">
                             <span class="dot"></span>
-                            EP.{{ item.bookInfoResp.completeNum}} / EP.{{ item.bookInfoResp.allNum }}
+                             EP.{{ item.bookInfoResp.allNum }}
                         </div>
                         <div class="hot-tag-container">
                             <div class="hot-tag">

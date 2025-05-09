@@ -765,11 +765,10 @@ const handleSearchResultClick = (item) => {
             height: 46px;
             color: var( --text-primary);
             border-radius: 50%;
-            border: 1px solid var( --text-primary);
+            // border: 1px solid var( --text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-
             transition: all 0.3s;
 
             &:hover {
@@ -892,7 +891,6 @@ const handleSearchResultClick = (item) => {
     display: flex;
     align-items: center;
     justify-content: center;
-
     transition: all 0.3s;
 
     &:hover {
@@ -905,8 +903,8 @@ const handleSearchResultClick = (item) => {
     }
 
     img {
-        width: 46px;
-        height: 46px;
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
         @include responsive-scale {
             width: calc(1024 / 1440 * 46px);
