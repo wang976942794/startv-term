@@ -3,29 +3,29 @@
         <div class="footer-top">
             <div class="footer-content">
                 <img src="@/assets/images/logo-1.svg" alt="START TV">
-                <span>START TV</span>
+                <span>STAR TV</span>
             </div>
             <div class="footer-right">
                 <div class="footer-right-top">
                     <p class="first"><a>{{ $t('message.ABOUT') }}</a></p>
                     <div class="footer-right-top-bottom">
-                        <p> <a >{{ $t('message.Contact_Us') }}</a></p>
-                        <p> <a >{{ $t('message.Terms_of_Service') }}</a></p>
-                        <p> <a >{{ $t('message.Privacy_Policy') }}</a></p>
+                        <p> <a href="https://startvae.vercel.app/" target="_blank">{{ $t('message.Contact_Us') }}</a></p>
+                        <p> <a href="https://startvae.vercel.app/" target="_blank">{{ $t('message.Terms_of_Service') }}</a></p>
+                        <p> <a href="https://startvae.vercel.app/" target="_blank">{{ $t('message.Privacy_Policy') }}</a></p>
                     </div>
                 </div>
-                <div class="footer-right-top">
+                <!-- <div class="footer-right-top">
                     <p class="first"><a >{{ $t('message.Company') }}</a></p>
                     <div class="footer-right-top-bottom">
-                        <p> <a >{{ $t('message.Feedback') }}</a></p>
-                        <p> <a >{{ $t('message.Media_Public_Relations') }}</a></p>
-                        <p> <a >{{ $t('message.Contact_Us') }}</a></p>
+                        <p> <a href="https://startvs.net/feedback">{{ $t('message.Feedback') }}</a></p>
+                        <p> <a href="https://startvs.net/media-public-relations">{{ $t('message.Media_Public_Relations') }}</a></p>
+                        <p> <a href="https://startvs.net/contact-us">{{ $t('message.Contact_Us') }}</a></p>
                     </div>
-                </div>
+                </div> -->
                 <div class="footer-right-top">
                     <p class="first"><a >Contact</a></p>
                     <div class="qr">
-
+                        <qrcode qrcodeSrc="https://startvae.vercel.app/" qrcodeSize="80"></qrcode>
                     </div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-
+import qrcode from '@/components/qrcode.vue'
 const { t } = useI18n()
 // 无需额外的 script 逻辑
 </script>
@@ -120,7 +120,7 @@ const { t } = useI18n()
         }
 
         .footer-right {
-            width: 728px;
+            width: 500px;
             height: 153px;
             color: #B4B4B8;
             display: flex;
@@ -171,8 +171,9 @@ const { t } = useI18n()
             .qr {
                 width: 94px;
                 height: 94px;
-                background-color: #B4B4B8;
+                background-color: #fff;
                 border-radius: 12px;
+                padding: 7px;
 
                 @include responsive-scale {
                     width: calc(1024 / 1440 * 94px);

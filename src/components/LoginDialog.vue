@@ -79,8 +79,8 @@ defineProps({
 const emit = defineEmits(['update:visible'])
 
 const userStore = useUserStore()
-const username = ref('')
-const password = ref('')
+const username = ref('lhg@123.com')
+const password = ref('123456')
 const rememberMe = ref(false)
 const agreeTerms = ref(false)
 

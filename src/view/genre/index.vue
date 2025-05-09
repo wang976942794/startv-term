@@ -9,10 +9,10 @@
 
         <!-- 类型标签列表 -->
         <div class="genre-tags">
-            <button class="tag-btn">{{ $t('message.All') }}</button>
-            <button v-for="i in 13" :key="i" class="tag-btn" :class="{ active: i === 1 }">
+            <button class="tag-btn active">{{ $t('message.All') }}</button>
+            <!-- <button v-for="i in 13" :key="i" class="tag-btn" :class="{ active: i === 1 }">
                 Reunion
-            </button>
+            </button> -->
         </div>
 
         <!-- 电影列表标题 -->
@@ -206,6 +206,7 @@ const handleItemClick = (item) => {
     .poster {
         width: 200px;
         height: 266px;
+        
         background: var(--bg-secondary);
         @include responsive-scale {
             width: calc(1024 / 1440 * 200px);
@@ -216,6 +217,7 @@ const handleItemClick = (item) => {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 8px;
         }
     }
 

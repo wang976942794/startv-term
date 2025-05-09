@@ -51,7 +51,7 @@
                         <div class="movie-list">
                             <div class="movie-item" v-for="movie in hotMovies" :key="movie.title">
                                 <span class="fire-icon">🔥</span>
-                                <span class="movie-title" style="color: var(--text-primary);">{{ movie.title }}</span>
+                                <span class="movie-title" style="color: var(--text-primary);">{{ movie.bookInfoResp.title }}</span>
                             </div>
                         </div>
                     </div>
@@ -206,7 +206,7 @@ import { ref, onMounted, watch, computed, reactive } from 'vue'
 import { useRoute, useRouter} from 'vue-router'
 import { useUserStore } from '@/stores/user'  // 导入 userStore
 import LoginDialog from './LoginDialog.vue'
-import { getHistory,getChapterCollections, findBook } from '@/api/home'
+import { getHistory,getChapterCollections, findBook ,getHotBook} from '@/api/home'
 import { useHistoryStore } from '@/stores/history'  // 添加这行
 import { useHomeStore } from '@/stores/home'
 import { useThemeStore } from '@/stores/theme'
@@ -239,13 +239,7 @@ const isLoggedIn = computed(() => userStore.isLoggedIn)
 const activeHistoryTab = ref(0)
 
 // 模拟数据
-const hotMovies = ref([
-    { title: 'Saved by the Sexy Cowboy' },
-    { title: 'Money, Guns, and a Merry Christmas' },
-    { title: 'Claimed by the Alpha I Hate' },
-    { title: 'Move Aside! I\'m the Final Boss' },
-    { title: 'Mommy Don\'t Cry, Daddy is Sorry' }
-])
+const hotMovies = ref()
 
 const searchTags = ref([
     'Enemies to Lovers',
@@ -307,8 +301,14 @@ const handleDownloadClick = (event) => {
     closeAllMenus('download')
     showDownloadQR.value = !showDownloadQR.value
 }
+const getHotBooklist = async () => {
+    const response = await getHotBook()
+    hotMovies.value = response.data || []
+    
+}
 
 onMounted(() => {
+    getHotBooklist()
     // 使用单个统一的文档点击事件处理器
     document.addEventListener('click', (e) => {
         const userBtn = e.target.closest('.timer-btn-user')

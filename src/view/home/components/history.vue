@@ -22,8 +22,8 @@ const activeIndex = ref(0)
 
 const menuItems = ref([
   { type: 'img', icon: '@/assets/images/category.svg', text:  'message.All' },
-  { type: 'emoji', icon: '🕒', text: '观看历史' },
-  { type: 'emoji', icon: '🆕', text: 'message.New_Release' },
+  // { type: 'emoji', icon: '🕒', text: '观看历史' },
+  // { type: 'emoji', icon: '🆕', text: 'message.New_Release' },
  
 ])
 </script>
