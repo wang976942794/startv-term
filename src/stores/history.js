@@ -30,10 +30,11 @@ export const useHistoryStore = defineStore('history', () => {
         }
     }
 
+   
     return { 
         historyData, 
         chapterCollections, 
         fetchHistory, 
-        fetchChapterCollections 
+        fetchChapterCollections,
     }
 })

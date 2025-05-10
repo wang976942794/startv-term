@@ -106,6 +106,7 @@ onMounted(async () => {
             console.log("response getTokenByOauth",response);
             if (response.code === 100000) {
                 userStore.setToken(response.data)
+
                 emit('update:visible', false)
                 window.history.replaceState({}, document.title, window.location.pathname)
             } else {
@@ -151,6 +152,7 @@ const handleLogin = async () => {
             // 保存账号密码和勾选状态
             if (rememberMe.value) {
                 userStore.saveCredentials(username.value, password.value, rememberMe.value)
+
             } else {
                 userStore.clearCredentials()
             }

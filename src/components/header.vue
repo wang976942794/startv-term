@@ -342,7 +342,7 @@ onMounted(() => {
             })
         }
     })
-
+    
     // 获取历史记录和章节集合
     historyStore.fetchHistory()
     historyStore.fetchChapterCollections()
@@ -359,6 +359,16 @@ onMounted(() => {
 watch(() => route.path, (newPath) => {
     currentPath.value = newPath
 }, { immediate: true })
+
+// 监听登录状态变化
+watch(() => userStore.isLoggedIn, (newValue) => {
+  if (newValue) {
+    // 用户登录后执行这些方法
+    historyStore.fetchHistory()
+    historyStore.fetchChapterCollections()
+    homeStore.fetchUserInfo()
+  }
+}, { immediate: true }) // immediate: true 会在组件创建时立即执行一次
 
 // 处理历史记录项点击
 const handleHistoryItemClick = (item) => {
