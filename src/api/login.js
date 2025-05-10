@@ -14,3 +14,10 @@ export function getTokenByLogin(data) {
       data: data
     })
   }
+  export function getTokenByOauth(data) {
+    return request({
+      url: '/api/login/getTokenByOauth',
+      method: 'post',
+      data: data
+    })
+  }

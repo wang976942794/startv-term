@@ -61,7 +61,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getOAuthUrl, getTokenByLogin } from '@/api/login'
+import { getOAuthUrl, getTokenByLogin, getTokenByOauth } from '@/api/login'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { useI18n } from 'vue-i18n'
@@ -85,13 +85,40 @@ const rememberMe = ref(false)
 const agreeTerms = ref(false)
 
 // 组件加载时读取保存的账号密码和勾选状态
-onMounted(() => {
+onMounted(async () => {
     const savedCredentials = userStore.getCredentials()
     if (savedCredentials) {
         username.value = savedCredentials.username
         password.value = savedCredentials.password
         rememberMe.value = savedCredentials.rememberMe
     }
+
+    const urlParams = new URLSearchParams(window.location.search)
+    const code = urlParams.get('code')
+    const state = urlParams.get('state')
+    console.log("code",code);
+    console.log("state",state);
+    
+    // if (code && state) {
+    //     try {
+    //         const response = await getTokenByOauth({
+    //             code,
+    //             state,
+    //             redirectUrl: window.location.origin
+    //         })
+            
+    //         if (response.code === 100000) {
+    //             userStore.setToken(response.data)
+    //             emit('update:visible', false)
+    //             window.history.replaceState({}, document.title, window.location.pathname)
+    //         } else {
+    //             ElMessage.error(response.msg || 'OAuth login failed')
+    //         }
+    //     } catch (error) {
+    //         console.error('OAuth login error:', error)
+    //         ElMessage.error('登录失败，请稍后重试')
+    //     }
+    // }
 })
 
 // 处理第三方登录
@@ -101,11 +128,11 @@ const handleSocialLogin = async (type) => {
         const redirectUrl = window.location.origin  // 添加回调路径
         const response = await getOAuthUrl({
             type,
-            redirectUrl
+            redirectUrl,  
         })
         console.log(response)
         if (response.code === 100000) {
-            window.location.href = response.data
+            window.location.href = response.data  
         } else {
             ElMessage.error(response.msg || '获取登录链接失败')
         }
