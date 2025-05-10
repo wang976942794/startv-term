@@ -102,11 +102,11 @@ onMounted(async () => {
     if (code && state) {
         try {
             const response = await getTokenByOauth({
-                code,
-                state,
+                code:code,
+                state:state.value,
                 redirectUrl: window.location.origin
             })
-            
+            console.log("response getTokenByOauth",response);
             if (response.code === 100000) {
                 userStore.setToken(response.data)
                 emit('update:visible', false)
