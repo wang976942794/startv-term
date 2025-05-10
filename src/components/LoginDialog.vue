@@ -94,15 +94,15 @@ onMounted(async () => {
     }
 
     const urlParams = new URLSearchParams(window.location.search)
-    const code = urlParams.get('code')
+    const type = urlParams.get('code')
     const state = ref('GOOGLE')
     console.log("code",code);
     console.log("state",state);
     
-    if (code && state) {
+    if (type && state) {
         try {
             const response = await getTokenByOauth({
-                code:code,
+                type:type,
                 state:state.value,
                 redirectUrl: window.location.origin
             })
