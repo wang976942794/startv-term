@@ -95,34 +95,35 @@ onMounted(async () => {
 
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
-    const state = urlParams.get('state')
+    const state = ref('GOOGLE')
     console.log("code",code);
     console.log("state",state);
     
-    // if (code && state) {
-    //     try {
-    //         const response = await getTokenByOauth({
-    //             code,
-    //             state,
-    //             redirectUrl: window.location.origin
-    //         })
+    if (code && state) {
+        try {
+            const response = await getTokenByOauth({
+                code,
+                state,
+                redirectUrl: window.location.origin
+            })
             
-    //         if (response.code === 100000) {
-    //             userStore.setToken(response.data)
-    //             emit('update:visible', false)
-    //             window.history.replaceState({}, document.title, window.location.pathname)
-    //         } else {
-    //             ElMessage.error(response.msg || 'OAuth login failed')
-    //         }
-    //     } catch (error) {
-    //         console.error('OAuth login error:', error)
-    //         ElMessage.error('登录失败，请稍后重试')
-    //     }
-    // }
+            if (response.code === 100000) {
+                userStore.setToken(response.data)
+                emit('update:visible', false)
+                window.history.replaceState({}, document.title, window.location.pathname)
+            } else {
+                ElMessage.error(response.msg || 'OAuth login failed')
+            }
+        } catch (error) {
+            console.error('OAuth login error:', error)
+            ElMessage.error('登录失败，请稍后重试')
+        }
+    }
 })
 
 // 处理第三方登录
 const handleSocialLogin = async (type) => {
+    
     try {
         // 使用完整的重定向URL，包含协议
         const redirectUrl = window.location.origin  // 添加回调路径
