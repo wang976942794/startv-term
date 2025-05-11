@@ -13,7 +13,7 @@
                 <label>{{ t('message.Username') }}</label>
                 <el-input v-model="username" :placeholder="t('message.your_username')" />
             </div>
-
+            
             <!-- 密码输入框 -->
             <div class="form-item">
                 <label>{{ t('message.Password') }}</label>
@@ -26,9 +26,20 @@
                 <a href="#" class="forgot-password">{{ t('message.Trouble_logging_in') }}</a>
             </div>
 
-            <!-- 登录按钮 -->
-            <button class="login-btn" @click="handleLogin">{{ t('message.Login') }}</button>
-
+            <div class="social-login">
+                <!-- <button class="social-btn" @click="handleSocialLogin('GOOGLE')">
+                    <img src="@/assets/images/google.svg" alt="Google">
+                    <span>{{ t('message.google_login') }}</span>
+                </button> -->
+                 <button class="social-btn" @click="handleGuestLogin()">
+                    <img src="@/assets/images/user.svg" alt="Facebook">
+                    <span>{{ t('message.facebook_login') }}</span>
+                </button>
+                <!-- <button class="social-btn" @click="handleSocialLogin('APPLE')">
+                    <img src="@/assets/images/apple.svg" alt="Apple">
+                    <span>{{ t('message.apple_login') }}</span>
+                </button>  -->
+            </div>
             <!-- 第三方登录 -->
             <div class="divider">
                 <span>Or Log In With</span>
@@ -48,6 +59,8 @@
                     <span>{{ t('message.apple_login') }}</span>
                 </button> -->
             </div>
+     <!-- 登录按钮 -->
+     <button class="login-btn" @click="handleLogin">{{ t('message.Login') }}</button>
 
             <!-- 服务条款 -->
             <div class="terms">
@@ -61,7 +74,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getOAuthUrl, getTokenByLogin, getTokenByOauth } from '@/api/login'
+import { getOAuthUrl, getTokenByLogin, getTokenByOauth, getTokenByGuest } from '@/api/login'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { useI18n } from 'vue-i18n'
@@ -167,6 +180,32 @@ const handleLogin = async () => {
     } catch (error) {
         console.error('Login error:', error)
         ElMessage.error('登录失败，请稍后重试')
+    }
+}
+
+const handleGuestLogin = async () => {
+    try {
+        // 生成随机字符串：26个字母加一个下划线
+        const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let result = '';
+        
+        // 生成字母部分
+        for (let i = 0; i < 15; i++) {
+            result += letters.charAt(Math.floor(Math.random() * letters.length));
+        }
+        
+        // 随机位置插入下划线
+        const position = Math.floor(Math.random() * 16);
+        result = result.slice(0, position) + '_' + result.slice(position);
+        
+        const response = await getTokenByGuest({
+            guestID: result
+        });
+        console.log("response getTokenByGuest", response);
+
+    } catch (error) {
+        console.error('Guest login error:', error);
+        ElMessage.error('登录失败，请稍后重试');
     }
 }
 </script>

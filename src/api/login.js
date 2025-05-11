@@ -21,3 +21,12 @@ export function getTokenByLogin(data) {
       data: data
     })
   }
+
+  // 游客登录
+  export function getTokenByGuest(data) {
+    return request({
+      url: '/api/login/registerGuest',
+      method: 'post',
+      data: data
+    })
+  }

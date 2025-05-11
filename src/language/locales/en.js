@@ -8,7 +8,7 @@ export default {
         Trouble_logging_in: 'Trouble logging in',
         Login: 'Login',
         google_login: 'Log in with Google',
-        facebook_login: 'Log in with Facebook',
+        facebook_login: 'Log in with Quick',
         apple_login: 'Log in with Apple',
         By_creating_an_account: 'By continuing, I agree to the Service Agreement and Privacy Policy',
         Incorrect_password: 'Incorrect password',
