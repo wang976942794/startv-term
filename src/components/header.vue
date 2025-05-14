@@ -367,6 +367,7 @@ watch(() => userStore.isLoggedIn, (newValue) => {
     historyStore.fetchHistory()
     historyStore.fetchChapterCollections()
     homeStore.fetchUserInfo()
+    homeStore.fetchHomePage()
   }
 }, { immediate: true }) // immediate: true 会在组件创建时立即执行一次
 

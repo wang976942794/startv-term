@@ -149,3 +149,27 @@ export function getProduct() {
         
     })
 }
+// 记录观看时长
+export function recordWatchTime(data) {
+    return request({
+        url: '/api/book/watchTime',
+        method: 'post',
+        data
+    })
+}
+// 获取观看时长
+export function getWatchTime() {
+    return request({
+        url: '/api/book/watchTime',
+        method: 'get',
+    })
+}   
+
+// 获取观看奖励
+export function getWatchReward(data) {
+    return request({
+        url: '/api/book/watchTime/bonus',
+        method: 'post',
+        data
+    })      
+}

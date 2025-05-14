@@ -20,6 +20,8 @@ import Hls from 'hls.js'
 
 const videoPlayer = ref(null)
 let player = null
+const currentTime = ref(0)
+const emit = defineEmits(['timeUpdate', 'videoPause'])
 
 const props = defineProps({
   fontUrl: {
@@ -227,10 +229,20 @@ const processSubtitleUrl = (url) => {
   return url.replace('https://subtitle-zhongdong.s3.me-central-1.amazonaws.com', '/subtitle')
 }
 
+// 首先，将事件处理函数提取出来，这样可以在添加和移除时使用相同的引用
+const handleTimeUpdate = () => {
+  currentTime.value = Math.floor(videoPlayer.value.currentTime)
+  // 发射当前播放时间（分钟）给父组件
+  emit('timeUpdate', Math.floor(currentTime.value / 60))
+}
+
 // 修改 onMounted 函数
 onMounted(async () => {
   if (videoPlayer.value) {
     const video = videoPlayer.value
+
+    // 添加时间更新事件监听
+    video.addEventListener('timeupdate', handleTimeUpdate)
 
     try {
       // 等待所有字幕转换完成
@@ -262,7 +274,7 @@ onMounted(async () => {
         console.log('Arabic track added:', trackAr.src)
       }
 
-      // 确保在添加字幕轨道后再初始化 Plyr
+      // 初始化 Plyr 后添加暂停事件监听
       if (videoOptions.src.includes('.m3u8')) {
         if (Hls.isSupported()) {
           const hls = new Hls({
@@ -274,14 +286,18 @@ onMounted(async () => {
           hls.attachMedia(video)
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
             player = new Plyr(video, plyrOptions)
-            // 强制启用字幕
-            // player.captions.toggle(true)
+            // 添加暂停事件监听
+            player.on('pause', () => {
+              emit('videoPause', player.currentTime)
+            })
           })
         }
       } else {
         player = new Plyr(video, plyrOptions)
-        // 强制启用字幕
-        // player.captions.toggle(true)
+        // 添加暂停事件监听
+        player.on('pause', () => {
+          emit('videoPause', player.currentTime)
+        })
       }
     } catch (error) {
       console.error('Error setting up video player:', error)
@@ -325,11 +341,15 @@ watch([() => props.enUrl, () => props.arUrl], async ([newEnUrl, newArUrl]) => {
 
     // 刷新 Plyr 字幕
     player.captions.toggle(false)
-    // player.captions.toggle(true)
   }
 }, { immediate: false })
 
 onBeforeUnmount(() => {
+  if (videoPlayer.value) {
+    // 正确地移除事件监听器，需要指定事件类型和处理函数
+    videoPlayer.value.removeEventListener('timeupdate', handleTimeUpdate)
+  }
+  
   if (player) {
     player.destroy()
   }

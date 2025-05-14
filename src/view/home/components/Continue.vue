@@ -44,6 +44,7 @@ watch(
     },
     { immediate: true } // immediate: true 会使得侦听器立即执行一次
 )
+
 const handleItemClick = (item) => {
     router.push({
         name: 'VideoPlay',

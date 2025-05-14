@@ -13,7 +13,7 @@
         </div>
 
         <div class="content-scroll">
-            <div class="content-list">
+            <div class="content-list-newrelease">
                 <div class="content-item" v-for="(item, index) in popularBookList" :key="index" @click="handleItemClick(item)">
                     <div class="cover-image">
                         <img :src="item.bookInfoResp.fontUrl" :alt="item.bookInfoResp.title">
@@ -73,7 +73,7 @@ const handleItemClick = (item) => {
 };
 
 const scrollContent = (direction) => {
-    const container = document.querySelector('.content-list');
+    const container = document.querySelector('.content-list-newrelease');
     const scrollAmount = 1232; // 7个item的总宽度 (174 * 7 + 16 * 6)
     if (direction === 'prev') {
         container.scrollLeft -= scrollAmount;
@@ -164,7 +164,7 @@ const scrollContent = (direction) => {
             height: calc(1024 / 1440 * 340px);
         }
 
-        .content-list {
+        .content-list-newrelease    {
             display: flex;
             gap: 16px;
             overflow-x: auto;

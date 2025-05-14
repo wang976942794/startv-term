@@ -14,6 +14,8 @@
         :url="chapterInfo.url" 
         :arUrl="subtitle?.arUrl"
         :enUrl="subtitle?.enUrl"
+    
+        @videoPause="handleVideoPause"
       />
       <!-- 添加加载中的状态显示 -->
       <div v-if="isLoading" class="loading-state">
@@ -138,7 +140,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute,useRouter } from 'vue-router'
 import Vue3VideoPlay from '@/components/Vue3videoPlay.vue'
-import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel,getComment,sendComment,getSubtitle,getUnlockChapter } from '@/api/home'
+import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel,getComment,sendComment,getSubtitle,getUnlockChapter,recordWatchTime } from '@/api/home'
 import { ElMessage } from 'element-plus'
 import{useI18n} from 'vue-i18n'
 const {t} = useI18n()
@@ -337,6 +339,30 @@ const handleComment = async () => {
   
   if(res.code === 100000){
     comments.value = res.data
+  }
+}
+// const handleTimeUpdate = (event) => {
+//   const currentTime = event.detail.plyr.currentTime
+//   const minutes = Math.floor(currentTime)
+//   console.log('当前播放时间：', minutes, '分钟')
+// }
+
+// 添加暂停事件处理函数
+const handleVideoPause = async (currentTime) => {
+  try {
+    // 在这里调用你的接口
+    const minutes = Math.floor(currentTime)
+    console.log('视频暂停时间：', minutes, '分钟')
+    // 调用接口的代码...
+    const res = await recordWatchTime({
+      bookId: bookId.value,
+      chapterId: chapterId.value,
+      watchTime: minutes
+    })
+    console.log('res',res);
+    
+  } catch (error) {
+    console.error('Failed to handle video pause:', error)
   }
 }
 

@@ -92,8 +92,8 @@ defineProps({
 const emit = defineEmits(['update:visible'])
 
 const userStore = useUserStore()
-const username = ref('lhg@163.com')
-const password = ref('123456')
+const username = ref('')
+const password = ref('')
 const rememberMe = ref(false)
 const agreeTerms = ref(false)
 
@@ -185,24 +185,16 @@ const handleLogin = async () => {
 
 const handleGuestLogin = async () => {
     try {
-        // 生成随机字符串：26个字母加一个下划线
-        const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        let result = '';
-        
-        // 生成字母部分
-        for (let i = 0; i < 15; i++) {
-            result += letters.charAt(Math.floor(Math.random() * letters.length));
+  
+        const response = await getTokenByGuest();
+        if(response.code === 100000){
+            username.value = response.data.email
+            password.value = response.data.password
+            userStore.setToken(response.data.token)
+            emit('update:visible', false)
+        }else{
+            ElMessage.error(response.msg || '登录失败，请稍后重试')
         }
-        
-        // 随机位置插入下划线
-        const position = Math.floor(Math.random() * 16);
-        result = result.slice(0, position) + '_' + result.slice(position);
-        
-        const response = await getTokenByGuest({
-            guestID: result
-        });
-        console.log("response getTokenByGuest", response);
-
     } catch (error) {
         console.error('Guest login error:', error);
         ElMessage.error('登录失败，请稍后重试');

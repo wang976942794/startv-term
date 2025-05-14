@@ -57,17 +57,33 @@
 </template>
 
 <script setup>
-import { ref,watch } from 'vue';
+import { ref,watch,onMounted } from 'vue';
 import { useHomeStore } from '@/stores/home'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const homeStore = useHomeStore()
 const userInfo = ref({})
-watch(()=>homeStore.userInfo,(newValue)=>{
-  userInfo.value = newValue
+const getUserInfo = async () => {
+  // 如果 store 中已有数据，直接使用
+  if (homeStore.userInfo) {
+    userInfo.value = homeStore.userInfo
+  }
+  // 无论是否有数据，都重新获取一次最新数据
+  await homeStore.fetchUserInfo() // 假设 store 中有这个 action
+  userInfo.value = homeStore.userInfo
+}
+
+// 监听 store 中的数据变化
+watch(() => homeStore.userInfo, (newValue) => {
+  if (newValue) {
+    userInfo.value = newValue
+  }
+}, { immediate: true })
+
+onMounted(() => {
+   getUserInfo()
 })
 
-const transactions = ref();
 </script>
 
 <style scoped lang="scss">
