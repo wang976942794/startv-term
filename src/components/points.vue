@@ -53,16 +53,41 @@
           <div class="checkpoint" v-for="(point, index) in checkpoints" :key="index">
             <div class="treasure-chest" 
                  :class="{
-                   'locked': watchTimeInfo < point.unlockTime,
-                   'unlocked': watchTimeInfo >= point.unlockTime && !point.claimed,
+                   'locked': !point.completed,
+                   'unlocked': point.completed && !point.claimed,
                    'opened': point.claimed
                  }"
                  @click="handleChestClick(point, index)">
             </div>
-            <div class="reward">+12</div>
+            <div class="reward">+{{ point.bonus }}</div>
             <div class="time">{{point.timeLabel}}</div>
           </div>
         </div>
+      </div>
+
+
+      <div class="share-bottom">
+        <div class="share-bottom-title">
+          <span>Watch ads (0/7)</span>
+        </div>
+        <div class="share-bottom-progress">
+          <div class="share-bottom-progress-bar" v-for="(item,index) in activityListInfo" :key="index">
+            <div class="share-bottom-progress-bar-left">
+              <div class="share-bottom-progress-bar-title">
+                {{item.name}}
+              </div>
+              <div class="share-bottom-progress-bar-info">
+                <div class="coins">
+                  <span class="coin-amount">+{{item.bonus}}</span>
+                  <span class="coin-label"></span>
+                </div>
+              </div>
+            </div>
+            <button class="watch-btn" v-if="!item.isReceived" @click="watchBtnClick(item)">{{ item.Completed ? 'Watch' : 'Go' }} </button>
+            <button class="completed-btn" v-else>Completed</button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -78,19 +103,19 @@
 </template>
 
 <script setup>
-import { ref,watch,onMounted } from 'vue'
+import { ref,watch,onMounted, computed } from 'vue'
 import facebook2Icon from '@/assets/images/facebook2.svg'
 import instagramIcon from '@/assets/images/instagram.svg'
 import txIcon from '@/assets/images/tx.svg'
 import whatsappIcon from '@/assets/images/social-whatsapp.svg'
-import {getBonus, signIn, getWatchTime, getWatchReward} from '@/api/home'
+import {getBonus, signIn, getWatchTime, getWatchReward, getActivityList} from '@/api/home'
 
 const dailySignInfo = ref({
   signDays: 0,
   signAvailable: false
 })
 
-// Calculate if a day is signed based on signDays (handles 7-day cycle)
+// 计算是否签到
 const isDaySigned = (dayIndex) => {
   const currentCycleDay = dailySignInfo.value.signDays % 7
   return dayIndex < currentCycleDay
@@ -135,95 +160,123 @@ const getWatchTimeInfo = async () => {
   }
 }
 
-// 修改 checkpoints 定义，添加 claimed 状态
-const checkpoints = ref([
-  { unlockTime: 2 * 60, timeLabel: '2min', claimed: false },   // 2分钟
-  { unlockTime: 5 * 60, timeLabel: '5min', claimed: false },   // 5分钟
-  { unlockTime: 10 * 60, timeLabel: '10min', claimed: false }, // 10分钟
-  { unlockTime: 20 * 60, timeLabel: '20min', claimed: false }, // 20分钟
-  { unlockTime: 30 * 60, timeLabel: '30min', claimed: false }  // 30分钟
-])
-
-// 修改计算观看进度的方法
-const getWatchProgress = () => {
-  // 找到当前已达到的最后一个检查点
-  let currentPosition = 0
-  for (let i = 0; i < checkpoints.value.length; i++) {
-    if (watchTimeInfo.value >= checkpoints.value[i].unlockTime) {
-      // 如果已经达到这个检查点，计算到下一个检查点的进度
-      currentPosition = i * 25 // 每个检查点间隔25%
-      const nextCheckpoint = checkpoints.value[i + 1]
-      if (nextCheckpoint) {
-        // 计算到下一个检查点之间的进度
-        const progressToNext = (watchTimeInfo.value - checkpoints.value[i].unlockTime) / 
-                             (nextCheckpoint.unlockTime - checkpoints.value[i].unlockTime) * 25
-        currentPosition += progressToNext
-      }
-    } else {
-      break
+// 计算观看时长奖励
+const checkpoints = computed(() => {
+  // 定义宝箱之间的时间间隔（单位：秒）
+  const intervals = [2 * 60, 3 * 60, 5 * 60, 10 * 60, 10 * 60]
+  
+  // 计算每个宝箱的解锁时间
+  let unlockTime = 0
+  return activityList.value.map((item, index) => {
+    unlockTime += intervals[index]
+    return {
+      unlockTime,
+      timeLabel: `${item.number}min`,
+      claimed: item.isReceived,
+      completed: item.Completed,
+      bonus: item.bouns
     }
-  }
-  return Math.min(currentPosition, 100)
-}
+  })
+})
 
-// 修改点击宝箱的处理方法
+// 领取观看时长奖励
 const handleChestClick = async (point, index) => {
+  const activityItem = activityList.value[index]
+  
   // 检查是否满足领取条件
-  if (watchTimeInfo.value < point.unlockTime || point.claimed) {
+  if (!activityItem.Completed || activityItem.isReceived) {
     return
   }
 
   // 检查前面的宝箱是否都已领取
-  const previousChestsUnclaimed = checkpoints.value
+  const previousChestsUnclaimed = activityList.value
     .slice(0, index)
-    .some(p => !p.claimed && watchTimeInfo.value >= p.unlockTime)
+    .some(item => item.Completed && !item.isReceived)
   
   if (previousChestsUnclaimed) {
-    console.log('Please claim previous rewards first')
+    console.log('请先领取前面的奖励')
     return
   }
 
-  // 根据宝箱的时间要求发送对应的 num
-  const rewardMinutes = Math.floor(point.unlockTime / 60) // 转换为分钟
-  
   try {
-    const res = await getWatchReward({ num: rewardMinutes })
+    const res = await getWatchReward({ num: activityItem.number })
     if (res.code === 100000) {
-      point.claimed = true
+      activityItem.isReceived = true
     }
-    console.log("res", res)
   } catch (error) {
-    console.error('Failed to claim reward:', error)
+    console.error('领取奖励失败:', error)
   }
 }
 
-// 保留 Watch 按钮的处理方法
+// 领取观看时长奖励
 const handleWatchReward = async () => {
-  // 找到第一个可以领取但未领取的宝箱
-  const nextChestToClaim = checkpoints.value.find(
-    (point, index) => 
-      watchTimeInfo.value >= point.unlockTime && 
-      !point.claimed &&
-      !checkpoints.value.slice(0, index).some(p => !p.claimed && watchTimeInfo.value >= p.unlockTime)
+  const nextChestToClaim = activityList.value.find(
+    (item, index) => 
+      item.Completed && 
+      !item.isReceived &&
+      !activityList.value.slice(0, index).some(p => p.Completed && !p.isReceived)
   )
 
   if (nextChestToClaim) {
-    const rewardMinutes = Math.floor(nextChestToClaim.unlockTime / 60)
     try {
-      const res = await getWatchReward({ num: rewardMinutes })
+      const res = await getWatchReward({ num: nextChestToClaim.number })
       if (res.code === 100000) {
-        nextChestToClaim.claimed = true
+        nextChestToClaim.isReceived = true
       }
-      console.log("res", res)
     } catch (error) {
-      console.error('Failed to claim reward:', error)
+      console.error('领取奖励失败:', error)
     }
   }
+}
+
+// 计算观看时长进度
+const getWatchProgress = () => {
+  // 获取所有宝箱的解锁时间
+  const unlockTimes = checkpoints.value.map(point => point.unlockTime)
+  console.log("unlockTimes",unlockTimes);
+  
+  // 找到当前观看时间所处的区间
+  for (let i = 0; i < unlockTimes.length; i++) {
+    if (watchTimeInfo.value < unlockTimes[i]) {
+      // 计算当前区间的进度
+      const previousUnlockTime = i === 0 ? 0 : unlockTimes[i - 1]
+      const intervalProgress = (watchTimeInfo.value - previousUnlockTime) / (unlockTimes[i] - previousUnlockTime)
+      
+      // 计算总进度
+      const totalProgress = i / unlockTimes.length + intervalProgress / unlockTimes.length
+      return Math.min(Math.max(totalProgress * 100, 0), 100)
+    }
+  }
+  
+  // 如果观看时间超过最后一个宝箱的解锁时间，返回100%
+  return 100
+}
+
+const activityList = ref([])//观看时长奖励列表
+const activityListInfo = ref({})//活动列表
+const getActivityListInfo = async () => {
+  const res = await getActivityList()
+  if (res.code === 100000) {
+    let list = []
+    list = res.data
+    activityList.value = list.splice(5,list.length)
+    activityListInfo.value = list.splice(0,5)
+  }
+  console.log("res",res);
+}
+
+const watchBtnClick = (item) => {
+  if(!item.Completed) {
+    
+  }
+  console.log("item",item);
 }
 
 onMounted( async () => {
   getBonusInfo()
   getWatchTimeInfo()
+  getActivityListInfo()
+ 
 })
 </script>
 
@@ -503,20 +556,27 @@ onMounted( async () => {
 }
 
 .watch-btn {
+  width: 120px;
+  height: 52px;
   background: #D0A944;
-  color: #000;
+  color: #0D0D0D;
   border: none;
   padding: 8px 24px;
   border-radius: 32px;
   font-weight: 500;
-  cursor: pointer;
   font-size: 16px;
 }
-
+.completed-btn {
+  background: linear-gradient(180deg, rgba(240, 216, 154, 0.15) 0%, rgba(208, 169, 68, 0.15) 100%);
+  color: #0D0D0D;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 32px;
+}
 .progress-bar {
   position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   padding: 10px 0;
   margin: 0 20px;
@@ -650,6 +710,82 @@ onMounted( async () => {
   50% {
     opacity: 1;
     transform: scale(1.2);
+  }
+}
+
+.share-bottom {
+  width: 100%;
+  height: 548px;
+  border: 1px solid var(--bg-quaternary);
+  border-radius: 16px;
+  background: var(--bg-tertiary);
+  margin-top: 23px;
+  padding: 20px;
+  .share-bottom-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 24px;
+    
+  }
+  .share-bottom-progress {
+    width: 100%;
+    height: 437px;
+    border-radius: 5px;
+    margin-top: 16px;
+   
+  }
+}
+
+.share-bottom-progress-bar {
+  width: 100%;
+  height: 91px;
+  border-bottom: 1px solid var(--bg-quaternary);
+  // padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .share-bottom-progress-bar-left {
+    .share-bottom-progress-bar-title {
+      font-size: 24px;
+      color: var(--text-primary);
+      // margin-bottom: 12px;
+    }
+
+    .share-bottom-progress-bar-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .coins {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .coin-amount {
+          color: #D0A944;
+          font-size: 20px;
+          font-weight: bold;
+        }
+
+        .coin-label {
+          color: #8899AA;
+          font-size: 14px;
+        }
+      }
+
+      // .watch-btn {
+      //   background: #D0A944;
+      //   color: #000;
+      //   border: none;
+      //   padding: 8px 24px;
+      //   border-radius: 32px;
+      //   font-weight: 500;
+      //   cursor: pointer;
+      //   font-size: 16px;
+      // }
+    }
   }
 }
 </style>

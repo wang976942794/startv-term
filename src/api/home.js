@@ -173,3 +173,10 @@ export function getWatchReward(data) {
         data
     })      
 }
+// 活动列表
+export function getActivityList() {
+    return request({
+        url: '/api/reward/dailytasks',
+        method: 'get',
+    })
+}
