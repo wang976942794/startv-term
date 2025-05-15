@@ -180,3 +180,44 @@ export function getActivityList() {
         method: 'get',
     })
 }
+//登录奖励
+export function getLoginReward(data) {
+    return request({
+        url: '/api/reward/dailytasks/login',
+        method: 'post',
+        data
+    })
+}
+
+// 解锁剧奖励
+export function getUnlockReward(data) {
+    return request({
+        url: '/api/reward/dailytasks/unlock',
+        method: 'post',
+        data
+    })
+}
+// 评论奖励
+export function getCommentReward(data) {
+    return request({
+        url: '/api/reward/dailytasks/Comment',
+        method: 'post',
+        data
+    })
+}
+//充值奖励
+export function getRechargeReward(data) {
+    return request({
+        url: '/api/reward/dailytasks/order',
+        method: 'post',
+        data
+    })
+}
+// 获取充值记录
+export function getRechargeRecord() {
+    return request({
+        url: '/api/paypal/orderStatus',
+        method: 'get',
+
+    })
+}

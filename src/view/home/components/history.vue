@@ -18,7 +18,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useHomeStore } from '@/stores/home.js'
+const homeStore = useHomeStore()
 const activeIndex = ref(0)
+
 
 const menuItems = ref([
   { type: 'img', icon: '@/assets/images/category.svg', text:  'message.All' },

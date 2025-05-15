@@ -108,8 +108,9 @@ import facebook2Icon from '@/assets/images/facebook2.svg'
 import instagramIcon from '@/assets/images/instagram.svg'
 import txIcon from '@/assets/images/tx.svg'
 import whatsappIcon from '@/assets/images/social-whatsapp.svg'
-import {getBonus, signIn, getWatchTime, getWatchReward, getActivityList} from '@/api/home'
-
+import {getBonus, signIn, getWatchTime, getWatchReward, getActivityList, getLoginReward, getUnlockReward, getCommentReward, getRechargeReward } from '@/api/home'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const dailySignInfo = ref({
   signDays: 0,
   signAvailable: false
@@ -267,9 +268,60 @@ const getActivityListInfo = async () => {
 
 const watchBtnClick = (item) => {
   if(!item.Completed) {
-    
+    switch(item.id) {
+      case 1:
+        router.push('/')
+        break
+      case 2:
+        router.push('/')
+        break
+      case 3:
+        router.push('/')
+        break
+      case 4:
+        router.push('/user')
+      default:
+        break
+    }
   }
-  console.log("item",item);
+  else {
+    switch(item.id) {
+      case 1:
+        getLoginReward().then(res => {
+          if(res.code === 100000) {
+            getActivityListInfo()
+            ElMessage.success('Received successfully')
+          }
+        })
+        break
+      case 2:
+        getUnlockReward().then(res => {
+          if(res.code === 100000) {
+            getActivityListInfo()
+            ElMessage.success('Received successfully')
+          }
+        })
+        break
+      case 3:
+        getCommentReward().then(res => {
+          if(res.code === 100000) {
+            getActivityListInfo()
+            ElMessage.success('Received successfully')
+          }
+        })
+        break
+      case 4:
+        getRechargeReward().then(res => {
+          if(res.code === 100000) {
+            getActivityListInfo()
+            message.success('Received successfully')
+          }
+        })
+        break
+      default:
+        break
+    }
+  }
 }
 
 onMounted( async () => {
@@ -567,6 +619,8 @@ onMounted( async () => {
   font-size: 16px;
 }
 .completed-btn {
+  width: 120px;
+  height: 52px;
   background: linear-gradient(180deg, rgba(240, 216, 154, 0.15) 0%, rgba(208, 169, 68, 0.15) 100%);
   color: #0D0D0D;
   border: none;

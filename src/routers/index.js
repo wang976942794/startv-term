@@ -11,7 +11,6 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: {
-      title: '首页',
       requiresAuth: false
     }
   },
@@ -20,7 +19,6 @@ const routes = [
     name: 'Genre',
     component: () => import('@/view/genre/index.vue'),
     meta: {
-      title: '分类',
       requiresAuth: false
     }
   },
@@ -29,23 +27,31 @@ const routes = [
     name: 'VideoPlay',
     component: () => import('@/view/home/components/videoPlay.vue'),
     meta: {
-      title: '视频播放',
-      requiresAuth: false
+      requiresAuth: true
     }
   },
   {
     path: '/fandom',
     name: 'Fandom',
-    component: () => import('@/view/fandom/index.vue')
+    component: () => import('@/view/fandom/index.vue'),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/fandom/:id',
     name: 'FandomContent',
-    component: () => import('@/view/fandom/components/fandomContent.vue')
+    component: () => import('@/view/fandom/components/fandomContent.vue'),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/user',
     component: () => import('@/components/user.vue'),
+    meta: {
+      requiresAuth: true
+    },
     children: [
       {
         path: 'wallet',
@@ -80,24 +86,25 @@ const router = createRouter({
 })
 
 // // 路由守卫
-// router.beforeEach((to, from, next) => {
-//   // 设置页面标题
-//   document.title = to.meta.title || '默认标题'
+router.beforeEach((to, from, next) => {
+  // 设置页面标题
+  document.title = to.meta.title || 'StarTv'
   
-//   // 判断该路由是否需要登录权限
-//   if (to.meta.requiresAuth) {
-//     const token = localStorage.getItem('token')
-//     if (token) {
-//       next()
-//     } else {
-//       next({
-//         path: '/login',
-//         query: { redirect: to.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
-//       })
-//     }
-//   } else {
-//     next()
-//   }
-// })
+  // 判断该路由是否需要登录权限
+  if (to.meta.requiresAuth) {
+    const token = localStorage.getItem('token')
+    if (token) {
+      next() // 放行
+    } else {
+      // 添加提示信息
+      next({
+        path: '/',
+        query: { redirect: to.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+      })
+    }
+  } else {
+    next()
+  }
+})
 
 export default router

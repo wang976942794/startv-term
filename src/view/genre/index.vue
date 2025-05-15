@@ -4,26 +4,38 @@
         <div class="breadcrumb">
             <span class="link">{{ $t('message.Home') }}</span>
             <span class="separator">/</span>
-            <span class="current">Reunion</span>
+            <span class="current">{{ activeGenre }}</span>
         </div>
 
-        <!-- 类型标签列表 -->
+        <!-- 分类标签列表 -->
         <div class="genre-tags">
-            <button class="tag-btn active">{{ $t('message.All') }}</button>
-            <!-- <button v-for="i in 13" :key="i" class="tag-btn" :class="{ active: i === 1 }">
-                Reunion
-            </button> -->
+            <button 
+                class="tag-btn" 
+                :class="{ active: activeGenre === 'All' }"
+                @click="handleGenreClick('All')"
+            >
+                {{ $t('message.All') }}
+            </button>
+            <button 
+                v-for="(value, key) in typeBookMap" 
+                :key="key" 
+                class="tag-btn" 
+                :class="{ active: activeGenre === key }"
+                @click="handleGenreClick(key)"
+            >
+                {{ key }}
+            </button>
         </div>
 
         <!-- 电影列表标题 -->
         <div class="movies-header">
-            <h1 class="title">Reunion Movies</h1>
-            <span class="count">{{ $t('message.Total') }} 56</span>
+            <h1 class="title">{{ activeGenre }} Movies</h1>
+            <span class="count">{{ $t('message.Total') }} {{ datalist.length }}</span>
         </div>
 
         <!-- 电影列表 -->
         <div class="movies-grid">
-            <div class="movie-card" v-for="item in popularBookList" :key="item.id">
+            <div class="movie-card" v-for="item in datalist" :key="item.id">
                 <div class="poster">
                     <img :src="item.fontUrl" alt="movie poster" />
                 </div>
@@ -32,11 +44,11 @@
                     <div class="stats">
                         <div class="stat">
                             <img src="@/assets/images/heart.svg" alt="heart">
-                            <span>64.3K</span>
+                            <span>{{ item.collectNum }}</span>
                         </div>
                         <div class="stat">
                             <img src="@/assets/images/starw.svg" alt="star">
-                            <span>64.3K</span>
+                            <span>{{ item.collectNum }}</span>
                         </div>
                     </div>
                     <p class="description">
@@ -48,7 +60,7 @@
                             {{ $t('message.Play') }}
                         </button>
                         <button class="btn-list">
-                            <img src="@/assets/images/star.svg" alt="Add to My List" class="plus-icon">
+                            <img src="@/assets/images/star.svg" alt="Add to My List" class="plus-icon" @click="handleItemClick(item)">
                             {{ $t('message.Add_to_My_List') }}
                         </button>
                     </div>
@@ -59,33 +71,49 @@
 </template>
 
 <script setup>
-import { ref,watch,onMounted } from 'vue'
-
+import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getHomePage } from '@/api/home'
+
 const router = useRouter()
-const popularBookList = ref([])
+const popularBookList = ref([])//全部剧集
+const typeBookMap = ref({})//分类
+const datalist = ref([])//显示的剧集
+const activeGenre = ref('All') // 用于跟踪当前选中的分类
+
 onMounted(() => {
     getPopularBookList()
 })
+
 const getPopularBookList = async () => {
     const res = await getHomePage()
-    console.log(res);
     popularBookList.value = res.data.popularBookList
-    console.log(popularBookList.value);
+    typeBookMap.value = res.data.typeBookMap
+    // 初始化时显示第一个分类的内容
+    if (Object.keys(typeBookMap.value).length > 0) {
+        datalist.value = res.data.popularBookList
+    }
 }
+
+const handleGenreClick = (genre) => {
+    activeGenre.value = genre
+    if (genre === 'All') {
+        // 如果选择"全部"，则合并所有分类的内容
+        datalist.value = popularBookList.value||[]
+    } else {
+        datalist.value = typeBookMap.value[genre] || []
+    }
+}
+
 const handleItemClick = (item) => {
-    console.log(item);
     router.push({
         name: 'VideoPlay',
         query: {
             bookId: item.bookId,
-            chapterId: item.watchChapterId||item.chapterId ||1
+            chapterId: item.watchChapterId || item.chapterId || 1
         }
-    });
-};
-
-// 这里可以添加需要的逻辑
+    })
+}
 </script>
 
 <style lang="scss" scoped>

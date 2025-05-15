@@ -27,13 +27,11 @@
             <!-- 搜索下拉框 -->
             <div class="search-dropdown" v-show="showDropdown">
                 <!-- Search Results -->
-                <div class="section" v-if="searchResults.length > 0">
+                <div class="section search-results" v-if="searchResults.length > 0">
                     <h3>{{ $t('message.Search_Results') }}</h3>
                     <div class="movie-list">
-                        <div class="movie-item" 
-                             v-for="item in searchResults" 
-                             :key="item.bookId"
-                             @click="handleSearchResultClick(item)">
+                        <div class="movie-item" v-for="item in searchResults" :key="item.bookId"
+                            @click="handleSearchResultClick(item)">
                             <img :src="item.fontUrl" class="search-result-img" alt="">
                             <div class="search-result-info">
                                 <span class="movie-title">{{ item.title }}</span>
@@ -51,7 +49,8 @@
                         <div class="movie-list">
                             <div class="movie-item" v-for="movie in hotMovies" :key="movie.title">
                                 <span class="fire-icon">🔥</span>
-                                <span class="movie-title" style="color: var(--text-primary);">{{ movie.bookInfoResp.title }}</span>
+                                <span class="movie-title" style="color: var(--text-primary);">{{
+                                    movie.bookInfoResp.title }}</span>
                             </div>
                         </div>
                     </div>
@@ -106,35 +105,33 @@
                 <!-- 历史菜单悬浮窗 -->
                 <div class="history-dropdown" v-show="showHistoryMenu">
                     <div class="history-nav">
-                        <div class="history-nav-item" 
-                             :class="{ active: activeHistoryTab === 0 }"
-                             @click="activeHistoryTab = 0">
+                        <div class="history-nav-item" :class="{ active: activeHistoryTab === 0 }"
+                            @click="activeHistoryTab = 0">
                             {{ $t('message.History') }}
                         </div>
-                        <div class="history-nav-item" 
-                             :class="{ active: activeHistoryTab === 1 }"
-                             @click="activeHistoryTab = 1">
+                        <div class="history-nav-item" :class="{ active: activeHistoryTab === 1 }"
+                            @click="activeHistoryTab = 1">
                             {{ $t('message.My_list') }}
                         </div>
                     </div>
                     <div class="history-content">
-                        <div class="history-item" 
-                        v-for="item in activeHistoryTab === 0 ? historyStore.historyData : historyStore.chapterCollections" 
-                        :key="item.bookId" 
-                        @click="handleHistoryItemClick(item)">
+                        <div class="history-item"
+                            v-for="item in activeHistoryTab === 0 ? historyStore.historyData : historyStore.chapterCollections"
+                            :key="item.bookId" @click="handleHistoryItemClick(item)">
                             <div class="history-left">
-                               <img :src="item.fontUrl" alt="">
+                                <img :src="item.fontUrl" alt="">
                             </div>
                             <div class="history-right">
                                 <div class="history-right-top">{{ item.title }}</div>
                                 <div class="history-right-bottom">
                                     <span class="history-right-bottom-icon"></span>
-                                    <span class="history-right-bottom-text">Played to Episode {{ item.watchChapterId }}</span>
+                                    <span class="history-right-bottom-text">Played to Episode {{ item.watchChapterId
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                 
+
                 </div>
             </div>
             <!-- 语言 -->
@@ -142,9 +139,7 @@
                 <img src="@/assets/images/langauge.svg" alt="Language">
                 <!-- 语言选择悬浮框 -->
                 <div class="language-dropdown" v-show="showLanguageMenu" @click.stop>
-                    <div class="language-item" 
-                         :class="{ active: locale === 'en' }" 
-                         @click="changeLanguage('en')">
+                    <div class="language-item" :class="{ active: locale === 'en' }" @click="changeLanguage('en')">
                         <span>English</span>
                     </div>
                     <!-- <div class="language-item" 
@@ -152,18 +147,16 @@
                          @click="changeLanguage('ru')">
                         <span>Pусск</span>
                     </div> -->
-                    <div class="language-item" 
-                         :class="{ active: locale === 'ar' }" 
-                         @click="changeLanguage('ar')"
-                         :dir="locale === 'ar' ? 'rtl' : 'ltr'">
+                    <div class="language-item" :class="{ active: locale === 'ar' }" @click="changeLanguage('ar')"
+                        :dir="locale === 'ar' ? 'rtl' : 'ltr'">
                         <span>العربية</span>
                     </div>
                 </div>
             </div>
             <!-- 主题 -->
             <div class="timer-btn" @click="toggleTheme">
-             <img src="@/assets/images/sun.svg" alt="" v-if="isDarkMode" >
-             <img src="@/assets/images/moon.svg" alt="" v-else>
+                <img src="@/assets/images/sun.svg" alt="" v-if="isDarkMode">
+                <img src="@/assets/images/moon.svg" alt="" v-else>
             </div>
             <!-- 头像 -->
             <div class="timer-btn-user" @click="handleUserClick">
@@ -192,8 +185,8 @@
                     </div>
                 </div>
             </div>
-           
-            
+
+
         </div>
     </div>
 
@@ -203,10 +196,10 @@
 
 <script setup>
 import { ref, onMounted, watch, computed, reactive } from 'vue'
-import { useRoute, useRouter} from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'  // 导入 userStore
 import LoginDialog from './LoginDialog.vue'
-import { getHistory,getChapterCollections, findBook ,getHotBook} from '@/api/home'
+import { getHistory, getChapterCollections, findBook, getHotBook } from '@/api/home'
 import { useHistoryStore } from '@/stores/history'  // 添加这行
 import { useHomeStore } from '@/stores/home'
 import { useThemeStore } from '@/stores/theme'
@@ -254,10 +247,10 @@ const handleBlur = (e) => {
     // 给一个小延时，让点击事件先触发
     setTimeout(() => {
         // 检查点击是否在下拉框内
-        const isClickInDropdown = document.activeElement && 
-            (document.activeElement.closest('.search-dropdown') || 
-             document.activeElement.closest('.search-container'));
-        
+        const isClickInDropdown = document.activeElement &&
+            (document.activeElement.closest('.search-dropdown') ||
+                document.activeElement.closest('.search-container'));
+
         if (!isClickInDropdown) {
             showDropdown.value = false;
         }
@@ -304,7 +297,7 @@ const handleDownloadClick = (event) => {
 const getHotBooklist = async () => {
     const response = await getHotBook()
     hotMovies.value = response.data || []
-    
+
 }
 
 onMounted(() => {
@@ -318,9 +311,9 @@ onMounted(() => {
         const languageBtn = e.target.closest('.language-btn')
         const languageDropdown = e.target.closest('.language-dropdown')
         const downloadWrapper = e.target.closest('.download-wrapper')
-        
+
         // 如果点击的是空白区域，关闭所有菜单
-        if (!userBtn && !userDropdown && !historyBtn && !historyDropdown && 
+        if (!userBtn && !userDropdown && !historyBtn && !historyDropdown &&
             !languageBtn && !languageDropdown && !downloadWrapper) {
             closeAllMenus()
         }
@@ -342,7 +335,7 @@ onMounted(() => {
             })
         }
     })
-    
+
     // 获取历史记录和章节集合
     historyStore.fetchHistory()
     historyStore.fetchChapterCollections()
@@ -362,13 +355,13 @@ watch(() => route.path, (newPath) => {
 
 // 监听登录状态变化
 watch(() => userStore.isLoggedIn, (newValue) => {
-  if (newValue) {
-    // 用户登录后执行这些方法
-    historyStore.fetchHistory()
-    historyStore.fetchChapterCollections()
-    homeStore.fetchUserInfo()
-    homeStore.fetchHomePage()
-  }
+    if (newValue) {
+        // 用户登录后执行这些方法
+        historyStore.fetchHistory()
+        historyStore.fetchChapterCollections()
+        homeStore.fetchUserInfo()
+        homeStore.fetchHomePage()
+    }
 }, { immediate: true }) // immediate: true 会在组件创建时立即执行一次
 
 // 处理历史记录项点击
@@ -380,7 +373,7 @@ const handleHistoryItemClick = (item) => {
         path: '/videoPlay',
         query: {
             bookId: item.bookId,
-            chapterId: item.watchChapterId||item.chapterId
+            chapterId: item.watchChapterId || item.chapterId
         }
     })
 }
@@ -405,7 +398,7 @@ const handleLogout = async () => {
         userStore.logout()
         // 关闭用户菜单
         showUserMenu.value = false
-   
+
     } catch (error) {
         console.error('Logout failed:', error)
     }
@@ -431,13 +424,13 @@ const handleSearch = async () => {
         searchResults.value = []
         return
     }
-    
+
     try {
         const response = await findBook({ bookName: searchValue })
-        console.log("response",response);
-        
+        console.log("response", response);
+
         searchResults.value = response.data || []
-        
+
         // Add to search history if not already present
         if (!searchHistory.value.includes(searchValue)) {
             searchHistory.value.unshift(searchValue)
@@ -456,8 +449,8 @@ const handleSearch = async () => {
 
 // Handle search result click
 const handleSearchResultClick = (item) => {
-    console.log("item",item);
-    
+    console.log("item", item);
+
     router.push({
         path: '/videoPlay',
         query: {
@@ -504,7 +497,7 @@ const handleSearchResultClick = (item) => {
         width: 192px;
         height: 46px;
         margin-right: 15px;
-  
+
 
         @include responsive-scale {
             width: calc(1024 / 1440 * 192px);
@@ -539,7 +532,7 @@ const handleSearchResultClick = (item) => {
             line-height: 46px;
             font-size: 16px;
             padding: 0 12px;
-            color: var( --text-primary);
+            color: var(--text-primary);
             // border-bottom: 2px solid transparent;
 
             @include responsive-scale {
@@ -550,7 +543,7 @@ const handleSearchResultClick = (item) => {
             }
 
             &:not(.is-active) {
-                color: var( --text-primary);
+                color: var(--text-primary);
                 border: none !important;
             }
 
@@ -590,6 +583,7 @@ const handleSearchResultClick = (item) => {
             top: 100%;
             left: 0;
             width: 360px;
+            height: 484px;
             background-color: var(--bg-primary);
             border-radius: 8px;
             padding: 16px;
@@ -601,7 +595,7 @@ const handleSearchResultClick = (item) => {
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 24px;
-                color: var( --text-primary);
+                color: var(--text-primary);
                 font-size: 14px;
 
                 .close-btn {
@@ -620,13 +614,20 @@ const handleSearchResultClick = (item) => {
 
             .section {
                 margin-bottom: 24px;
+                height: 300px;
+                overflow-y: auto;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+
 
                 &:last-child {
                     margin-bottom: 0;
                 }
 
                 h3 {
-                    color: var( --text-primary);
+                    color: var(--text-primary);
                     font-size: 14px;
                     font-weight: 600;
                     margin-bottom: 16px;
@@ -659,14 +660,14 @@ const handleSearchResultClick = (item) => {
                             gap: 4px;
 
                             .movie-title {
-                                color: var( --text-primary);
+                                color: var(--text-primary);
                                 font-size: 14px;
                                 font-weight: 500;
                             }
 
                             .movie-desc {
                                 font-size: 12px;
-                                color: var( --text-primary);
+                                color: var(--text-primary);
                                 display: -webkit-box;
                                 -webkit-line-clamp: 2;
                                 -webkit-box-orient: vertical;
@@ -685,9 +686,9 @@ const handleSearchResultClick = (item) => {
                     .tag {
                         padding: 6px 12px;
                         background-color: var(--bg-primary);
-                        border: 1px solid var( --bg-secondary);
+                        border: 1px solid var(--bg-secondary);
                         border-radius: 100px;
-                        color: var( --text-primary);
+                        color: var(--text-primary);
                         font-size: 14px;
 
 
@@ -699,12 +700,25 @@ const handleSearchResultClick = (item) => {
                 }
             }
 
-            .tag, .movie-item {
-                cursor: pointer;
-                user-select: none;  // 防止文本被选中
+            .search-results {
+                height: 484px;
+                overflow-y: auto;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+
+
             }
-            
-            .movie-list, .tag-list {
+
+            .tag,
+            .movie-item {
+                cursor: pointer;
+                user-select: none; // 防止文本被选中
+            }
+
+            .movie-list,
+            .tag-list {
                 // 确保这些容器可以接收点击事件
                 pointer-events: auto;
             }
@@ -731,7 +745,7 @@ const handleSearchResultClick = (item) => {
             height: 32px;
             background-color: transparent;
             border-color: #30363d;
-            color: var( --text-primary);
+            color: var(--text-primary);
 
             &:hover {
                 background-color: #21262d;
@@ -747,7 +761,7 @@ const handleSearchResultClick = (item) => {
         .timer-btn {
             width: 46px;
             height: 46px;
-            color: var( --text-primary);
+            color: var(--text-primary);
             border-radius: 50%;
             border: 1px solid #2C2E31;
             display: flex;
@@ -763,6 +777,7 @@ const handleSearchResultClick = (item) => {
                 width: 24px;
                 height: 24px;
                 filter: var(--icon-filter);
+
                 @include responsive-scale {
                     width: calc(1024 / 1440 * 24px);
                     height: calc(1024 / 1440 * 24px);
@@ -774,7 +789,7 @@ const handleSearchResultClick = (item) => {
             position: relative;
             width: 46px;
             height: 46px;
-            color: var( --text-primary);
+            color: var(--text-primary);
             border-radius: 50%;
             // border: 1px solid var( --text-primary);
             display: flex;
@@ -824,7 +839,7 @@ const handleSearchResultClick = (item) => {
                     display: flex;
                     align-items: center;
                     gap: 12px;
-                    color: var( --text-primary);
+                    color: var(--text-primary);
                     font-size: 18px;
 
                     border-radius: 4px;
@@ -846,7 +861,7 @@ const handleSearchResultClick = (item) => {
                             width: calc(1024 / 1440 * 24px);
                             height: calc(1024 / 1440 * 24px);
                         }
-                        
+
                     }
 
                     &:hover {
@@ -877,7 +892,7 @@ const handleSearchResultClick = (item) => {
     }
 
     .el-input__inner {
-        color: var( --text-primary);
+        color: var(--text-primary);
         height: 40px;
         font-size: 14px;
 
@@ -896,7 +911,7 @@ const handleSearchResultClick = (item) => {
 .timer-btn-user {
     width: 46px;
     height: 46px;
-    color: var( --text-primary);
+    color: var(--text-primary);
     border-radius: 50%;
     border: 1px solid #2C2E31;
     display: flex;
@@ -917,6 +932,7 @@ const handleSearchResultClick = (item) => {
         width: 45px;
         height: 45px;
         border-radius: 50%;
+
         @include responsive-scale {
             width: calc(1024 / 1440 * 46px);
             height: calc(1024 / 1440 * 46px);
@@ -992,7 +1008,7 @@ const handleSearchResultClick = (item) => {
             }
 
             p {
-                color: var( --text-primary);
+                color: var(--text-primary);
                 font-size: 20px;
 
                 @include responsive-scale {
@@ -1019,7 +1035,7 @@ const handleSearchResultClick = (item) => {
                     background: #D0A944;
                     border: none;
                     border-radius: 100px;
-                    color: var( --text-primary)FFF;
+                    color: var(--text-primary)FFF;
 
                     font-size: 14px;
                     transition: all 0.3s;
@@ -1060,7 +1076,7 @@ const handleSearchResultClick = (item) => {
         .qr-code {
             width: 160px;
             height: 160px;
-            background: var( --text-primary)FFF;
+            background: var(--text-primary)FFF;
             border-radius: 8px;
 
             @include responsive-scale {
@@ -1108,7 +1124,7 @@ const handleSearchResultClick = (item) => {
             line-height: 47px;
             text-align: center;
             font-size: 18px;
-            color: var( --text-primary);
+            color: var(--text-primary);
             opacity: 0.7;
             cursor: pointer;
             transition: all 0.3s;
@@ -1116,8 +1132,8 @@ const handleSearchResultClick = (item) => {
             &.active {
                 opacity: 1;
                 position: relative;
-                color:#D0A944 ;
-                
+                color: #D0A944;
+
                 &::after {
                     content: '';
                     position: absolute;
@@ -1136,11 +1152,16 @@ const handleSearchResultClick = (item) => {
         width: 100%;
         height: calc(100% - 47px);
         overflow-y: auto;
-        scrollbar-width: none;  /* Firefox */
-        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+
+        /* IE and Edge */
         &::-webkit-scrollbar {
-          display: none;  /* Chrome, Safari and Opera */
+            display: none;
+            /* Chrome, Safari and Opera */
         }
+
         .history-item {
             width: 100%;
             height: 154px;
@@ -1155,6 +1176,7 @@ const handleSearchResultClick = (item) => {
             .history-left {
                 width: 120px;
                 height: 154px;
+
                 img {
                     width: 100%;
                     height: 100%;
@@ -1173,7 +1195,7 @@ const handleSearchResultClick = (item) => {
 
                 .history-right-top {
                     font-size: 16px;
-                    color: var( --text-primary);
+                    color: var(--text-primary);
                 }
 
                 .history-right-bottom {
@@ -1263,7 +1285,7 @@ const handleSearchResultClick = (item) => {
 }
 
 .language-btn {
-    position: relative;  // 添加相对定位
+    position: relative; // 添加相对定位
 }
 
 .section-header {
@@ -1276,7 +1298,7 @@ const handleSearchResultClick = (item) => {
         color: #88888C;
         font-size: 14px;
         cursor: pointer;
-        
+
         &:hover {
             color: #D0A944;
         }
@@ -1285,13 +1307,13 @@ const handleSearchResultClick = (item) => {
 
 .movie-item {
     cursor: pointer;
-    
+
     &:hover {
         color: #D0A944;
     }
 }
 
 .search-container {
-    pointer-events: auto;  // 确保下拉框可以接收点击事件
+    pointer-events: auto; // 确保下拉框可以接收点击事件
 }
 </style>

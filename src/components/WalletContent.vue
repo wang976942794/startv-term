@@ -58,7 +58,8 @@
 
 <script setup>
 import { ref,watch,onMounted } from 'vue';
-import { useHomeStore } from '@/stores/home'
+import { useHomeStore  } from '@/stores/home'
+import { getRechargeRecord } from '@/api/home'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const homeStore = useHomeStore()
@@ -79,9 +80,15 @@ watch(() => homeStore.userInfo, (newValue) => {
     userInfo.value = newValue
   }
 }, { immediate: true })
-
+const rechargeRecord = ref([])
+const getRechargeRecordList = async () => {
+  const res = await getRechargeRecord()
+  rechargeRecord.value = res.data.data
+  console.log(res);
+}
 onMounted(() => {
    getUserInfo()
+   getRechargeRecordList()
 })
 
 </script>
