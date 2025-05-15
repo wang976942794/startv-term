@@ -436,7 +436,7 @@ onMounted(async () => {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var( --text-primary);
+      color: #D0A944;
       font-size: 20px;
     }
   }

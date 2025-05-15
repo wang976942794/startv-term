@@ -21,6 +21,7 @@ export default {
         Trending_Searches:'Trending Searches',
         Download:'Download',
         All:'All',
+        SendMessage:'Send a message',
         ABOUT:'About',
         New_Release:'New Release',
         Scan_QR_code_to_download_START_TV_App:'Scan QR code to download STAR TV App',

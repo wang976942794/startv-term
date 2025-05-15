@@ -21,6 +21,7 @@ export default {
         Trending_Searches:'البحث الشائع',
         Download:'تحميل',
         All:'الكل',
+        SendMessage:'إرسال رسالة',
         ABOUT:'عنا',
         New_Release:'إطلاق منتج جديد',
         Scan_QR_code_to_download_START_TV_App:'امسح رمز الاستجابة السريعة لتحميل تطبيق STAR TV',
