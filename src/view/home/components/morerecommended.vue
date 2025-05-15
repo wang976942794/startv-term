@@ -6,7 +6,7 @@
 
         <div class="content-container">
             <div class="content-grid">
-                <div class="content-item" v-for="(item, index) in popularBookList" :key="index" @click="handleItemClick(item)">
+                <div class="content-item" v-for="(item, index) in visibleBookList" :key="index" @click="handleItemClick(item)">
                     <div class="cover-image">
                         <img :src="item.fontUrl" :alt="item.title">
                         <div class="text">{{ item.title }}</div>
@@ -18,34 +18,74 @@
                 </div>
             </div>
         </div>
+        <div class="more-recommended-footer" v-if="hasMoreItems" @click="loadMore">
+            <img 
+                src="@/assets/images/LoadProgress.svg" 
+                alt="Loading" 
+                :class="{ loading: isLoading }"
+            >
+            <span>{{ isLoading ? 'Loading...' : 'Load More' }}</span>
+        </div>
     </div>
 </template>
 
 <script setup>
-import { ref, watch} from 'vue'
+import { ref, watch, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useHomeStore } from '@/stores/home.js'
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 const homeStore = useHomeStore()
 const popularBookList = ref([])
-watch(() => homeStore.popularBookList, (newValue) => {
-    popularBookList.value = newValue
-},
-    { immediate: true } // immediate: true 会使得侦听器立即执行一次
-)
-const handleItemClick = (item) => {
-    console.log(item);
+const visibleItems = ref(homeStore.moreRecommendedState)
+const itemsPerLoad = 18
+const isLoading = ref(false)
+
+// 计算属性
+const visibleBookList = computed(() => {
+    return popularBookList.value.slice(0, visibleItems.value)
+})
+
+const hasMoreItems = computed(() => {
+    return visibleItems.value < popularBookList.value.length
+})
+
+// 修改后的加载方法
+const loadMore = async () => {
+    if (isLoading.value) return
     
+    isLoading.value = true
+    // 模拟加载延迟
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    visibleItems.value += itemsPerLoad
+    isLoading.value = false
+}
+
+// 处理点击事件
+const handleItemClick = (item) => {
     router.push({
         name: 'VideoPlay',
         query: {
             bookId: item.bookId,
-            chapterId: item.watchChapterId||item.chapterId ||1
+            chapterId: item.watchChapterId || item.chapterId || 1
         }
-    });
-};
+    })
+}
 
+// 监听数据变化
+watch(() => homeStore.popularBookList, (newValue) => {
+    popularBookList.value = newValue
+}, { immediate: true })
 
+// 组件挂载时恢复之前的状态
+onMounted(() => {
+    visibleItems.value = homeStore.moreRecommendedState
+})
+
+// 组件销毁前保存当前状态
+onBeforeUnmount(() => {
+    homeStore.setMoreRecommendedState(visibleItems.value)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -97,10 +137,11 @@ const handleItemClick = (item) => {
         .content-item {
             width: 100%;
             max-width: 174px;
+            transition: transform 0.3s ease;
             @include responsive-scale {
                 max-width: calc(1024 / 1440 * 174px);
             }
-            transition: transform 0.3s ease;
+            
             &:hover {
                 transform: translateY(-5px);
             }
@@ -168,5 +209,46 @@ const handleItemClick = (item) => {
             }
         }
     }
+    .more-recommended-footer {
+        width: 160px;
+        height: 52px;
+        background: #D0A9441A;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: #D0A944;
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 20px;
+        border: 1px solid #D0A944;
+        margin: 0 auto;
+        @include responsive-scale {
+            margin-top: calc(1024 / 1440 * 20px);
+            width: calc(1024 / 1440 * 160px);
+            height: calc(1024 / 1440 * 52px);
+            font-size: calc(1024 / 1440 * 14px);
+            gap: calc(1024 / 1440 * 10px);
+            border-radius: calc(1024 / 1440 * 50px);
+        }
+        img {
+            width: 18px;
+            height: 18px;
+            @include responsive-scale {
+                width: calc(1024 / 1440 * 18px);
+                height: calc(1024 / 1440 * 18px);
+            }
+            transition: transform 0.3s ease;
+            &.loading {
+                animation: spin 1s linear infinite;
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>

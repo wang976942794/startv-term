@@ -35,7 +35,7 @@
 
         <!-- 电影列表 -->
         <div class="movies-grid">
-            <div class="movie-card" v-for="item in datalist" :key="item.id">
+            <div class="movie-card" v-for="item in currentPageData" :key="item.id">
                 <div class="poster">
                     <img :src="item.fontUrl" alt="movie poster" />
                 </div>
@@ -44,11 +44,11 @@
                     <div class="stats">
                         <div class="stat">
                             <img src="@/assets/images/heart.svg" alt="heart">
-                            <span>{{ item.collectNum }}</span>
+                            <span>{{ formatNumber(item.collectNum) }}</span>
                         </div>
                         <div class="stat">
                             <img src="@/assets/images/starw.svg" alt="star">
-                            <span>{{ item.collectNum }}</span>
+                            <span>{{ formatNumber(item.collectNum) }}</span>
                         </div>
                     </div>
                     <p class="description">
@@ -65,21 +65,34 @@
                         </button>
                     </div>
                 </div>
+             
             </div>
+        </div>
+
+        <div class="pagination-block">
+            <el-pagination 
+                layout="prev, pager, next" 
+                :total="datalist.length"
+                :page-size="20"
+                :current-page="currentPage"
+                @current-change="handlePageChange"
+            />
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { getHomePage } from '@/api/home'
-
+import { formatNumber } from '@/utils/fix'
 const router = useRouter()
 const popularBookList = ref([])//全部剧集
 const typeBookMap = ref({})//分类
 const datalist = ref([])//显示的剧集
 const activeGenre = ref('All') // 用于跟踪当前选中的分类
+const currentPage = ref(1)
+const pageSize = 20 // 每页显示20条数据
 
 onMounted(() => {
     getPopularBookList()
@@ -95,11 +108,18 @@ const getPopularBookList = async () => {
     }
 }
 
+// 计算当前页要显示的数据
+const currentPageData = computed(() => {
+    const startIndex = (currentPage.value - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return datalist.value.slice(startIndex, endIndex)
+})
+
 const handleGenreClick = (genre) => {
+    currentPage.value = 1 // 重置页码
     activeGenre.value = genre
     if (genre === 'All') {
-        // 如果选择"全部"，则合并所有分类的内容
-        datalist.value = popularBookList.value||[]
+        datalist.value = popularBookList.value || []
     } else {
         datalist.value = typeBookMap.value[genre] || []
     }
@@ -112,6 +132,15 @@ const handleItemClick = (item) => {
             bookId: item.bookId,
             chapterId: item.watchChapterId || item.chapterId || 1
         }
+    })
+}
+
+const handlePageChange = (page) => {
+    currentPage.value = page
+    // 页面滚动到顶部，提供更好的用户体验
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
     })
 }
 </script>
@@ -353,6 +382,78 @@ const handleItemClick = (item) => {
             }
             img {
                 filter: var(--icon-filter);
+            }
+        }
+    }
+}
+
+.pagination-block {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+    padding-bottom: 40px;
+    @include responsive-scale {
+        margin: calc(1024 / 1440 * 40px) 0;
+        padding-bottom: calc(1024 / 1440 * 40px);
+    }
+
+    :deep(.el-pagination) {
+        --el-pagination-font-size: 14px;
+        --el-pagination-bg-color: transparent;
+        --el-pagination-hover-color: #E6B322;
+        --el-pagination-button-color: var(--text-primary);
+        --el-pagination-button-disabled-color: var(--text-primary);
+        --el-pagination-button-disabled-bg-color: transparent;
+        
+        .el-pager {
+            li {
+                background: transparent;
+                color: var(--text-primary);
+                border: 1px solid var(--bg-quaternary);
+                border-radius: 4px;
+                min-width: 32px;
+                height: 32px;
+                margin: 0 4px;
+                
+                &:hover {
+                    color: #E6B322;
+                    border-color: #E6B322;
+                }
+                
+                &.is-active {
+                    background: #D0A9441A;
+                    color: #E6B322;
+                    border-color: #E6B322;
+                }
+
+                @include responsive-scale {
+                    min-width: calc(1024 / 1440 * 32px);
+                    height: calc(1024 / 1440 * 32px);
+                }
+            }
+        }
+
+        .btn-prev, .btn-next {
+            background: transparent;
+            border: 1px solid var(--bg-quaternary);
+            border-radius: 4px;
+            color: var(--text-primary);
+            margin: 0 4px;
+            
+            &:hover:not([disabled]) {
+                color: #E6B322;
+                border-color: #E6B322;
+            }
+
+            &[disabled] {
+                border: 1px solid var(--bg-quaternary);
+                color: var(--text-primary);
+                opacity: 0.5;
+            }
+
+            @include responsive-scale {
+                min-width: calc(1024 / 1440 * 32px);
+                height: calc(1024 / 1440 * 32px);
             }
         }
     }

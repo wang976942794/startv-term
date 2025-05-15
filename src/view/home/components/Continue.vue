@@ -166,10 +166,10 @@ const scrollContent = (direction) => {
         .content-item {
             flex: 0 0 auto;
             width: 174px;
+            transition: transform 0.3s ease;
             @include responsive-scale {
                 width: calc(1024 / 1440 * 174px);
             }
-            transition: transform 0.3s ease;
 
             &:hover {
                 transform: translateY(-5px);
