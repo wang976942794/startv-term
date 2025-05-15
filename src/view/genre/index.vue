@@ -2,9 +2,9 @@
     <div class="genre-page">
         <!-- 面包屑导航 -->
         <div class="breadcrumb">
-            <span class="link">{{ $t('message.Home') }}</span>
+            <span class="link">{{ $t('message.Genre') }}</span>
             <span class="separator">/</span>
-            <span class="current">{{ activeGenre }}</span>
+            <span class="current">{{ $t(activeGenre) }}</span>
         </div>
 
         <!-- 分类标签列表 -->
@@ -12,7 +12,7 @@
             <button 
                 class="tag-btn" 
                 :class="{ active: activeGenre === 'All' }"
-                @click="handleGenreClick('All')"
+                @click="handleGenreClick('message.All')"
             >
                 {{ $t('message.All') }}
             </button>
@@ -29,7 +29,7 @@
 
         <!-- 电影列表标题 -->
         <div class="movies-header">
-            <h1 class="title">{{ activeGenre }} Movies</h1>
+            <h1 class="title">{{ $t(activeGenre) }} Movies</h1>
             <span class="count">{{ $t('message.Total') }} {{ datalist.length }}</span>
         </div>
 
@@ -90,7 +90,7 @@ const router = useRouter()
 const popularBookList = ref([])//全部剧集
 const typeBookMap = ref({})//分类
 const datalist = ref([])//显示的剧集
-const activeGenre = ref('All') // 用于跟踪当前选中的分类
+const activeGenre = ref('message.All') // 用于跟踪当前选中的分类
 const currentPage = ref(1)
 const pageSize = 20 // 每页显示20条数据
 
@@ -118,7 +118,7 @@ const currentPageData = computed(() => {
 const handleGenreClick = (genre) => {
     currentPage.value = 1 // 重置页码
     activeGenre.value = genre
-    if (genre === 'All') {
+    if (genre === 'message.All') {
         datalist.value = popularBookList.value || []
     } else {
         datalist.value = typeBookMap.value[genre] || []
