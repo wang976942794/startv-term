@@ -100,11 +100,16 @@ const handleItemClick = (item) => {
             @include responsive-scale {
                 max-width: calc(1024 / 1440 * 174px);
             }
+            transition: transform 0.3s ease;
+            &:hover {
+                transform: translateY(-5px);
+            }
 
             .cover-image {
                 width: 100%;
                 height: 328px;
                 position: relative;
+                margin-top: 10px;
                 .text {
                     font-size: 16px;
                     color: var( --text-primary);

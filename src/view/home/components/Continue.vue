@@ -169,10 +169,16 @@ const scrollContent = (direction) => {
             @include responsive-scale {
                 width: calc(1024 / 1440 * 174px);
             }
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: translateY(-5px);
+            }
 
             .cover-image {
                 width: 100%;
                 height: 328px;
+                margin-top: 10px;
                 position: relative;
                 img {
                     width: 100%;
