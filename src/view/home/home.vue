@@ -2,7 +2,7 @@
   <div class="home">
     <Header></Header>
     <History></History>
-    <Continue v-if="userStore.isLoggedIn"></Continue>
+    <Continue v-if="userStore.isLoggedIn&&homeStore.watchBookList.length>0"></Continue>
     <NewRelease></NewRelease>
     <MoreRecommended></MoreRecommended>
    
