@@ -2,7 +2,7 @@
   <div class="home">
     <Header></Header>
     <History></History>
-    <Continue></Continue>
+    <Continue v-if="userStore.isLoggedIn"></Continue>
     <NewRelease></NewRelease>
     <MoreRecommended></MoreRecommended>
    
@@ -17,9 +17,12 @@ import NewRelease from './components/newrelease.vue'
 import MoreRecommended from './components/morerecommended.vue'
 import { onMounted } from 'vue'
 import { useHomeStore } from '@/stores/home'
+import { useUserStore } from '@/stores/user'
 const homeStore = useHomeStore()
+const userStore = useUserStore()
 onMounted(async () => {
     await homeStore.fetchHomePage()
+    await userStore.fetchUserInfo()
 })
 </script>
 
