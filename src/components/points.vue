@@ -41,11 +41,16 @@
     <div class="share-section">
       <div class="drama-progress">
         <div class="drama-header">
-          <h2>Watch new dramas</h2>
+          <div>
+         
+            <h2>Watch new dramas</h2>
           <div class="points-info">
+            <img src="@/assets/images/Vector.svg" alt="coin"/>
             <span class="points-earned">+172</span>
             <span class="points-label">at most</span>
           </div>
+          </div>
+         
           <button class="watch-btn" @click="handleWatchReward">Watch</button>
         </div>
         
@@ -78,8 +83,11 @@
               </div>
               <div class="share-bottom-progress-bar-info">
                 <div class="coins">
+                  <img src="@/assets/images/Vector.svg" alt="coin" v-if="!item.isReceived" />
+                  <img src="@/assets/images/Vectorno.svg" alt="coin" v-else />
                   <span class="coin-amount">+{{item.bonus}}</span>
-                  <span class="coin-label"></span>
+                  <!-- <span class="coin-label"></span> -->
+                  <img src="@/assets/images/vectortwo.svg" alt="coin" v-if="item.isReceived" class="coin-icon" />
                 </div>
               </div>
             </div>
@@ -594,6 +602,10 @@ onMounted( async () => {
   gap: 4px;
   margin-left: auto;
   margin-right: 20px;
+  img{
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .points-earned {
@@ -815,7 +827,17 @@ onMounted( async () => {
       .coins {
         display: flex;
         align-items: center;
-        gap: 8px;
+        justify-content: center;
+        margin-top: 10px;
+        gap: 3px;
+        img{
+          width: 24px;
+          height: 24px;
+        }
+        .coin-icon{
+          width: 16px;
+          height: 16px;
+        }
 
         .coin-amount {
           color: #D0A944;
