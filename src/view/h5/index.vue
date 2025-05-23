@@ -37,8 +37,7 @@ onMounted(() => {
 <style scoped>
 .h5-page {
     width: 100vw;
-    height: 100vh;
-    height: -webkit-fill-available; 
+    height: 100%;
     background-color: #fff;
     padding-top: 0.1px;
 }
