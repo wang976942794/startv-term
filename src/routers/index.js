@@ -122,7 +122,11 @@ router.beforeEach((to, from, next) => {
       })
     }
   } else {
-    next()
+    if (to.path.endsWith('.txt')) {
+      next(false) // 阻止路由跳转，直接返回 false
+    } else {
+      next()
+    }
   }
 })
 
