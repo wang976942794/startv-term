@@ -50,11 +50,11 @@
                     <img src="@/assets/images/google.svg" alt="Google">
                     <span>{{ t('message.google_login') }}</span>
                 </button>
-                <!-- <button class="social-btn" @click="handleSocialLogin('FACEBOOK')">
-                    <img src="@/assets/images/facebook.svg" alt="Facebook">
+                 <button class="social-btn" @click="handleSocialLogin('tiktok')">
+                    <img src="@/assets/images/facebook.svg" alt="tiktok">
                     <span>{{ t('message.facebook_login') }}</span>
                 </button>
-                <button class="social-btn" @click="handleSocialLogin('APPLE')">
+              <!--  <button class="social-btn" @click="handleSocialLogin('APPLE')">
                     <img src="@/assets/images/apple.svg" alt="Apple">
                     <span>{{ t('message.apple_login') }}</span>
                 </button> -->
@@ -78,7 +78,7 @@ import { getOAuthUrl, getTokenByLogin, getTokenByOauth, getTokenByGuest } from '
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { useI18n } from 'vue-i18n'
-
+import axios from 'axios'
 const { t } = useI18n()
 
 defineProps({
@@ -96,6 +96,8 @@ const username = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 const agreeTerms = ref(false)
+const clientKey = 'awq3gwcfvcetiq7l'; // 替换为你的Client Key
+const clientSecret = 'JNYvdgb1sSRgDPasvo8g95bqqbXZQisd'; // 用于后端请求，前端不应暴露
 
 // 组件加载时读取保存的账号密码和勾选状态
 onMounted(async () => {
@@ -131,11 +133,32 @@ onMounted(async () => {
         }
     }
 })
-
+// 生成随机state字符串
+const generateRandomString = (length) => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};
 // 处理第三方登录
 const handleSocialLogin = async (type) => {
-    
-    try {
+    if(type === 'tiktok'){
+        const state = generateRandomString(16);
+  localStorage.setItem('tiktok_auth_state', state);
+  
+  const authUrl = `https://www.tiktok.com/auth/authorize?` +
+    `client_key=${clientKey}&` +
+    `redirect_uri=https://www.startv.ae/` +
+    `response_type=code&` +
+    `scope=user.info.basic&` +
+    `state=${state}`;
+  
+  window.location.href = authUrl;
+    }
+    if(type === 'GOOGLE'){
+        try {
         // 使用完整的重定向URL，包含协议
         const redirectUrl = window.location.origin  // 添加回调路径
         const response = await getOAuthUrl({
@@ -152,6 +175,9 @@ const handleSocialLogin = async (type) => {
         console.error('Social login error:', error)
         ElMessage.error('登录失败，请稍后重试')
     }
+    }
+   
+ 
 }
 
 const handleLogin = async () => {
