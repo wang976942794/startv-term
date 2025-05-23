@@ -1,16 +1,16 @@
 {
     "rewrites": [
       {
+        "source": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt",
+        "destination": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt"
+      },
+      {
         "source": "/api/:path*",
         "destination": "https://api.startvs.net//:path*"
       },
       {
         "source": "/hls/:path*",
         "destination": "https://zhongdong-stream.startvs.net/:path*"
-      },
-      {
-        "source": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt",
-        "destination": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt"
       },
       {
         "source": "/(.*)",
