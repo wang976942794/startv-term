@@ -9,6 +9,10 @@
         "destination": "https://zhongdong-stream.startvs.net/:path*"
       },
       {
+        "source": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt",
+        "destination": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt"
+      },
+      {
         "source": "/(.*)",
         "destination": "/index.html"
       }
@@ -21,6 +25,12 @@
           { "key": "Access-Control-Allow-Origin", "value": "*" },
           { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
           { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization" }
+        ]
+      },
+      {
+        "source": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt",
+        "headers": [
+          { "key": "Content-Type", "value": "text/plain" }
         ]
       }
     ]
