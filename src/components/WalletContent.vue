@@ -2,7 +2,7 @@
   <div class="wallet-content">
     <!-- 钱包信息 -->
     <div class="wallet-section">
-      <div class="wallet-card coins">
+      <!-- <div class="wallet-card coins">
         <div class="card-content">
           <img src="@/assets/images/coin-icon.svg" alt="coin" class="coin-icon">
           <div class="info">
@@ -10,14 +10,14 @@
             <div class="amount">{{ userInfo.coins||0 }}</div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="wallet-card bonus">
         <div class="card-content">
           <div class="info">
             <h3>{{ $t('message.Bonus') }} <span class="info-icon">i</span></h3>
             <div class="amount">{{ userInfo.bonus||0 }}</div>
           </div>
-          <span class="arrow">›</span>
+          <span class="arrow"><img src="@/assets/images/right-log.svg" alt="arrow"></span>
         </div>
       </div>
     </div>
@@ -83,7 +83,7 @@ watch(() => homeStore.userInfo, (newValue) => {
 const rechargeRecord = ref([])
 const getRechargeRecordList = async () => {
   const res = await getRechargeRecord()
-  rechargeRecord.value = res.data.data
+  rechargeRecord.value = res.data.data||[]
   console.log(res);
 }
 onMounted(() => {
@@ -109,8 +109,6 @@ onMounted(() => {
 }
 
 .wallet-section {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin-bottom: 30px;
   @include responsive-scale{
@@ -155,10 +153,12 @@ onMounted(() => {
       }
 
       .info {
-        flex-grow: 1;
-
+        // flex-grow: 1;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
         h3 {
-          font-size: 16px;
+          font-size: 18px;
           margin-bottom: 8px;
           display: flex;
           align-items: center;
@@ -174,7 +174,7 @@ onMounted(() => {
             height: 16px;
             border: 1px solid var( --text-primary);
             border-radius: 50%;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
@@ -188,7 +188,7 @@ onMounted(() => {
         }
 
         .amount {
-          font-size: 24px;
+          font-size: 32px;
           font-weight: 600;
           @include responsive-scale{
             font-size: calc(1024 / 1440 * 24px);
@@ -197,10 +197,14 @@ onMounted(() => {
       }
 
       .arrow {
-        font-size: 24px;
+        margin-top: 5px;
+        width: 24px;
+        height: 24px;
         opacity: 0.6;
+        color: var(--text-primary);
         @include responsive-scale{
-          font-size: calc(1024 / 1440 * 24px);
+          width: calc(1024 / 1440 * 24px);
+          height: calc(1024 / 1440 * 24px);
         } 
       }
     }

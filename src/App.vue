@@ -5,7 +5,7 @@ import { computed, onMounted } from 'vue'
 import Header from '@/components/header.vue'
 import Footer from '@/components/footer.vue'
 import { useThemeStore } from './stores/theme'
-
+import isMobile from 'ismobilejs'
 const userStore = useUserStore()
 const route = useRoute()
 const themeStore = useThemeStore()
@@ -22,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="app-container">
+    <div class="app-container" v-if="!isMobile().phone">
         <header class="fixed-header">
             <Header></Header>
         </header>
@@ -30,6 +30,9 @@ onMounted(() => {
             <router-view></router-view>
         </main>
         <Footer ></Footer>
+    </div>
+    <div class="h5-container" v-else>
+        <router-view></router-view>
     </div>
 </template>
 

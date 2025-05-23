@@ -235,11 +235,12 @@ onBeforeUnmount(() => {
         img {
             width: 18px;
             height: 18px;
+            transition: transform 0.3s ease;
             @include responsive-scale {
                 width: calc(1024 / 1440 * 18px);
                 height: calc(1024 / 1440 * 18px);
             }
-            transition: transform 0.3s ease;
+          
             &.loading {
                 animation: spin 1s linear infinite;
             }

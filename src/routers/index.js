@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import isMobile from 'ismobilejs'
 // 引入组件
 import Home from '@/view/home/home.vue'
 
@@ -13,6 +13,7 @@ const routes = [
     meta: {
       requiresAuth: false
     }
+    
   },
   {
     path: '/genre',
@@ -74,6 +75,14 @@ const routes = [
         redirect: '/user/wallet'
       }
     ]
+  },
+  {
+    path: '/h5',
+    name: 'H5',
+    component: () => import('@/view/h5/index.vue'),
+    meta: {
+      requiresAuth: false
+    }
   }
 ]
 
@@ -89,7 +98,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // 设置页面标题
   document.title = to.meta.title || 'StarTv'
-  
+  if (isMobile().phone && !to.meta.spread && to.path !== '/h5') {
+    next({
+      path: '/h5',
+    })
+    return
+  }
   // 判断该路由是否需要登录权限
   if (to.meta.requiresAuth) {
     const token = localStorage.getItem('token')

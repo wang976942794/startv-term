@@ -22,7 +22,6 @@ const homeStore = useHomeStore()
 const userStore = useUserStore()
 onMounted(async () => {
     await homeStore.fetchHomePage()
-    await userStore.fetchUserInfo()
 })
 </script>
 
