@@ -20,6 +20,30 @@
       <h3>{{ $t('message.Top_Up') }}</h3>
         <p>{{ $t('message.We_promise') }}</p>
     </div>
+    <!-- 年卡月卡 -->
+    <div class="year-card-month-card">
+      <div class="year-card-month-card-item">
+        <img src="@/assets/images/vip.svg" alt="year-card">
+        <div class="year-card-month-card-item-content">
+          <p class="p1">Weekly VIP</p>
+          <p class="p2">Unlock All Series for 7Days</p>
+        </div>
+        <div class="button">
+          <p>$79.99</p>
+        </div>
+      </div>
+      <div class="year-card-month-card-item">
+        <img src="@/assets/images/vip.svg" alt="year-card">
+        <div class="year-card-month-card-item-content">
+          <p class="p1">Yearly VIP</p>
+          <p class="p2">Unlock All Series for 1Year</p>
+        </div>
+        <div class="button">
+          <p>$769.99</p>
+        </div>
+      </div>
+     
+    </div>
 
     <!-- 充值选项 -->
     <div class="recharge-options">
@@ -78,7 +102,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .payment-dialog {
   width: 691px;
-  height: 696px;
+  height: 814px;
   background: var(--bg-primary);
   color: var(--text-primary);
   padding: 24px;
@@ -90,14 +114,14 @@ onMounted(() => {
 .payment-title {
   color: var(--text-primary);
   font-size: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   font-weight: 700;
 }
 
 .payment-methods {
   display: flex;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .method-btn {
@@ -126,15 +150,73 @@ onMounted(() => {
   justify-content: space-between;
   background: var(--bg-tertiary);
   border-radius: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 
   p {
     font-size: 12px;
 
   }
 }
-
+.year-card-month-card {
+  width: 100%;
+  height: 94px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .year-card-month-card-item {
+    padding:  12px 4px;
+    width: 49%;
+    height: 100%;
+    background: linear-gradient(180deg, #F0D89A 0%, #D0A944 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    img {
+      width: 70px;
+      height: 70px;
+      // margin-top: 10px;
+    }
+    .year-card-month-card-item-content {
+      .p1 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #3A1F00;
+        font-family: 'Barlow Condensed';
+        margin: 0px;
+        padding: 0px;
+      }
+      .p2 {
+        font-size: 15px;
+        font-weight: 500;
+        color: #3A1F00;
+        font-family: 'Barlow Condensed';
+        margin: 0px;
+        padding: 0px;
+      }
+    }
+  }
+  .button {
+    width: 80px;
+    height: 32px;
+    background: #3A1F00;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 12px;
+    p {
+      font-size: 16px;
+      font-weight: 500;
+      background: linear-gradient(180deg, #F0D89A 0%, #D0A944 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
 .recharge-options {
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
@@ -155,11 +237,11 @@ onMounted(() => {
 
   .bonus-tag {
     position: absolute;
-    top: -8px;
-    right: -8px;
+    top: 0px;
+    right: 0px;
     background: #ff4081;
     padding: 4px 8px;
-    border-radius: 12px;
+    border-radius: 0px 5px 0px 16px;
     font-size: 12px;
   }
 
