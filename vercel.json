@@ -9,6 +9,13 @@
         "destination": "https://zhongdong-stream.startvs.net/:path*"
       },
       {
+        "source": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt",
+        "destination": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt",
+        "headers": {
+          "Content-Type": "text/plain"
+        }
+      },
+      {
         "source": "/(.*)",
         "destination": "/index.html"
       }
