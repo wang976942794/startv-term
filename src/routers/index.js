@@ -98,9 +98,14 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // 设置页面标题
   document.title = to.meta.title || 'StarTv'
-  if (isMobile().phone && !to.meta.spread && to.path !== '/h5') {
+  if (isMobile().phone && to.path !== '/h5') {
     next({
       path: '/h5',
+    })
+    return
+  } else if (!isMobile().phone && to.path === '/h5') {
+    next({
+      path: '/',
     })
     return
   }
