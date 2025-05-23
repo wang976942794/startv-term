@@ -1,8 +1,8 @@
 {
     "rewrites": [
       {
-        "source": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt",
-        "destination": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt"
+        "source": "/tiktokcCN9oFYkqBezSigmJGzoksAy5YPlHjBX.txt",
+        "destination": "/tiktokcCN9oFYkqBezSigmJGzoksAy5YPlHjBX.txt"
       },
       {
         "source": "/api/:path*",
