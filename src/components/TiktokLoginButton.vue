@@ -46,7 +46,7 @@ onMounted(async () => {
         const response = await getTokenByOauth({
           code : code,
           type: 'TIKTOK',
-          redirectUrl: 'https://www.startv.ae/'
+          redirectUrl: 'https://www.startv.ae'
         })
         if (response.code === 100000) {
           userStore.setToken(response.data)
