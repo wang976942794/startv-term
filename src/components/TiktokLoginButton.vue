@@ -29,7 +29,7 @@ function generateRandomString(length) {
 const handleTiktokLogin = () => {
   const state = generateRandomString(16)
   localStorage.setItem('tiktok_auth_state', state)
-  const authUrl = `https://www.tiktok.com/v2/auth/authorize?client_key=${clientKey}&response_type=code&scope=user.info.basic,user.info.profile&redirect_uri=https://www.startv.ae/&state=${state}&disable_auto_auth=1`
+  const authUrl = `https://www.tiktok.com/v2/auth/authorize?client_key=${clientKey}&response_type=code&scope=user.info.basic&redirect_uri=https://www.startv.ae/&state=${state}&disable_auto_auth=1`
   window.location.href = authUrl
 }
 
