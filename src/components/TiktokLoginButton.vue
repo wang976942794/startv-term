@@ -16,7 +16,7 @@ const { t } = useI18n()
 const userStore = useUserStore()
 const emit = defineEmits(['login-success'])
 const clientKey = 'sbawwjfsvg5z0lacsi'
-
+const authCode = ref('');
 function generateRandomString(length) {
   let result = ''
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
