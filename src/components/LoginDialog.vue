@@ -46,18 +46,8 @@
             </div>
 
             <div class="social-login">
-                <button class="social-btn" @click="handleSocialLogin('GOOGLE')">
-                    <img src="@/assets/images/google.svg" alt="Google">
-                    <span>{{ t('message.google_login') }}</span>
-                </button>
-                 <button class="social-btn" @click="handleSocialLogin('tiktok')">
-                    <img src="@/assets/images/facebook.svg" alt="tiktok">
-                    <span>{{ t('message.facebook_login') }}</span>
-                </button>
-              <!--  <button class="social-btn" @click="handleSocialLogin('APPLE')">
-                    <img src="@/assets/images/apple.svg" alt="Apple">
-                    <span>{{ t('message.apple_login') }}</span>
-                </button> -->
+                <GoogleLoginButton @login-success="emit('update:visible', false)" />
+                <TiktokLoginButton @login-success="emit('update:visible', false)" />
             </div>
      <!-- 登录按钮 -->
      <button class="login-btn" @click="handleLogin">{{ t('message.Login') }}</button>
@@ -74,11 +64,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getOAuthUrl, getTokenByLogin, getTokenByOauth, getTokenByGuest } from '@/api/login'
+import { getTokenByLogin, getTokenByGuest } from '@/api/login'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { useI18n } from 'vue-i18n'
-import axios from 'axios'
+import GoogleLoginButton from './GoogleLoginButton.vue'
+import TiktokLoginButton from './TiktokLoginButton.vue'
 const { t } = useI18n()
 
 defineProps({
@@ -96,8 +87,6 @@ const username = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 const agreeTerms = ref(false)
-const clientKey = 'sbawwjfsvg5z0lacsi'; // 替换为你的Client Key
-const clientSecret = 'nKDMr7RkCy44rbVsscGMb6uyNN7vGaCI'; // 用于后端请求，前端不应暴露
 
 // 组件加载时读取保存的账号密码和勾选状态
 onMounted(async () => {
@@ -107,73 +96,7 @@ onMounted(async () => {
         password.value = savedCredentials.password
         rememberMe.value = savedCredentials.rememberMe
     }
-
-    const urlParams = new URLSearchParams(window.location.search)
-    const code = urlParams.get('code')
-    const state = ref('GOOGLE')
-    if (code && state) {
-        try {
-            const response = await getTokenByOauth({
-                code:code,
-                type:state.value,
-                redirectUrl: window.location.origin
-            })
-            console.log("response getTokenByOauth",response);
-            if (response.code === 100000) {
-                userStore.setToken(response.data)
-
-                emit('update:visible', false)
-                window.history.replaceState({}, document.title, window.location.pathname)
-            } else {
-                ElMessage.error(response.msg || 'OAuth login failed')
-            }
-        } catch (error) {
-            console.error('OAuth login error:', error)
-            ElMessage.error('登录失败，请稍后重试')
-        }
-    }
 })
-// 生成随机state字符串
-const generateRandomString = (length) => {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-};
-// 处理第三方登录
-const handleSocialLogin = async (type) => {
-    if(type === 'tiktok'){
-        const state = generateRandomString(16);
-  localStorage.setItem('tiktok_auth_state', state);
-
-  const authUrl = `https://www.tiktok.com/v2/auth/authorize?client_key=${clientKey}&response_type=code&scope=user.info.basic&redirect_uri=https://www.startv.ae/&state=${state}`;
-  
-  window.location.href = authUrl;
-    }
-    if(type === 'GOOGLE'){
-        try {
-        // 使用完整的重定向URL，包含协议
-        const redirectUrl = window.location.origin  // 添加回调路径
-        const response = await getOAuthUrl({
-            type,
-            redirectUrl,  
-        })
-        console.log(response)
-        if (response.code === 100000) {
-            window.location.href = response.data  
-        } else {
-            ElMessage.error(response.msg || '获取登录链接失败')
-        }
-    } catch (error) {
-        console.error('Social login error:', error)
-        ElMessage.error('登录失败，请稍后重试')
-    }
-    }
-   
- 
-}
 
 const handleLogin = async () => {
     try {
