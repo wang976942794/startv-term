@@ -37,28 +37,30 @@ onMounted(async () => {
   const urlParams = new URLSearchParams(window.location.search)
   const code = urlParams.get('code')
   const state = urlParams.get('state')
-  if (code && state) {
-    const savedState = localStorage.getItem('tiktok_auth_state')
-    if (state === savedState) {
-      try {
-        const response = await getTokenByOauth({
-          code,
-          type: 'tiktok',
-          redirectUrl: window.location.origin
-        })
-        if (response.code === 100000) {
-          userStore.setToken(response.data)
-          emit('login-success')
-          window.history.replaceState({}, document.title, window.location.pathname)
-        } else {
-          ElMessage.error(response.msg || 'OAuth login failed')
-        }
-      } catch (error) {
-        console.error('OAuth login error:', error)
-        ElMessage.error('登录失败，请稍后重试')
-      }
-    }
-  }
+  console.log("code",code);
+  console.log("state",state);
+  // if (code && state) {
+  //   const savedState = localStorage.getItem('tiktok_auth_state')
+  //   if (state === savedState) {
+  //     try {
+  //       const response = await getTokenByOauth({
+  //         code,
+  //         type: 'tiktok',
+  //         redirectUrl: window.location.origin
+  //       })
+  //       if (response.code === 100000) {
+  //         userStore.setToken(response.data)
+  //         emit('login-success')
+  //         window.history.replaceState({}, document.title, window.location.pathname)
+  //       } else {
+  //         ElMessage.error(response.msg || 'OAuth login failed')
+  //       }
+  //     } catch (error) {
+  //       console.error('OAuth login error:', error)
+  //       ElMessage.error('登录失败，请稍后重试')
+  //     }
+  //   }
+  // }
 })
 </script>
 
