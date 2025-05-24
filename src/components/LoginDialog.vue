@@ -96,8 +96,8 @@ const username = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 const agreeTerms = ref(false)
-const clientKey = 'awq3gwcfvcetiq7l'; // 替换为你的Client Key
-const clientSecret = 'JNYvdgb1sSRgDPasvo8g95bqqbXZQisd'; // 用于后端请求，前端不应暴露
+const clientKey = 'sbawwjfsvg5z0lacsi'; // 替换为你的Client Key
+const clientSecret = 'nKDMr7RkCy44rbVsscGMb6uyNN7vGaCI'; // 用于后端请求，前端不应暴露
 
 // 组件加载时读取保存的账号密码和勾选状态
 onMounted(async () => {
@@ -147,13 +147,8 @@ const handleSocialLogin = async (type) => {
     if(type === 'tiktok'){
         const state = generateRandomString(16);
   localStorage.setItem('tiktok_auth_state', state);
-  
-  const authUrl = `https://www.tiktok.com/auth/authorize?` +
-    `client_key=${clientKey}&` +
-    `redirect_uri=https://www.startv.ae/` +
-    `response_type=code&` +
-    `scope=user.info.basic&` +
-    `state=${state}`;
+
+  const authUrl = `https://www.tiktok.com/v2/auth/authorize?client_key=${clientKey}&response_type=code&scope=user.info.basic&redirect_uri=https://www.startv.ae/&state=${state}`;
   
   window.location.href = authUrl;
     }
