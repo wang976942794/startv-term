@@ -5,7 +5,7 @@
     <Continue v-if="userStore.isLoggedIn&&homeStore.watchBookList.length>0"></Continue>
     <NewRelease></NewRelease>
     <MoreRecommended></MoreRecommended>
-   
+    <LoginDialog :visible="showLoginDialog" @update:visible="showLoginDialog = $event" />
   </div>
 </template>
 
@@ -15,13 +15,21 @@ import History from './components/history.vue'
 import Continue from './components/Continue.vue'
 import NewRelease from './components/newrelease.vue'
 import MoreRecommended from './components/morerecommended.vue'
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useHomeStore } from '@/stores/home'
 import { useUserStore } from '@/stores/user'
+import LoginDialog from '@/components/LoginDialog.vue'
+
 const homeStore = useHomeStore()
 const userStore = useUserStore()
+const showLoginDialog = ref(false)
+
 onMounted(async () => {
-    await homeStore.fetchHomePage()
+  await homeStore.fetchHomePage()
+  // 检查token，没有就弹窗
+  if (!userStore.token) {
+    showLoginDialog.value = true
+  }
 })
 </script>
 
