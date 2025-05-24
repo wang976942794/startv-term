@@ -29,9 +29,10 @@ function generateRandomString(length) {
 const handleTiktokLogin = () => {
   const state = generateRandomString(16)
   localStorage.setItem('tiktok_auth_state', state)
-  const authUrl = `https://www.tiktok.com/v2/auth/authorize?client_key=${clientKey}&response_type=code&scope=user.info.basic,user.info.profile&redirect_uri=${encodeURIComponent(window.location.origin)}&state=${state}&disable_auto_auth=1`
+  const authUrl = `https://www.tiktok.com/v2/auth/authorize?client_key=${clientKey}&response_type=code&scope=user.info.basic&redirect_uri=${encodeURIComponent(window.location.origin)}&state=${state}&disable_auto_auth=1`
   window.location.href = authUrl
 }
+
 onMounted(async () => {
   const urlParams = new URLSearchParams(window.location.search)
   const code = urlParams.get('code')
