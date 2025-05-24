@@ -137,10 +137,9 @@ const handleGuestLogin = async () => {
             userStore.setToken(response.data.token)
             emit('update:visible', false)
         }else{
-            ElMessage.error(response.msg || '登录失败，请稍后重试')
+            ElMessage.error('登录失败，请稍后重试')
         }
     } catch (error) {
-        console.error('Guest login error:', error);
         ElMessage.error('登录失败，请稍后重试');
     }
 }

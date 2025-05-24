@@ -37,7 +37,8 @@ const handleGoogleLogin = async () => {
 onMounted(async () => {
   const urlParams = new URLSearchParams(window.location.search)
   const code = urlParams.get('code')
-  if (code) {
+  const state = urlParams.get('state')
+  if (code && !state) {
     try {
       const response = await getTokenByOauth({
         code: code,
