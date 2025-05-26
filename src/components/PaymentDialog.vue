@@ -74,7 +74,7 @@
 
 <script setup>
 import { ref,onMounted } from 'vue'
-import { getProduct,getOrder,getOrderStatus } from '@/api/home'
+import { getProduct,getOrder } from '@/api/home'
 const selectedMethod = ref('paypal')
 const selectedOption = ref(null)
 const rechargeOptions = ref([])
@@ -99,23 +99,10 @@ const selectOption = async (item,index) => {
   console.log("res",res);
   selectedOption.value = index
 }
-const getOrderStatusInfo = async () => {
-  const urlParams = new URLSearchParams(window.location.search)
-  const paymentId = urlParams.get('paymentId')
-  const payerId = urlParams.get('payerId')
-  console.log("paymentId",paymentId);
-  console.log("payerId",payerId);
-  const res = await getOrderStatus({paymentId,payerId})
-  if(res.code === 100000){
-    ElMessage.success(res.msg)
-  }else{
-    ElMessage.error(res.msg)
-  }
-}
+
 
 onMounted(() => {
   getProductInfo()
-  getOrderStatusInfo()
 })
 </script>
 

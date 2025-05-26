@@ -59,7 +59,7 @@
 <script setup>
 import { ref,watch,onMounted } from 'vue';
 import { useHomeStore  } from '@/stores/home'
-import { getRechargeRecord } from '@/api/home'
+import { getRechargeRecord,getOrderStatus } from '@/api/home'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const homeStore = useHomeStore()
@@ -86,9 +86,23 @@ const getRechargeRecordList = async () => {
   rechargeRecord.value = res.data.data||[]
   console.log(res);
 }
+const getOrderStatusInfo = async () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const paymentId = urlParams.get('paymentId')
+  const payerId = urlParams.get('PayerID')
+  console.log("paymentId",paymentId);
+  console.log("payerId",payerId);
+  const res = await getOrderStatus({paymentId,payerId})
+  if(res.code === 100000){
+    ElMessage.success(res.msg)
+  }else{
+    ElMessage.error(res.msg)
+  }
+}
 onMounted(() => {
    getUserInfo()
    getRechargeRecordList()
+   getOrderStatusInfo()
 })
 
 </script>
