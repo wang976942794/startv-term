@@ -38,6 +38,7 @@
           <p class="p1">Yearly VIP</p>
           <p class="p2">Unlock All Series for 1Year</p>
         </div>
+        
         <div class="button">
           <p>${{ rechargeOptions[1]?.priceUsdCent/100 }}</p>
         </div>
