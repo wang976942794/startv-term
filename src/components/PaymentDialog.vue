@@ -82,14 +82,20 @@ const getProductInfo = async () => {
   const res = await getProduct()
   console.log("res",res);
   rechargeOptions.value = res.data
-
 }
 const selectOption = async (item,index) => {
-  console.log(item,index);
+  console.log(item);
   const res = await getOrder({
-    goodId:item.id,
-    redirectUrl:'http://api.startvs.net/api/paypal/Dreamo9/success'
+    goodId:item.goodId,
+    redirectUrl:'https://www.startv.ae/user/wallet'
   })
+  if(res.code === 100000){
+    if(selectedMethod.value === 'paypal'){
+      window.location.href = res.data.paypal
+    }else{
+      window.location.href = res.data.card
+    }
+  }
   console.log("res",res);
   selectedOption.value = index
 }
