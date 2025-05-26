@@ -141,6 +141,14 @@ export function getOrder(data) {
         data
     })
 }
+// 获取订单状态
+export function getOrderStatus(data) {
+    return request({
+        url: '/api/paypal/success',
+        method: 'post',
+        params:data
+    })
+}
 // 获取商品
 export function getProduct() {
     return request({
