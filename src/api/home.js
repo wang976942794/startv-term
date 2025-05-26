@@ -146,7 +146,7 @@ export function getOrderStatus(data) {
     return request({
         url: '/api/paypal/success',
         method: 'post',
-        params:data
+        data
     })
 }
 // 获取商品
