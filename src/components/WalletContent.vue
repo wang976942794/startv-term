@@ -94,9 +94,9 @@ const getOrderStatusInfo = async () => {
   console.log("payerId",payerId);
   const res = await getOrderStatus({paymentId,payerId})
   if(res.code === 100000){
-    ElMessage.success(res.msg)
+    ElMessage.success('充值成功')
   }else{
-    ElMessage.error(res.msg)
+    ElMessage.error('充值失败')
   }
 }
 onMounted(() => {

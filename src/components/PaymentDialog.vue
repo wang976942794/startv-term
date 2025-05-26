@@ -22,24 +22,24 @@
     </div>
     <!-- 年卡月卡 -->
     <div class="year-card-month-card">
-      <div class="year-card-month-card-item">
+      <div class="year-card-month-card-item" @click="selectOption(rechargeOptions[0] ,-1)">
         <img src="@/assets/images/vip.svg" alt="year-card">
         <div class="year-card-month-card-item-content">
           <p class="p1">Weekly VIP</p>
           <p class="p2">Unlock All Series for 7Days</p>
         </div>
         <div class="button">
-          <p>$79.99</p>
+          <p>${{ rechargeOptions[0]?.priceUsdCent/100 }}</p>
         </div>
       </div>
-      <div class="year-card-month-card-item">
+      <div class="year-card-month-card-item" @click="selectOption(rechargeOptions[1] ,-1)">
         <img src="@/assets/images/vip.svg" alt="year-card">
         <div class="year-card-month-card-item-content">
           <p class="p1">Yearly VIP</p>
           <p class="p2">Unlock All Series for 1Year</p>
         </div>
         <div class="button">
-          <p>$769.99</p>
+          <p>${{ rechargeOptions[1]?.priceUsdCent/100 }}</p>
         </div>
       </div>
      
@@ -47,15 +47,15 @@
 
     <!-- 充值选项 -->
     <div class="recharge-options">
-      <div v-for="(item, index) in rechargeOptions" :key="index" class="recharge-item"
+      <div v-for="(item, index) in rechargeOptions.filter(item => item.vipTime === 0)" :key="index" class="recharge-item"
         :class="{ active: selectedOption === index }" @click="selectOption(item,index)">
         <div class="bonus-tag">+10%</div>
         <div class="recharge-content">
-          <div class="coins">{{ item.priceUsdCent }} <span>{{ $t('message.Coins') }}</span></div>
-          <div class="bouns">+{{ item.coinNum }} <span>{{ $t('message.Bonus') }}</span></div>
+          <div class="coins">{{ item.coinNum }} <span>{{ $t('message.Coins') }}</span></div>
+          <div class="bouns">+{{ item.bonusNum }} <span>{{ $t('message.Bonus') }}</span></div>
         </div>
 
-        <div class="price">${{ item.priceCent }}</div>
+        <div class="price">${{ item.priceUsdCent/100 }}</div>
       </div>
     </div>
 
