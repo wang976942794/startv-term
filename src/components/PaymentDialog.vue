@@ -29,7 +29,9 @@
           <p class="p2">Unlock All Series for 7Days</p>
         </div>
         <div class="button">
-          <p><span style="font-size: 8px;">AED</span>{{ rechargeOptions[0]?.priceUsdCent/100 }}</p>
+          <p>
+            <!-- <span style="font-size: 8px;">AED</span> -->
+            ${{ rechargeOptions[0]?.priceUsdCent/100 }}</p>
         </div>
       </div>
       <div class="year-card-month-card-item" @click="selectOption(rechargeOptions[1] ,-1)">
@@ -40,7 +42,9 @@
         </div>
         
         <div class="button">
-          <p><span style="font-size: 8px;">AED</span>{{ rechargeOptions[1]?.priceUsdCent/100 }}</p>
+          <p>
+            <!-- <span style="font-size: 8px;">AED</span> -->
+            ${{ rechargeOptions[1]?.priceUsdCent/100 }}</p>
         </div>
       </div>
      
@@ -57,8 +61,8 @@
         </div>
 
         <div class="price">
-          <span style="font-size: 8px;">AED</span>
-          {{ item.priceUsdCent/100 }}
+          <!-- <span style="font-size: 8px;">AED</span> -->
+          ${{ item.priceUsdCent/100 }}
         </div>
       </div>
     </div>
@@ -226,7 +230,6 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
     }
   }
 }
