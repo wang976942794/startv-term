@@ -94,7 +94,7 @@
                         <p class="download-tip">{{ $t('message.Download_on_iOS_or_Android') }}</p>
                     </div>
                     <div class="qr-code">
-                        <!-- <img src="@/assets/images/qr-code.png" alt="QR Code"> -->
+                        <qrcode  qrcodeSize="140"></qrcode>
                     </div>
 
                 </div>
@@ -206,7 +206,7 @@ import { useThemeStore } from '@/stores/theme'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import { setI18nLanguage } from '@/language';
-
+import qrcode from '@/components/qrcode.vue'
 
 const route = useRoute()
 const router = useRouter()  // 获取路由实例
@@ -1076,8 +1076,9 @@ const handleSearchResultClick = (item) => {
         .qr-code {
             width: 160px;
             height: 160px;
-            background: var(--text-primary)FFF;
+            background: #FFF;
             border-radius: 8px;
+            padding: 10px;
 
             @include responsive-scale {
                 width: calc(1024 / 1440 * 160px);

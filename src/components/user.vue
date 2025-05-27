@@ -8,7 +8,7 @@
         <div class="user-info">
           <img src="@/assets/images/user.svg" alt="user avatar" class="avatar">
           <div class="user-details">
-            <h2>{{ userInfo.name }}</h2>
+            <h2>{{ userInfo?.name }}</h2>
             <p class="user-id">UID {{ userInfo.userId }}</p>
           </div>
           <button class="top-up-btn" @click="showPaymentDialog = true">{{ $t('message.Top_Up') }}</button>

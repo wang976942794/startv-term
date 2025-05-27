@@ -14,10 +14,12 @@
          <img src="@/assets/images/appStore.svg" alt="download">
          <span>iOS Download</span>
        </div>
-       <div class="h5-footer-item">
-        <img src="@/assets/images/apk.svg" alt="download">
-        <span>Android Download</span>
-       </div>
+       <!-- <div class="h5-footer-item"> -->
+        <a :href="downloadList" class="h5-footer-item">
+            <img src="@/assets/images/apk.svg" alt="download">
+            <span>Android Download</span>
+        </a>
+       <!-- </div> -->
     </div>
   </div>
 </template>
@@ -26,12 +28,19 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { getDownloadUrl } from '@/api/home'
 const router = useRouter();
 const i18n = useI18n();
 const t = i18n.t;
+const downloadList = ref('')
+const getDownload = async () => {
+    const response = await getDownloadUrl()
+    downloadList.value = response.data.apkUrl
+}
 
 onMounted(() => {
-  console.log('H5 Page mounted');
+getDownload()
+
 }); 
 </script>
 <style scoped>

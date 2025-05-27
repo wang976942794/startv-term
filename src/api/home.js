@@ -229,3 +229,10 @@ export function getRechargeRecord() {
 
     })
 }
+//获取下载链接
+export function getDownloadUrl() {
+    return request({
+        url: 'api/apk/getApk',
+        method: 'get',
+    })
+}

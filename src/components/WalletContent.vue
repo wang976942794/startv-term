@@ -83,7 +83,7 @@ watch(() => homeStore.userInfo, (newValue) => {
 const rechargeRecord = ref([])
 const getRechargeRecordList = async () => {
   const res = await getRechargeRecord()
-  rechargeRecord.value = res.data.data||[]
+  rechargeRecord.value = res.data?.data||[]
   console.log(res);
 }
 const getOrderStatusInfo = async () => {

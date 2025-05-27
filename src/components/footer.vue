@@ -25,7 +25,7 @@
                 <div class="footer-right-top">
                     <p class="first"><a >Contact</a></p>
                     <div class="qr">
-                        <qrcode qrcodeSrc="https://startvae.vercel.app/" qrcodeSize="80"></qrcode>
+                        <qrcode qrcodeSize="80"></qrcode>
                     </div>
                 </div>
             </div>

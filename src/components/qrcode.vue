@@ -11,21 +11,31 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import UQRCode from "uqrcodejs";
+import { getDownloadUrl } from '@/api/home'
 const props = defineProps({
     qrcodeSize:100,
-    qrcodeSrc:String,
+
     qrcodeId:{
       type:String,
       default:'qrcode'}
 })
 const canvasRef = ref(null);
 const qr =new UQRCode()
+const qrcodeSrc = ref('')
+const getDownload = async () => {
+    const response = await getDownloadUrl()
+    qrcodeSrc.value = response.data.apkUrl
+ 
+    qrDraw()
+}
 
 onMounted(() => {
-  qrDraw()
+  getDownload()
+
+  
 });
 function qrDraw(){
-  qr.data =props.qrcodeSrc;
+  qr.data =qrcodeSrc.value;
   qr.size =props.qrcodeSize*2;
   qr.bg = '#ffffff';
   qr.fg = '#000000';
