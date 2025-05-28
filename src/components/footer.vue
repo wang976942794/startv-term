@@ -9,7 +9,7 @@
                 <div class="footer-right-top">
                     <p class="first"><a>{{ $t('message.ABOUT') }}</a></p>
                     <div class="footer-right-top-bottom">
-                        <p> <a href="https://startvae.vercel.app/" target="_blank">{{ $t('message.Contact_Us') }}</a></p>
+                        <p> <a href="https://star-tv-use.vercel.app/" target="_blank">{{ $t('message.Contact_Us') }}</a></p>
                         <p> <a href="https://startvae.vercel.app/" target="_blank">{{ $t('message.Terms_of_Service') }}</a></p>
                         <p> <a href="https://startvae.vercel.app/" target="_blank">{{ $t('message.Privacy_Policy') }}</a></p>
                     </div>
