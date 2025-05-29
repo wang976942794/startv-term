@@ -1,5 +1,5 @@
 <template>
-  <div class="video-container">
+  <div class="video-container" :key="`${bookId}-${chapterId}`">
     <div class="video-player-bg" @click="handleBack">
         <img src="@/assets/images/arrow-left.svg" alt="">
        </div>
@@ -137,7 +137,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute,useRouter } from 'vue-router'
 import Vue3VideoPlay from '@/components/Vue3videoPlay.vue'
 import { getVideoInfo, getChapterInfo,getChapterCollect,getChapterCollectCancel,getComment,sendComment,getSubtitle,getUnlockChapter,recordWatchTime } from '@/api/home'
@@ -231,42 +231,41 @@ const postComment = async () => {
 
   }
 }
-// 封装获取视频和章节信息的函数
-const fetchVideoAndChapterInfo = async (bookId, chapterId) => {
+// 封装获取视频和章节信息的函数，添加重试机制
+const fetchVideoAndChapterInfo = async (bookId, chapterId, retryCount = 1) => {
   try {
-    const [videoRes, chapterRes,subtitleRes,] = await Promise.all([
-      getVideoInfo({
-        bookId,
-        chapterId
-      }),
-      getChapterInfo({
-        bookId,
-        chapterId
-      }),
-      getSubtitle({
-        bookId,
-        chapterId
-      }),
-    
-    ]) 
+    const [videoRes, chapterRes, subtitleRes] = await Promise.all([
+      getVideoInfo({ bookId, chapterId }),
+      getChapterInfo({ bookId, chapterId }),
+      getSubtitle({ bookId, chapterId }),
+    ]);
+
     if (videoRes.code === 100000) {
-      videoInfo.value = videoRes.data.bookInfoResp
-      unlockChapterIdomfp.value = videoRes.data.userBookRelationResp
+      videoInfo.value = videoRes.data.bookInfoResp;
+      unlockChapterIdomfp.value = videoRes.data.userBookRelationResp;
     }
 
     if (chapterRes.code === 100000) {
-      chapterInfo.value = chapterRes.data
-      matchCollect.value = chapterRes.data.matchCollect
+      chapterInfo.value = chapterRes.data;
+      matchCollect.value = chapterRes.data.matchCollect;
     }
+
     if (subtitleRes.code === 100000) {
-      subtitle.value = subtitleRes.data
+      subtitle.value = subtitleRes.data;
     }
-    return { videoRes, chapterRes }
+
+    return { videoRes, chapterRes };
   } catch (error) {
-    console.error('Failed to fetch data:', error)
-    throw error
+    if (retryCount > 0) {
+      // 如果还有重试次数，自动重试
+      return fetchVideoAndChapterInfo(bookId, chapterId, retryCount - 1);
+    } else {
+      // 如果两次都失败，显示错误提示
+      ElMessage.error(t('message.Network_Error'));
+      throw error;
+    }
   }
-}
+};
 
 // 修改点击处理函数
 const handleEpisodeClick = async (episodeNum) => {
@@ -366,18 +365,37 @@ const handleVideoPause = async (currentTime) => {
   }
 }
 
-// 修改 onMounted
+// 修改 watch 函数，调用 fetchVideoAndChapterInfo 时传入重试次数
+watch(
+  () => [route.query.bookId, route.query.chapterId],
+  async ([newBookId, newChapterId], [oldBookId, oldChapterId]) => {
+    if (newBookId !== oldBookId || newChapterId !== oldChapterId) {
+      try {
+        isLoading.value = true;
+        await fetchVideoAndChapterInfo(newBookId, newChapterId, 1); // 重试一次
+        handleComment();
+      } catch (error) {
+        console.error('路由参数变化时获取数据失败:', error);
+      } finally {
+        isLoading.value = false;
+      }
+    }
+  },
+  { immediate: true }
+);
+
+// 修改 onMounted，调用 fetchVideoAndChapterInfo 时传入重试次数
 onMounted(async () => {
-  window.scrollTo(0, 0)
-  
+  window.scrollTo(0, 0);
+
   try {
-    console.log(bookId.value, chapterId.value)
-    await fetchVideoAndChapterInfo(bookId.value, chapterId.value)
+    console.log(bookId.value, chapterId.value);
+    await fetchVideoAndChapterInfo(bookId.value, chapterId.value, 1); // 重试一次
   } catch (error) {
-    console.error('Failed to fetch initial data:', error)
+    console.error('初始数据获取失败:', error);
   }
-  handleComment()
-})
+  handleComment();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -563,8 +581,16 @@ onMounted(async () => {
 
     .plot-summary {
       margin-bottom: 24px;
+      height: 100px;
+      overflow-y: auto;
+      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
+      &::-webkit-scrollbar {
+        display: none;  /* Chrome, Safari and Opera */
+      }
       @include responsive-scale {
         margin-bottom: calc(1024 / 1440 * 24px);
+        height: calc(1024 / 1440 * 100px);
       }
 
       h3 {
