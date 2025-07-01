@@ -4,6 +4,7 @@
     <History></History>
     <Continue v-if="userStore.isLoggedIn&&homeStore.watchBookList.length>0"></Continue>
     <NewRelease></NewRelease>
+    <AdComponent />
     <MoreRecommended></MoreRecommended>
     <LoginDialog :visible="showLoginDialog" @update:visible="showLoginDialog = $event" />
   </div>
@@ -19,6 +20,7 @@ import { ref, onMounted } from 'vue'
 import { useHomeStore } from '@/stores/home'
 import { useUserStore } from '@/stores/user'
 import LoginDialog from '@/components/LoginDialog.vue'
+import AdComponent from '@/components/AdComponent.vue'
 
 const homeStore = useHomeStore()
 const userStore = useUserStore()
