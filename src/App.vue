@@ -10,11 +10,7 @@ const userStore = useUserStore()
 const route = useRoute()
 const themeStore = useThemeStore()
 
-// 计算属性来判断是否显示 Footer
-// const showFooter = computed(() => {
-//   // 在 videoPlay 路由下不显示 Footer
-//   return !route.path.includes('/videoPlay')
-// })
+
 
 onMounted(() => {
   themeStore.initTheme()
@@ -22,18 +18,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="app-container" v-if="!isMobile().phone">
-        <header class="fixed-header">
-            <Header></Header>
-        </header>
-        <main class="main-content">
-            <router-view></router-view>
-        </main>
-        <Footer ></Footer>
-    </div>
-    <div class="h5-container" v-else>
-        <router-view></router-view>
-    </div>
+   <router-view></router-view>
 </template>
 
 <style scoped>
