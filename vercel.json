@@ -1,8 +1,8 @@
 {
     "rewrites": [
       {
-        "source": "/tiktok5nY53DnyStpatoSIxeKHpOxrRAqetEpb.txt",
-        "destination": "/tiktok5nY53DnyStpatoSIxeKHpOxrRAqetEpb.txt"
+        "source": "/tiktokPr7ahHhlGecUR7JeIW0VOQxdPM6HIa8u.txt",
+        "destination": "/tiktokPr7ahHhlGecUR7JeIW0VOQxdPM6HIa8u.txt"
       },
       {
         "source": "/api/:path*",
@@ -28,7 +28,7 @@
         ]
       },
       {
-        "source": "/tiktok5nY53DnyStpatoSIxeKHp0DxrRAqetEpb.txt",
+        "source": "/tiktokPr7ahHhlGecUR7JeIW0VOQxdPM6HIa8u.txt",
         "headers": [
           { "key": "Content-Type", "value": "text/plain" }
         ]
