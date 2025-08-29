@@ -5,6 +5,10 @@
         "destination": "/tiktokPr7ahHhlGecUR7JeIW0VOQxdPM6HIa8u.txt"
       },
       {
+        "source": "app-ads.txt",
+        "destination": "app-ads.txt"
+      },
+      {
         "source": "/api/:path*",
         "destination": "https://api.startvs.net//:path*"
       },
